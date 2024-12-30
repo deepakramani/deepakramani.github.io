@@ -48,8 +48,8 @@ website:
   #     style: docked
   #     contents: notes/**
 
-  # google-analytics:
-  #   tracking-id: "G-V08NSV8XPF"
+  google-analytics:
+    tracking-id: "G-V08NSV8XPF"
   cookie-consent:
     type: implied
     palette: light
@@ -76,11 +76,10 @@ format:
       dark: [_includes/dark-theme.scss]
     highlight-style: dracula
     # css: _includes/styles.css
-    # include-before-body: 
     include-in-header:
-      _includes/canonical.html
-      _includes/analytics.html
+      [_includes/canonical.html]
     #   _includes/google-ads.html
+    # includes/analytics.html,
     code-link: true
     smooth-scroll: true
     code-copy: hover
