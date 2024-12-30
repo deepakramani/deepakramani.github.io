@@ -32,15 +32,24 @@
     ]
   },
   {
-    "listing": "/notes/data-analysis/index.html",
-    "items": [
-      "/notes/data-analysis/pandas/index.html"
-    ]
-  },
-  {
     "listing": "/projects/index.html",
     "items": [
       "/projects/mlops.html"
+    ]
+  },
+  {
+    "listing": "/notes/data-engineering/index.html",
+    "items": [
+      "/notes/data-engineering/apache-Kafka/index.html",
+      "/notes/data-engineering/Debezium-CDC/index.html",
+      "/notes/data-engineering/postgres/index.html",
+      "/notes/data-engineering/Kafka-connect/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/data-analysis/index.html",
+    "items": [
+      "/notes/data-analysis/pandas/index.html"
     ]
   },
   {
@@ -51,15 +60,6 @@
       "/notes/data-analysis/index.html",
       "/notes/python_concepts.html",
       "/notes/linux/index.html"
-    ]
-  },
-  {
-    "listing": "/notes/data-engineering/index.html",
-    "items": [
-      "/notes/data-engineering/apache-Kafka/index.html",
-      "/notes/data-engineering/Debezium-CDC/index.html",
-      "/notes/data-engineering/postgres/index.html",
-      "/notes/data-engineering/Kafka-connect/index.html"
     ]
   },
   {
