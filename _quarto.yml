@@ -76,13 +76,14 @@ format:
       dark: [_includes/dark-theme.scss]
     highlight-style: dracula
     # css: _includes/styles.css
-    include-in-header:
-      [_includes/canonical.html]
+    # include-in-header:
+    #   [_includes/canonical.html]
     #   _includes/google-ads.html
     # includes/analytics.html,
     code-link: true
     smooth-scroll: true
     code-copy: hover
+    canonical-url: true
 
 execute: 
   freeze: auto
