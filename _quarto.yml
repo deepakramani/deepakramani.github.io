@@ -76,10 +76,10 @@ format:
       dark: [_includes/dark-theme.scss]
     highlight-style: dracula
     # css: _includes/styles.css
-    include-before-body: 
-      _includes/analytics.html
+    # include-before-body: 
     include-in-header:
       _includes/canonical.html
+      _includes/analytics.html
     #   _includes/google-ads.html
     code-link: true
     smooth-scroll: true
