@@ -1,5 +1,11 @@
 [
   {
+    "listing": "/projects/index.html",
+    "items": [
+      "/projects/mlops.html"
+    ]
+  },
+  {
     "listing": "/archive.html",
     "items": [
       "/notes/data-engineering/index.html",
@@ -32,37 +38,6 @@
     ]
   },
   {
-    "listing": "/projects/index.html",
-    "items": [
-      "/projects/mlops.html"
-    ]
-  },
-  {
-    "listing": "/notes/data-engineering/index.html",
-    "items": [
-      "/notes/data-engineering/apache-Kafka/index.html",
-      "/notes/data-engineering/Debezium-CDC/index.html",
-      "/notes/data-engineering/postgres/index.html",
-      "/notes/data-engineering/Kafka-connect/index.html"
-    ]
-  },
-  {
-    "listing": "/notes/data-analysis/index.html",
-    "items": [
-      "/notes/data-analysis/pandas/index.html"
-    ]
-  },
-  {
-    "listing": "/notes/index.html",
-    "items": [
-      "/notes/data-engineering/index.html",
-      "/notes/py_for_finance.html",
-      "/notes/data-analysis/index.html",
-      "/notes/python_concepts.html",
-      "/notes/linux/index.html"
-    ]
-  },
-  {
     "listing": "/index.html",
     "items": [
       "/posts/2023-09-02-testing-data-pipelines/index.html",
@@ -80,6 +55,31 @@
       "/posts/2022-09-24-using-json-normalize/index.html",
       "/posts/2022-01-09-dotfiles/index.html",
       "/posts/2021-09-18-kaggle-setup/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/index.html",
+    "items": [
+      "/notes/data-engineering/index.html",
+      "/notes/py_for_finance.html",
+      "/notes/data-analysis/index.html",
+      "/notes/python_concepts.html",
+      "/notes/linux/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/data-engineering/index.html",
+    "items": [
+      "/notes/data-engineering/apache-Kafka/index.html",
+      "/notes/data-engineering/Debezium-CDC/index.html",
+      "/notes/data-engineering/postgres/index.html",
+      "/notes/data-engineering/Kafka-connect/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/data-analysis/index.html",
+    "items": [
+      "/notes/data-analysis/pandas/index.html"
     ]
   }
 ]

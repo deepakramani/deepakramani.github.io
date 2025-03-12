@@ -9,7 +9,7 @@
 <link>https://deepakramani.github.io/</link>
 <atom:link href="https://deepakramani.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>This is Deepak Ramani personal blog.</description>
-<generator>quarto-1.7.5</generator>
+<generator>quarto-1.7.15</generator>
 <lastBuildDate>Sat, 02 Sep 2023 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Testing Data Pipelines</title>
@@ -1231,7 +1231,7 @@ font-style: inherit;">    }'</span></span></code></pre></div>
 </section>
 <section id="prerequisites-and-setup" class="level2">
 <h2 class="anchored" data-anchor-id="prerequisites-and-setup">Prerequisites and Setup</h2>
-<p>We use Ubuntu 20.04 LTS AWS EC2 machine for the project. Full source code <a href="https://github.com/deepakramani/cdc-pg-dbz-kafka-s3.git">here</a>.</p>
+<p>We use Ubuntu 20.04 LTS AWS EC2 machine for the project. Full source code <a href="https://github.com/deepakramani/cdc-debezium-kafka.git">here</a>.</p>
 <p>We need the following:</p>
 <ul>
 <li><p><a href="https://github.com/git-guides/install-git">git version &gt;= 2.37.1</a>,</p></li>
