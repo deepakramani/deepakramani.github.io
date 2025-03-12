@@ -70,7 +70,7 @@ If you're curious like me, it is always the challenges that make a good story to
 
 ## Prerequisites and Setup
 
-We use Ubuntu 20.04 LTS AWS EC2 machine for the project. Full source code [here](https://github.com/deepakramani/cdc-pg-dbz-kafka-s3.git).
+We use Ubuntu 20.04 LTS AWS EC2 machine for the project. Full source code [here](https://github.com/deepakramani/cdc-debezium-kafka.git).
 
 We need the following:
 
