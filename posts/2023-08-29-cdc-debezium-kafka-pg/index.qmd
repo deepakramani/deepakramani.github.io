@@ -1,5 +1,5 @@
 ---
-title: Change Data Capture with Debezium, Kafka, S3
+title: Event-driven data pipeline -- Change Data Capture with Debezium and Kafka
 description: "Using Debezium capture data changes and stream it downstream to consumers."
 date: "2023-08-29"
 date-modified: "2023-09-12"
@@ -10,7 +10,7 @@ format:
     code-annotations: hover
 execute: 
   eval: false
-categories: ["Debezium", "Postgres", "Change Data Capture", "CDC", "Kafka", "Connectors", "Faker", "Docker", ""]
+categories: ["Debezium", "Postgres", "Change Data Capture", "CDC", "Kafka", "Connectors", "Faker", "Docker", "Event-driven"]
 ---
 
 # Introduction
