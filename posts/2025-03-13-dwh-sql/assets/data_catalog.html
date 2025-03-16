@@ -6,11 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Deepak Ramani">
-<meta name="dcterms.date" content="2023-02-06">
-<meta name="description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
 
-<title>Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog</title>
+<title>data_catalog – Deepak Ramani blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,66 +20,32 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-e5c2ab1f5221acdb0ea7cf817d19f399.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e5c2ab1f5221acdb0ea7cf817d19f399.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-dark-e21dd77ff9034c3bd82aa1b8d06af895.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-6809aa9492a535cb6ee6b0dcfa46d869.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-e5c2ab1f5221acdb0ea7cf817d19f399.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-e5c2ab1f5221acdb0ea7cf817d19f399.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-e21dd77ff9034c3bd82aa1b8d06af895.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-6809aa9492a535cb6ee6b0dcfa46d869.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<script src="../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -137,20 +100,12 @@ cookieconsent.run({
 <style>html{ scroll-behavior: smooth; }</style>
 
 
-<meta property="og:title" content="Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog">
-<meta property="og:description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
-<meta property="og:image" content="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/neovim-logo1.png">
+<meta property="og:title" content="Deepak Ramani blog">
 <meta property="og:site_name" content="Deepak Ramani blog">
-<meta property="og:image:height" content="95">
-<meta property="og:image:width" content="358">
-<meta name="twitter:title" content="Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog">
-<meta name="twitter:description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
-<meta name="twitter:image" content="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/neovim-logo1.png">
+<meta name="twitter:title" content="Deepak Ramani blog">
 <meta name="twitter:creator" content="@thosegradients">
-<meta name="twitter:image-height" content="95">
-<meta name="twitter:image-width" content="358">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://deepakramani.github.io/posts/2025-03-13-dwh-sql/assets/data_catalog.html">
 </head>
 
 <body class="floating nav-fixed quarto-light">
@@ -166,21 +121,21 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../notes/index.html"> 
+    <a class="nav-link" href="../../../notes/index.html"> 
 <span class="menu-text">Notes</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="../../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../resume.pdf"> 
+    <a class="nav-link" href="../../../resume.pdf"> 
 <span class="menu-text">Resume</span></a>
   </li>  
 </ul>
@@ -192,68 +147,19 @@ cookieconsent.run({
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Setup Skim PDF reader with VimTeX in Mac OS</h1>
-                  <div>
-        <div class="description">
-          A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">skim</div>
-                <div class="quarto-category">vimtex</div>
-                <div class="quarto-category">neovim</div>
-                <div class="quarto-category">vim</div>
-                <div class="quarto-category">mac</div>
-                <div class="quarto-category">inverse search</div>
-                <div class="quarto-category">backward search</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Deepak Ramani </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">February 6, 2023</p>
-      </div>
-    </div>
-    
-      <div>
-      <div class="quarto-title-meta-heading">Modified</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date-modified">March 24, 2023</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block"></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
-  <li><a href="#install-skim" id="toc-install-skim" class="nav-link active" data-scroll-target="#install-skim">Install Skim</a></li>
-  <li><a href="#install-vimtex" id="toc-install-vimtex" class="nav-link" data-scroll-target="#install-vimtex">Install VimTeX</a></li>
-  <li><a href="#pdf-preview" id="toc-pdf-preview" class="nav-link" data-scroll-target="#pdf-preview">Pdf preview</a></li>
-  <li><a href="#configurations" id="toc-configurations" class="nav-link" data-scroll-target="#configurations">Configurations</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#data-catalog-for-gold-layer" id="toc-data-catalog-for-gold-layer" class="nav-link active" data-scroll-target="#data-catalog-for-gold-layer">Data Catalog for Gold Layer</a>
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-02-06-skim-vimtex/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2025-03-13-dwh-sql/assets/data_catalog.md" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -395,114 +301,244 @@ cookieconsent.run({
 
 
 
+<section id="data-catalog-for-gold-layer" class="level1">
+<h1>Data Catalog for Gold Layer</h1>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>The Gold Layer is the business-level data representation, structured to support analytical and reporting use cases. It consists of <strong>dimension tables</strong> and <strong>fact tables</strong> for specific business metrics.</p>
+<hr>
+<section id="gold.dim_customers" class="level3">
+<h3 class="anchored" data-anchor-id="gold.dim_customers">1. <strong>gold.dim_customers</strong></h3>
+<ul>
+<li><strong>Purpose:</strong> Stores customer details enriched with demographic and geographic data.</li>
+<li><strong>Columns:</strong></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 74%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>customer_skey</td>
+<td>INT</td>
+<td>Surrogate key uniquely identifying each customer record in the dimension table.</td>
+</tr>
+<tr class="even">
+<td>customer_id</td>
+<td>INT</td>
+<td>Unique numerical identifier assigned to each customer.</td>
+</tr>
+<tr class="odd">
+<td>customer_key</td>
+<td>VARCHAR(50)</td>
+<td>Alphanumeric identifier representing the customer, used for tracking and referencing.</td>
+</tr>
+<tr class="even">
+<td>customer_first_name</td>
+<td>VARCHAR(50)</td>
+<td>The customer’s first name, as recorded in the system.</td>
+</tr>
+<tr class="odd">
+<td>customer_last_name</td>
+<td>VARCHAR(50)</td>
+<td>The customer’s last name or family name.</td>
+</tr>
+<tr class="even">
+<td>customer_birthdate</td>
+<td>DATE</td>
+<td>The date of birth of the customer, formatted as YYYY-MM-DD (e.g., 1971-10-06).</td>
+</tr>
+<tr class="odd">
+<td>customer_gender</td>
+<td>VARCHAR(50)</td>
+<td>The gender of the customer (e.g., ‘Male’, ‘Female’, ‘n/a’).</td>
+</tr>
+<tr class="even">
+<td>customer_marital_status</td>
+<td>VARCHAR(50)</td>
+<td>The marital status of the customer (e.g., ‘Married’, ‘Single’).</td>
+</tr>
+<tr class="odd">
+<td>customer_country</td>
+<td>VARCHAR(50)</td>
+<td>The country of residence for the customer (e.g., ‘Australia’).</td>
+</tr>
+<tr class="even">
+<td>create_date</td>
+<td>DATE</td>
+<td>The date and time when the customer record was created in the system</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="gold.dim_products" class="level3">
+<h3 class="anchored" data-anchor-id="gold.dim_products">2. <strong>gold.dim_products</strong></h3>
+<ul>
+<li><strong>Purpose:</strong> Provides information about the products and their attributes.</li>
+<li><strong>Columns:</strong></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>product_skey</td>
+<td>INT</td>
+<td>Surrogate key uniquely identifying each product record in the product dimension table.</td>
+</tr>
+<tr class="even">
+<td>product_id</td>
+<td>INT</td>
+<td>A unique identifier assigned to the product for internal tracking and referencing.</td>
+</tr>
+<tr class="odd">
+<td>product_key</td>
+<td>VARCHAR(50)</td>
+<td>A structured alphanumeric code representing the product, often used for categorization or inventory.</td>
+</tr>
+<tr class="even">
+<td>product_name</td>
+<td>VARCHAR(50)</td>
+<td>Descriptive name of the product, including key details such as type, color, and size.</td>
+</tr>
+<tr class="odd">
+<td>product_category_id</td>
+<td>VARCHAR(50)</td>
+<td>A unique identifier for the product’s category, linking to its high-level classification.</td>
+</tr>
+<tr class="even">
+<td>product_category</td>
+<td>VARCHAR(50)</td>
+<td>The broader classification of the product (e.g., Bikes, Components) to group related items.</td>
+</tr>
+<tr class="odd">
+<td>product_subcategory</td>
+<td>VARCHAR(50)</td>
+<td>A more detailed classification of the product within the category, such as product type.</td>
+</tr>
+<tr class="even">
+<td>product_maintenance_flag</td>
+<td>VARCHAR(50)</td>
+<td>Indicates whether the product requires maintenance (e.g., ‘Yes’, ‘No’).</td>
+</tr>
+<tr class="odd">
+<td>product_cost</td>
+<td>INT</td>
+<td>The cost or base price of the product, measured in monetary units.</td>
+</tr>
+<tr class="even">
+<td>product_line</td>
+<td>VARCHAR(50)</td>
+<td>The specific product line or series to which the product belongs (e.g., Road, Mountain).</td>
+</tr>
+<tr class="odd">
+<td>product_start_date</td>
+<td>DATE</td>
+<td>The date when the product became available for sale or use, stored in</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="gold.fact_sales" class="level3">
+<h3 class="anchored" data-anchor-id="gold.fact_sales">3. <strong>gold.fact_sales</strong></h3>
+<ul>
+<li><strong>Purpose:</strong> Stores transactional sales data for analytical purposes.</li>
+<li><strong>Columns:</strong></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 74%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sales_details_skey</td>
+<td>CHAR(32)</td>
+<td>Derived surrogate key using md5 hash function using sales_order_number, product_key, customer_key. 32 characters long.</td>
+</tr>
+<tr class="even">
+<td>sales_order_number</td>
+<td>VARCHAR(50)</td>
+<td>A unique alphanumeric identifier for each sales order (e.g., ‘SO54496’).</td>
+</tr>
+<tr class="odd">
+<td>product_key</td>
+<td>INT</td>
+<td>Surrogate key linking the order to the product dimension table.</td>
+</tr>
+<tr class="even">
+<td>customer_key</td>
+<td>INT</td>
+<td>Surrogate key linking the order to the customer dimension table.</td>
+</tr>
+<tr class="odd">
+<td>sales_order_date</td>
+<td>DATE</td>
+<td>The date when the order was placed.</td>
+</tr>
+<tr class="even">
+<td>sales_shipping_date</td>
+<td>DATE</td>
+<td>The date when the order was shipped to the customer.</td>
+</tr>
+<tr class="odd">
+<td>sales_due_date</td>
+<td>DATE</td>
+<td>The date when the order payment was due.</td>
+</tr>
+<tr class="even">
+<td>sales_amount</td>
+<td>INT</td>
+<td>The total monetary value of the sale for the line item, in whole currency units (e.g., 25).</td>
+</tr>
+<tr class="odd">
+<td>sales_quantity</td>
+<td>INT</td>
+<td>The number of units of the product ordered for the line item (e.g., 1).</td>
+</tr>
+<tr class="even">
+<td>sales_price</td>
+<td>INT</td>
+<td>The price per unit of the product for the line item, in whole currency units (e.g., 25).</td>
+</tr>
+</tbody>
+</table>
 
-<p><a href="https://github.com/lervag/vimtex">VimTeX</a> plugin written by Karl Yngve Lervåg is one of the goto plugins to manage LaTeX files with Vim/Neovim text editors. VimTeX allows integration with several PDF viewers. In Mac OS, <a href="https://skim-app.sourceforge.io">Skim</a> and <a href="https://pwmt.org/projects/zathura/">Zathura</a> PDF readers allow easy integration with LaTeX. Since Zathura’s installation in Mac OS involves more steps, we will be using Skim for this post.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You should have a working LaTeX setup and Neovim version &gt; 0.8.3 is advised.</p>
-</div>
-</div>
-<section id="install-skim" class="level2">
-<h2 class="anchored" data-anchor-id="install-skim">Install Skim</h2>
-<p>With <a href="../brew.sh">Homebrew</a></p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>Terminal</strong></pre>
-</div>
-<div class="sourceCode" id="cb1" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> skim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Or download the dmg file of the current version(as of writing latest version is v1.6.8) from <a href="https://skim-app.sourceforge.io">Skim’s website</a>.</p>
-</section>
-<section id="install-vimtex" class="level2">
-<h2 class="anchored" data-anchor-id="install-vimtex">Install VimTeX</h2>
-<p>Using <a href="https://github.com/junegunn/vim-plug">vim-plug</a> plugin manager we add the following line to <code>.vimrc</code> or <code>init.vim</code> or <code>init.lua</code></p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>Inside init.vim</strong></pre>
-</div>
-<div class="sourceCode" id="cb2" data-filename="Inside init.vim"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Plug</span> <span class="st">'lervag/vimtex'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="pdf-preview" class="level2">
-<h2 class="anchored" data-anchor-id="pdf-preview">Pdf preview</h2>
-<p>Conversion between TeX and PDF is one of the most common operations while writing a scientific document. Though it is possible to open the PDF file in one of the commercially available PDF readers, a seamless integration with neovim(in our case) is appreciated. This is where Skim comes into the picture. By default, Skim allows native, seamless integration with the LaTex editor of choice. In our case, we can make VimTex interact with Skim with just a few lines of config.</p>
-</section>
-<section id="configurations" class="level2">
-<h2 class="anchored" data-anchor-id="configurations">Configurations</h2>
-<section id="minimal-setup-and-forward-search" class="level3">
-<h3 class="anchored" data-anchor-id="minimal-setup-and-forward-search">Minimal setup and Forward Search</h3>
-<p>We require the following lines to make VimTeX talk to Skim within neovim. This direction of communication, is known as <em>forward search</em>.</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>Inside init.vim</strong></pre>
-</div>
-<div class="sourceCode" id="annotated-cell-3" data-filename="Inside init.vim"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hover over the number at the end of each line to see its importance</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_method</span> <span class="op">=</span> <span class="st">'skim'</span></span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_skim_sync</span> <span class="op">=</span> <span class="dv">1</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-6" class="code-annotation-target"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_skim_activate</span> <span class="op">=</span> <span class="dv">1</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Choose which program to use to view PDF file.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="2">Value 1 allows forward search after every successful compilation.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="6" data-code-annotation="3">Value 1 allows change focus to skim after command <code>:VimtexView</code> is given.</span>
-</dd>
-</dl>
-<p>The forward search allows any change made in the TeX file automatically refreshes Skim to reflect those changes in PDF. One of the other common uses is cursor sync between the TeX file and PDF. Setting <code>let g:vimtex_view_skim_sync</code> allows placing the cursor in some position in the Tex file sync with the same position in the PDF after every successful compilation(<code>:VimtexCompile</code>). Setting <code>let g:vimtex_view_skim_activate</code> allows to shift focus of control from neovim to Skim and bring it to foreground.</p>
-</section>
-<section id="inverse-or-backward-search" class="level3">
-<h3 class="anchored" data-anchor-id="inverse-or-backward-search">Inverse or Backward Search</h3>
-<p>So far there was only one channel of communication between neovim(editor) and Skim. A backward communication is possible but it took quite bit of hacking to get it to work. More on that read <a href="https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/">this jdhao’s post</a>. However, with the release of <a href="https://github.com/lervag/vimtex/releases/tag/v2.8">VimTex v2.8</a>, it has become simple to setup.</p>
-<p>Consider a scenario where we are going through a paper and find an error, instead of going back to source TeX file and finding the error location can be cumbersome. Using <em>backward search</em>, we can go to the error location from PDF to TeX. For Skim, to activate <em>backward search</em> press <code>shift</code> and <code>command</code> together and <code>click</code> the position in PDF using the mouse. That location gets reflected in the editor in the background. For more information, see <code>:h :VimtexInverseSearch</code></p>
-<p>Natively, every instance of neovim starts a server <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. With Skim as client and nvim as server, we can interact in that direction.</p>
-<p>In order to do so, in the preferances pane of Skim, navigate to <code>Sync</code> tab. There, in the <code>PDF-TeX Sync support</code>, make <code>preset</code> as <code>custom</code>, <code>command</code> as <code>nvim</code>(use <code>vim</code> if you use vim editor), and set <code>arguments</code> as <code>--headless -c "VimtexInverseSearch %line '%file'"</code>.</p>
-<p><img src="skim_setting.png" title="Skim preferances window" class="img-fluid"></p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Skim must be started by VimTeX (either through compiler callback or explicitly via <leader>lv) for backward sync to work! (This is how Skim “knows” which neovim instance – terminal or GUI – to sync to.)</leader></p>
-</div>
-</div>
-</section>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>With just four lines of settings in the <code>init.vim</code> file and a line in Skim preferances, we can activate both forward and backward search features with VimTeX.</p>
-
 
 </section>
+</section>
+</section>
 
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>In the nvim command line, run <code>:echo v:servername</code> to know the name of the server<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <!-- <div>
 <hr>
 <h3> Support my work with a coffee </h3>
@@ -893,64 +929,25 @@ Important
           }
         };
       }
-        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
-        for (let i=0; i<annoteTargets.length; i++) {
-          const annoteTarget = annoteTargets[i];
-          const targetCell = annoteTarget.getAttribute("data-target-cell");
-          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
-          const contentFn = () => {
-            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-            if (content) {
-              const tipContent = content.cloneNode(true);
-              tipContent.classList.add("code-annotation-tip-content");
-              return tipContent.outerHTML;
-            }
-          }
-          const config = {
-            allowHTML: true,
-            content: contentFn,
-            onShow: (instance) => {
-              selectCodeLines(instance.reference);
-              instance.reference.classList.add('code-annotation-active');
-              window.tippy.hideAll();
-            },
-            onHide: (instance) => {
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
               unselectCodeLines();
-              instance.reference.classList.remove('code-annotation-active');
-            },
-            maxWidth: 300,
-            delay: [50, 0],
-            duration: [200, 0],
-            offset: [5, 10],
-            arrow: true,
-            appendTo: function(el) {
-              return el.parentElement.parentElement.parentElement;
-            },
-            interactive: true,
-            interactiveBorder: 10,
-            theme: 'quarto',
-            placement: 'right',
-            popperOptions: {
-              modifiers: [
-              {
-                name: 'flip',
-                options: {
-                  flipVariations: false, // true by default
-                  allowedAutoPlacements: ['right'],
-                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
-                },
-              },
-              {
-                name: 'preventOverflow',
-                options: {
-                  mainAxis: false,
-                  altAxis: false
-                }
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
               }
-              ]        
-            }      
-          };
-          window.tippy(annoteTarget, config); 
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
@@ -1001,22 +998,22 @@ Important
 </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-02-06-skim-vimtex/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2025-03-13-dwh-sql/assets/data_catalog.md" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">
-    <a class="nav-link" href="../../archive.html">
+    <a class="nav-link" href="../../../archive.html">
 <p><iconify-icon role="img" inline="" icon="mage:archive-drawer" aria-label="Icon archive-drawer from mage Iconify.design set." title="Icon archive-drawer from mage Iconify.design set." width="20" height="27"></iconify-icon></p>
 </a>
   </li>  
     <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml">
+    <a class="nav-link" href="../../../index.xml">
       <i class="bi bi-rss" role="img">
 </i> 
     </a>
   </li>  
     <li class="nav-item">
-    <a class="nav-link" href="../../sitemap.xml">
+    <a class="nav-link" href="../../../sitemap.xml">
 <p><iconify-icon role="img" inline="" icon="fe:sitemap" aria-label="Icon sitemap from fe Iconify.design set." title="Icon sitemap from fe Iconify.design set." width="20" height="27"></iconify-icon></p>
 </a>
   </li>  
@@ -1028,5 +1025,5 @@ Important
 
 
 
-<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

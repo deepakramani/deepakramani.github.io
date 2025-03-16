@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Deepak Ramani">
-<meta name="dcterms.date" content="2023-02-06">
-<meta name="description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
+<meta name="dcterms.date" content="2025-03-15">
+<meta name="description" content="Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles">
 
-<title>Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog</title>
+<title>Build Data Warehouse for CRM/ERP dataset – Deepak Ramani blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -80,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e5c2ab1f5221acdb0ea7cf817d19f399.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-dark-e21dd77ff9034c3bd82aa1b8d06af895.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-6809aa9492a535cb6ee6b0dcfa46d869.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-f09d52811635bd27177f621b9894c007.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-9c07b7a38de16352a6e068dae1cd906f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -137,20 +137,22 @@ cookieconsent.run({
 <style>html{ scroll-behavior: smooth; }</style>
 
 
-<meta property="og:title" content="Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog">
-<meta property="og:description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
-<meta property="og:image" content="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/neovim-logo1.png">
+<meta property="og:title" content="Build Data Warehouse for CRM/ERP dataset – Deepak Ramani blog">
+<meta property="og:description" content="Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles">
+<meta property="og:image" content="https://deepakramani.github.io/posts/2025-03-13-dwh-sql/assets/data_architecture.png">
 <meta property="og:site_name" content="Deepak Ramani blog">
-<meta property="og:image:height" content="95">
-<meta property="og:image:width" content="358">
-<meta name="twitter:title" content="Setup Skim PDF reader with VimTeX in Mac OS – Deepak Ramani blog">
-<meta name="twitter:description" content="A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.">
-<meta name="twitter:image" content="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/neovim-logo1.png">
+<meta property="og:image:alt" content="ETL architecture diagram">
+<meta property="og:image:height" content="911">
+<meta property="og:image:width" content="1703">
+<meta name="twitter:title" content="Build Data Warehouse for CRM/ERP dataset – Deepak Ramani blog">
+<meta name="twitter:description" content="Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles">
+<meta name="twitter:image" content="https://deepakramani.github.io/posts/2025-03-13-dwh-sql/assets/data_architecture.png">
 <meta name="twitter:creator" content="@thosegradients">
-<meta name="twitter:image-height" content="95">
-<meta name="twitter:image-width" content="358">
+<meta name="twitter:image:alt" content="ETL architecture diagram">
+<meta name="twitter:image-height" content="911">
+<meta name="twitter:image-width" content="1703">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/">
+<link rel="canonical" href="https://deepakramani.github.io/posts/2025-03-13-dwh-sql/">
 </head>
 
 <body class="floating nav-fixed quarto-light">
@@ -195,20 +197,21 @@ cookieconsent.run({
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Setup Skim PDF reader with VimTeX in Mac OS</h1>
+      <h1 class="title">Build Data Warehouse for CRM/ERP dataset</h1>
                   <div>
         <div class="description">
-          A short post to setup Skim pdf reader with Vimtex plugin in Mac OS.
+          Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">skim</div>
-                <div class="quarto-category">vimtex</div>
-                <div class="quarto-category">neovim</div>
-                <div class="quarto-category">vim</div>
-                <div class="quarto-category">mac</div>
-                <div class="quarto-category">inverse search</div>
-                <div class="quarto-category">backward search</div>
+                <div class="quarto-category">data warehousing</div>
+                <div class="quarto-category">sql</div>
+                <div class="quarto-category">medallion architecture</div>
+                <div class="quarto-category">ETL</div>
+                <div class="quarto-category">data engineer</div>
+                <div class="quarto-category">data engineering</div>
+                <div class="quarto-category">ETL data pipeline</div>
+                <div class="quarto-category">data modeling</div>
               </div>
                   </div>
   </div>
@@ -226,14 +229,14 @@ cookieconsent.run({
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 6, 2023</p>
+        <p class="date">March 15, 2025</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">March 24, 2023</p>
+        <p class="date-modified">March 17, 2025</p>
       </div>
     </div>
       
@@ -247,13 +250,22 @@ cookieconsent.run({
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
-  <li><a href="#install-skim" id="toc-install-skim" class="nav-link active" data-scroll-target="#install-skim">Install Skim</a></li>
-  <li><a href="#install-vimtex" id="toc-install-vimtex" class="nav-link" data-scroll-target="#install-vimtex">Install VimTeX</a></li>
-  <li><a href="#pdf-preview" id="toc-pdf-preview" class="nav-link" data-scroll-target="#pdf-preview">Pdf preview</a></li>
-  <li><a href="#configurations" id="toc-configurations" class="nav-link" data-scroll-target="#configurations">Configurations</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#etl-data-architecture" id="toc-etl-data-architecture" class="nav-link" data-scroll-target="#etl-data-architecture">ETL data architecture</a></li>
+  <li><a href="#prerequisites-and-setup" id="toc-prerequisites-and-setup" class="nav-link" data-scroll-target="#prerequisites-and-setup">Prerequisites and Setup</a></li>
+  <li><a href="#sec-etl" id="toc-sec-etl" class="nav-link" data-scroll-target="#sec-etl">Extract-Transform-Load (ETL) Process</a></li>
+  <li><a href="#sec-bronze" id="toc-sec-bronze" class="nav-link" data-scroll-target="#sec-bronze">Bronze Layer</a></li>
+  <li><a href="#sec-silver" id="toc-sec-silver" class="nav-link" data-scroll-target="#sec-silver">Silver Layer</a></li>
+  <li><a href="#populate-silver-layer-tables" id="toc-populate-silver-layer-tables" class="nav-link" data-scroll-target="#populate-silver-layer-tables">Populate Silver layer tables</a></li>
+  <li><a href="#sec-gold" id="toc-sec-gold" class="nav-link" data-scroll-target="#sec-gold">Gold Layer (Business Logic layer)</a></li>
+  <li><a href="#sec-testing" id="toc-sec-testing" class="nav-link" data-scroll-target="#sec-testing">Testing - Data quality checks</a></li>
+  <li><a href="#sec-data-catalog" id="toc-sec-data-catalog" class="nav-link" data-scroll-target="#sec-data-catalog">Data Catalog</a></li>
+  <li><a href="#sec-future" id="toc-sec-future" class="nav-link" data-scroll-target="#sec-future">Future developments</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-02-06-skim-vimtex/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2025-03-13-dwh-sql/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
@@ -396,113 +408,224 @@ cookieconsent.run({
 
 
 
-<p><a href="https://github.com/lervag/vimtex">VimTeX</a> plugin written by Karl Yngve Lervåg is one of the goto plugins to manage LaTeX files with Vim/Neovim text editors. VimTeX allows integration with several PDF viewers. In Mac OS, <a href="https://skim-app.sourceforge.io">Skim</a> and <a href="https://pwmt.org/projects/zathura/">Zathura</a> PDF readers allow easy integration with LaTeX. Since Zathura’s installation in Mac OS involves more steps, we will be using Skim for this post.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You should have a working LaTeX setup and Neovim version &gt; 0.8.3 is advised.</p>
-</div>
-</div>
-<section id="install-skim" class="level2">
-<h2 class="anchored" data-anchor-id="install-skim">Install Skim</h2>
-<p>With <a href="../brew.sh">Homebrew</a></p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Building a data warehouse can be daunting task. In this blog post, I make an attempt to take a sales dataset, do some transformation and load it into a data warehouse from which business intelligence team can create reports.</p>
+<p><strong>Full disclosure</strong>: This blog is inspired upon following <a href="https://www.youtube.com/watch?v=9GVqKuTVANE">Data With Bara</a> video. Only the dataset, project specifications to make a data warehouse is unchanged; every other step is changed such as using docker, postgresQL and adding personal touches.</p>
+<p>The code for this project is <a href="https://github.com/deepakramani/sql-data-warehouse-project">here in github</a>.</p>
+<section id="etl-data-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="etl-data-architecture">ETL data architecture</h2>
+<p>This is the architecture we are going to implement. The raw data in <code>csv</code> files are extracted into bronze layer tables. Then the data is cleaned and transformed into silver layer tables. Then we combine tables to form data marts for business users in the gold/final layer.</p>
+<p><img src="./assets/data_architecture.png" class="img-fluid" alt="ETL architecture diagram"> <em>Source: <a href="https://datawithbaraa.substack.com/p/build-a-data-warehouse-from-scratch">Data With Baraa</a></em></p>
+</section>
+<section id="prerequisites-and-setup" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites-and-setup">Prerequisites and Setup</h2>
+<p>We use Ubuntu 20.04 LTS AWS EC2 and GCP machine for the project.</p>
+<p>We need the following:</p>
+<ul>
+<li><a href="https://github.com/git-guides/install-git">git version &gt;= 2.37.1</a>,</li>
+<li><a href="https://docs.docker.com/engine/install/">Docker version &gt;= 20.10.17</a> and <a href="https://docs.docker.com/compose/install/">Docker compose v2 version &gt;= v2.10.2</a>,</li>
+<li><a href="https://linuxhint.com/install-make-ubuntu/">make</a></li>
+</ul>
+<p>To make things easier I have scripted these prerequisites. Just clone my repo and run the instructions I provide.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Terminal</strong></pre>
+<pre><strong>clone and install prerequisites</strong></pre>
 </div>
-<div class="sourceCode" id="cb1" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install <span class="at">--cask</span> skim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1" data-filename="clone and install prerequisites"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install git make <span class="at">-y</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/deepakramani/sql-data-warehouse-project.git</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> sql-data-warehouse-project</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install_docker</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Or download the dmg file of the current version(as of writing latest version is v1.6.8) from <a href="https://skim-app.sourceforge.io">Skim’s website</a>.</p>
-</section>
-<section id="install-vimtex" class="level2">
-<h2 class="anchored" data-anchor-id="install-vimtex">Install VimTeX</h2>
-<p>Using <a href="https://github.com/junegunn/vim-plug">vim-plug</a> plugin manager we add the following line to <code>.vimrc</code> or <code>init.vim</code> or <code>init.lua</code></p>
+<p>Logout and log in back to the instance. To test docker if it is working, run</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Inside init.vim</strong></pre>
+<pre><strong>check if docker is installed</strong></pre>
 </div>
-<div class="sourceCode" id="cb2" data-filename="Inside init.vim"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Plug</span> <span class="st">'lervag/vimtex'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-filename="check if docker is installed"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> hello-world <span class="co"># should return "Hello from Docker!" without errors</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="pdf-preview" class="level2">
-<h2 class="anchored" data-anchor-id="pdf-preview">Pdf preview</h2>
-<p>Conversion between TeX and PDF is one of the most common operations while writing a scientific document. Though it is possible to open the PDF file in one of the commercially available PDF readers, a seamless integration with neovim(in our case) is appreciated. This is where Skim comes into the picture. By default, Skim allows native, seamless integration with the LaTex editor of choice. In our case, we can make VimTex interact with Skim with just a few lines of config.</p>
-</section>
-<section id="configurations" class="level2">
-<h2 class="anchored" data-anchor-id="configurations">Configurations</h2>
-<section id="minimal-setup-and-forward-search" class="level3">
-<h3 class="anchored" data-anchor-id="minimal-setup-and-forward-search">Minimal setup and Forward Search</h3>
-<p>We require the following lines to make VimTeX talk to Skim within neovim. This direction of communication, is known as <em>forward search</em>.</p>
+<p><strong>Set environment variables</strong>:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Inside init.vim</strong></pre>
+<pre><strong>Setting env variables</strong></pre>
 </div>
-<div class="sourceCode" id="annotated-cell-3" data-filename="Inside init.vim"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hover over the number at the end of each line to see its importance</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_method</span> <span class="op">=</span> <span class="st">'skim'</span></span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_skim_sync</span> <span class="op">=</span> <span class="dv">1</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3">3</button><span id="annotated-cell-3-6" class="code-annotation-target"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">let</span> <span class="va">g</span><span class="op">:</span><span class="va">vimtex_view_skim_activate</span> <span class="op">=</span> <span class="dv">1</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3" data-filename="Setting env variables"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">POSTGRES_USER</span><span class="op">=</span>postgres</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">POSTGRES_PASSWORD</span><span class="op">=</span>postgres</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">POSTGRES_HOST</span><span class="op">=</span>postgres</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">POSTGRES_DB</span><span class="op">=</span>sql_dwh_db</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">Choose which program to use to view PDF file.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="2">Value 1 allows forward search after every successful compilation.</span>
-</dd>
-<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
-<dd>
-<span data-code-cell="annotated-cell-3" data-code-lines="6" data-code-annotation="3">Value 1 allows change focus to skim after command <code>:VimtexView</code> is given.</span>
-</dd>
-</dl>
-<p>The forward search allows any change made in the TeX file automatically refreshes Skim to reflect those changes in PDF. One of the other common uses is cursor sync between the TeX file and PDF. Setting <code>let g:vimtex_view_skim_sync</code> allows placing the cursor in some position in the Tex file sync with the same position in the PDF after every successful compilation(<code>:VimtexCompile</code>). Setting <code>let g:vimtex_view_skim_activate</code> allows to shift focus of control from neovim to Skim and bring it to foreground.</p>
-</section>
-<section id="inverse-or-backward-search" class="level3">
-<h3 class="anchored" data-anchor-id="inverse-or-backward-search">Inverse or Backward Search</h3>
-<p>So far there was only one channel of communication between neovim(editor) and Skim. A backward communication is possible but it took quite bit of hacking to get it to work. More on that read <a href="https://jdhao.github.io/2021/02/20/inverse_search_setup_neovim_vimtex/">this jdhao’s post</a>. However, with the release of <a href="https://github.com/lervag/vimtex/releases/tag/v2.8">VimTex v2.8</a>, it has become simple to setup.</p>
-<p>Consider a scenario where we are going through a paper and find an error, instead of going back to source TeX file and finding the error location can be cumbersome. Using <em>backward search</em>, we can go to the error location from PDF to TeX. For Skim, to activate <em>backward search</em> press <code>shift</code> and <code>command</code> together and <code>click</code> the position in PDF using the mouse. That location gets reflected in the editor in the background. For more information, see <code>:h :VimtexInverseSearch</code></p>
-<p>Natively, every instance of neovim starts a server <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. With Skim as client and nvim as server, we can interact in that direction.</p>
-<p>In order to do so, in the preferances pane of Skim, navigate to <code>Sync</code> tab. There, in the <code>PDF-TeX Sync support</code>, make <code>preset</code> as <code>custom</code>, <code>command</code> as <code>nvim</code>(use <code>vim</code> if you use vim editor), and set <code>arguments</code> as <code>--headless -c "VimtexInverseSearch %line '%file'"</code>.</p>
-<p><img src="skim_setting.png" title="Skim preferances window" class="img-fluid"></p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>Now we’re ready to start our project.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Start ETL DWH project</strong></pre>
 </div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Skim must be started by VimTeX (either through compiler callback or explicitly via <leader>lv) for backward sync to work! (This is how Skim “knows” which neovim instance – terminal or GUI – to sync to.)</leader></p>
-</div>
+<div class="sourceCode" id="cb4" data-filename="Start ETL DWH project"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> up <span class="co"># creates the database and schemas for the medallion architecture</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="sec-etl" class="level2">
+<h2 class="anchored" data-anchor-id="sec-etl">Extract-Transform-Load (ETL) Process</h2>
+<p>We begin the ETL process of the data pipeline with the bronze layer. This layer is usually called <code>staging</code> layer as the raw data from various sources are dumped into temp tables. We choose <code>full-extract</code> type instead of <code>incremental</code> here. Raw data are in <code>csv</code> files.</p>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>With just four lines of settings in the <code>init.vim</code> file and a line in Skim preferances, we can activate both forward and backward search features with VimTeX.</p>
-
-
+<section id="sec-bronze" class="level2">
+<h2 class="anchored" data-anchor-id="sec-bronze">Bronze Layer</h2>
+<section id="setup-bronze-layer-and-populate-raw-data-to-tables" class="level3">
+<h3 class="anchored" data-anchor-id="setup-bronze-layer-and-populate-raw-data-to-tables">Setup bronze layer and populate raw data to tables</h3>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>setup bronze layer of ETL process</strong></pre>
+</div>
+<div class="sourceCode" id="cb5" data-filename="setup bronze layer of ETL process"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> setup_bronze_tables</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> populate_bronze_tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now the bronze layer tables have raw data populated.</p>
 </section>
-
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>In the nvim command line, run <code>:echo v:servername</code> to know the name of the server<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</section>
+<section id="sec-silver" class="level2">
+<h2 class="anchored" data-anchor-id="sec-silver">Silver Layer</h2>
+<section id="setup-silver-layer-table" class="level3">
+<h3 class="anchored" data-anchor-id="setup-silver-layer-table">Setup silver layer table</h3>
+<p>(The script is designed to work only once in the beginning since gold layer table(downstream) is dependent on silver tables)</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>setup silver layer tables</strong></pre>
+</div>
+<div class="sourceCode" id="cb6" data-filename="setup silver layer tables"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> setup_silver_tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the Silver layer, data cleansing and transformation on the bronze layer tables are carried out.</p>
+</section>
+<section id="data-cleansing" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleansing">Data Cleansing</h3>
+<p>This step includes:</p>
+<ol type="1">
+<li>Remove duplicate entries</li>
+<li>Data filtering</li>
+<li>Handling missing/invalid data</li>
+<li>Handling unwanted white spaces</li>
+<li>Data type casting</li>
+<li>Outlier detection</li>
 </ol>
-</section></div></main> <!-- /main -->
+</section>
+<section id="data-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="data-transformation">Data Transformation</h3>
+<p>This step includes:</p>
+<ol type="1">
+<li>Data enrichment</li>
+<li>Data integration</li>
+<li>Deriving new columns</li>
+<li>Data aggregations</li>
+<li>Applying business rules and logic</li>
+<li>Data normalization and standardization</li>
+</ol>
+</section>
+</section>
+<section id="populate-silver-layer-tables" class="level2">
+<h2 class="anchored" data-anchor-id="populate-silver-layer-tables">Populate Silver layer tables</h2>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Populate silver layer tables</strong></pre>
+</div>
+<div class="sourceCode" id="cb7" data-filename="Populate silver layer tables"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> populate_silver_tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As the data integration image indicates, we design the silver layer tables accordingly.</p>
+</section>
+<section id="sec-gold" class="level2">
+<h2 class="anchored" data-anchor-id="sec-gold">Gold Layer (Business Logic layer)</h2>
+<p>We use the below image to see how data from the source comes downstream to the destination in gold layer views.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./assets/data_flow.png" class="img-fluid figure-img" alt="Data flow diagram"></p>
+<figcaption>Data Flow</figcaption>
+</figure>
+</div>
+<p><em>Source: <a href="https://datawithbaraa.substack.com/p/build-a-data-warehouse-from-scratch">Data with Baraa</a></em></p>
+<p>Before the dimensional and fact tables are created, it is important to know the relationship between tables. The below data integration image shows how one table is related to other. This diagram helps in making joins with other tables using that specific key.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./assets/data_integration.png" class="img-fluid figure-img" alt="Data integration diagram"></p>
+<figcaption>Data Integration</figcaption>
+</figure>
+</div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Create gold layer views</strong></pre>
+</div>
+<div class="sourceCode" id="cb8" data-filename="Create gold layer views"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> setup_gold_layer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="sec-data-mart" class="level3">
+<h3 class="anchored" data-anchor-id="sec-data-mart">Data Mart</h3>
+<p>In the image below, we can see how the gold layer dimensional and fact tables/views(data marts) are created.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./assets/data_model.png" class="img-fluid figure-img" alt="Data mart model diagram"></p>
+<figcaption>Data Mart</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-testing" class="level2">
+<h2 class="anchored" data-anchor-id="sec-testing">Testing - Data quality checks</h2>
+<p>Testing data quality is an integral part of ETL process. It ensures bad data doesn’t get transmitted to the stakeholders or business users potentially avoiding dire consequences.</p>
+<p>Here we check data integrity, consistency, and correctness. It verifies primary key uniqueness, standardization, referential integrity, and logical correctness of business rules.</p>
+<section id="silver---data-quality-check" class="level3">
+<h3 class="anchored" data-anchor-id="silver---data-quality-check">Silver - data quality check</h3>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Silver data quality checks</strong></pre>
+</div>
+<div class="sourceCode" id="cb9" data-filename="Silver data quality checks"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> check_silver_data_quality</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="gold---data-quality-check" class="level3">
+<h3 class="anchored" data-anchor-id="gold---data-quality-check">Gold - data quality check</h3>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Gold data quality checks</strong></pre>
+</div>
+<div class="sourceCode" id="cb10" data-filename="Gold data quality checks"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/sql-data-warehouse-project</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> check_gold_data_quality</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="sec-data-catalog" class="level2">
+<h2 class="anchored" data-anchor-id="sec-data-catalog">Data Catalog</h2>
+<p>Gold layer views are usually used by Business users. In order to help them understand what each row in the table/view represent is important. Therefore I provide a catalog file that gives the metadata of the views created.</p>
+<p><a href="../../posts/2025-03-13-dwh-sql/assets/data_catalog.html">Data Catalog</a></p>
+</section>
+<section id="sec-future" class="level2">
+<h2 class="anchored" data-anchor-id="sec-future">Future developments</h2>
+<ol type="1">
+<li>Take historical data into account</li>
+<li>Do incremental data load than full load each time</li>
+<li>Make use of an orchestration tool such as Dagster to orchestrate ETL process</li>
+<li>Do EDA on the gold layer and derive reports for business users</li>
+</ol>
+<section id="deleting-resources" class="level3">
+<h3 class="anchored" data-anchor-id="deleting-resources">Deleting resources</h3>
+<p>To bring down all container and return to the original state, run the following instructions</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>restoring to original state</strong></pre>
+</div>
+<div class="sourceCode" id="cb11" data-filename="restoring to original state"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In this blog we learn how to build a data warehouse using ETL process in a data pipeline. We learn to create sql scripts to create tables. We learn to create stored procedures and their invocation. We learn to do data quality check at the silver and gold layers.</p>
+
+
+</section>
+
+</main> <!-- /main -->
 <!-- <div>
 <hr>
 <h3> Support my work with a coffee </h3>
@@ -1001,7 +1124,7 @@ Important
 </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-02-06-skim-vimtex/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2025-03-13-dwh-sql/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">

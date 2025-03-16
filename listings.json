@@ -10,6 +10,7 @@
     "items": [
       "/notes/data-engineering/index.html",
       "/notes/index.html",
+      "/posts/2025-03-13-dwh-sql/index.html",
       "/notes/data-analysis/index.html",
       "/notes/data-analysis/pandas/index.html",
       "/notes/linux/index.html",
@@ -40,6 +41,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2025-03-13-dwh-sql/index.html",
       "/posts/2023-09-02-testing-data-pipelines/index.html",
       "/posts/2023-08-30-secrets-in-json/index.html",
       "/posts/2023-08-29-cdc-debezium-kafka-pg/index.html",
