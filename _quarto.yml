@@ -61,7 +61,7 @@ website:
     copy-button: true
     keyboard-shortcut: ["/"]
   page-footer:
-    left: Copyright 2024, Deepak Ramani |
+    left: Copyright 2025, Deepak Ramani |
           powered by [Quarto](https://quarto.org)
     right:
       - text: "{{< iconify width='20' height='27' mage archive-drawer >}}"
