@@ -1,3 +1,9 @@
+- project: "Build Data Warehouse using SQL"
+  path: "https://github.com/deepakramani/sql-data-warehouse-project"
+  role: Creator
+  description: |
+      Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles.
+
 - project: "Capture Change data using Debezium and Kafka"
   path: https://github.com/deepakramani/cdc-pg-dbz-kafka-s3
   role: Creator
