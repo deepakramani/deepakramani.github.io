@@ -1,12 +1,12 @@
 /*-- scss:defaults --*/
 $teal: #147C91;
 $cream: #e7e3de;
-$cream-darker: #bebab3;
+$cream-darker: #aca08c;
 $dark-sage-green: #44493f;
 $light-sage-green: #D1D9CE;
 $light-gray: #aebfca;
 $purple: #6253ba;
-$black: #222222;
+$black: #383434;
 $callout-color-important: #eb0a0a;
 
 // use litera as the base
@@ -108,4 +108,12 @@ a.nav-link:hover::after {
 
 .nav-footer p{
     font-size: 13px
+}
+
+.page-item.disabled .page-link {
+  color: #150505; /* Change the color to a darker gray or another visible color */
+  background-color: #857a7a; /* Change the background color to a light gray or another contrasting color */
+  border-color: #ccc; /* Add or adjust the border color for better definition */
+  opacity: 1; /* Ensure opacity is set to 1 to make it fully visible */
+  pointer-events: none; /* prevent hover effects and clicks on the disabled item */
 }
