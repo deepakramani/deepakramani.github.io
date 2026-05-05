@@ -29,10 +29,13 @@ Pfizer(PFE) stocks fair in the last 3 years.
 import yfinance as yf
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 
-pharma_df = yf.download('PFE JNJ', start='2015-01-01', end='2023-04-28')
-pharma_df.head() #<1>
+# Set matplotlib style for dark background
+plt.style.use("dark_background")
+
+pharma_df = yf.download("PFE JNJ", start="2015-01-01", end="2023-04-28")
+pharma_df.head()  # <1>
 ```
 1. Displays first 5 rows
 
@@ -672,8 +675,7 @@ def calc_ad(df, close_col="Close",low_col="Low",high_col="High",vol_col="Volume"
 ```
 
 ## RSI - Relative strength index
-
-WIP
+Work in progress.
 
 
 
