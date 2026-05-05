@@ -21,7 +21,6 @@
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>Building a data warehouse can be daunting task. In this blog post, I make an attempt to take a sales dataset, do some transformation and load it into a data warehouse from which business intelligence team can create reports.</p>
@@ -337,7 +336,6 @@ font-style: inherit;">make</span> down</span></code></pre></div></div>
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2023-09-02-testing-data-pipelines/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -943,7 +941,6 @@ font-style: inherit;">in</span> usernames</span><div class="code-annotation-gutt
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>Unlike other file formats it is only possible to hardcode sensitive information in JSON files. In this post I explore one of the two ways we can eliminate hardcoded secrets inside JSON.</p>
@@ -1493,7 +1490,6 @@ font-style: inherit;">    }'</span></span></code></pre></div></div>
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2023-08-29-cdc-debezium-kafka-pg/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -3830,7 +3826,6 @@ font-style: inherit;">20</span>;</span></code></pre></div></div>
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>The Continuous Integration and Continuous Delivery abbreviated as CI/CD is an important part of software development cycle. This part provides the essential step in checking everything before the final product is ready to delivered to the customer. In our case, this step should create infrastructure to deploy the web application into the cloud. In other words, automate the tasks we did in part 3.</p>
@@ -4207,7 +4202,6 @@ font-style: inherit;">terraform destroy -var-file=vars/prod.tfvars</span></span>
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2023-06-12-Attach-iam-policy-to-roles/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -4789,7 +4783,6 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>In part 2 we saw how to migrate to AWS cloud. In bigger projects where so many resources are present, it is near impossible to remember and manage them using the console. Terraform provides that solution. It allows to track resources just like code. We saw about the use of Terraform in my introduction <a href="https://deepakramani.github.io/posts/2023-06-02-Terraform-setup/">post</a> on Terraform.</p>
@@ -5343,7 +5336,6 @@ font-style: inherit;">}</span></span></code></pre></div></div>
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2023-06-04-api-lambda-ecr/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -6261,7 +6253,6 @@ font-style: inherit;">'successfully created item!'</span>,</span>
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>This post is a follow up to my previous <a href="https://deepakramani.github.io/posts/2023-06-03-deploy-with-docker/">post</a> on deploying with docker. This will be part 1 of the deploy using Docker series. In this part, I will introduce the concept of <code>lambda_function</code> and how it can tested locally.</p>
@@ -6684,7 +6675,6 @@ font-style: inherit;">python</span> test_docker_fn.py</span></code></pre></div><
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2023-06-03-deploy-with-docker/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -7289,7 +7279,6 @@ font-style: inherit;">print</span>(response.json())</span></code></pre></div></d
 
 
 
-
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p><a href="https://developer.hashicorp.com/terraform">Terraform</a> from Hasicorp is Infrastructure as Code(<strong>IaC</strong>) tool that is gaining popularity among the data engineers. It lets us build, change and version infrastructure safely and efficiently. As to why one needs Terraform, I shall direct you to <a href="https://blog.gruntwork.io/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation-7989dad2865c">this comprehensive article</a>.</p>
@@ -7847,7 +7836,6 @@ font-style: inherit;">}</span></span></code></pre></div></div>
   <title>Getting started with S3 using boto3</title>
   <link>https://deepakramani.github.io/posts/2023-04-27-getting-started-with-s3/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -8617,7 +8605,6 @@ font-style: inherit;">'downloaded_turtlesim.jpg'</span>)</span></code></pre></di
 
 
 
-
 <p><a href="https://github.com/lervag/vimtex">VimTeX</a> plugin written by Karl Yngve Lervåg is one of the goto plugins to manage LaTeX files with Vim/Neovim text editors. VimTeX allows integration with several PDF viewers. In Mac OS, <a href="https://skim-app.sourceforge.io">Skim</a> and <a href="https://pwmt.org/projects/zathura/">Zathura</a> PDF readers allow easy integration with LaTeX. Since Zathura’s installation in Mac OS involves more steps, we will be using Skim for this post.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -8787,7 +8774,6 @@ Important
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2022-09-24-using-json-normalize/</link>
   <description><![CDATA[ 
-
 
 
 
@@ -11226,7 +11212,6 @@ font-style: inherit;">=</span> json.loads(requests.get(URL).text)</span>
 
 
 
-
 <p>In this post, I will try to guide in organise your dotfiles in the cloud and manage them using GNU Stow.</p>
 <section id="what-are-dotfiles" class="level2">
 <h2 class="anchored" data-anchor-id="what-are-dotfiles">What are dotfiles?</h2>
@@ -11435,7 +11420,6 @@ font-style: inherit;">&gt;</span> ../.dotfiles/nvim/.config/nvim</span></code></
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2021-09-18-kaggle-setup/</link>
   <description><![CDATA[ 
-
 
 
 
