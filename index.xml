@@ -7842,30 +7842,66 @@ font-style: inherit;">}</span></span></code></pre></div></div>
 
 
 <p><strong>Boto3</strong> is an AWS python SDK that allows access to AWS services like EC2 and S3. It provides a python object-oriented API and as well as low-level access to AWS services</p>
+<p><strong>Note:</strong> This post uses minIO to simulate S3 locally so you don’t incur AWS costs. If you’re using real AWS, remove the <code>endpoint_url</code> parameter and ensure your credentials are configured.</p>
+<section id="start-minio-docker-instance" class="level2">
+<h2 class="anchored" data-anchor-id="start-minio-docker-instance">Start MinIO docker instance</h2>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Terminal</strong></pre>
+<pre><strong>Run docker instance</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-filename="Run docker instance" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">docker</span> run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-d</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--rm</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span> 9000:9000 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span> 9001:9001 <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-e</span> MINIO_ROOT_USER=minioadmin <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-e</span> MINIO_ROOT_PASSWORD=minioadmin <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">\</span></span>
+<span id="cb1-4">  minio/minio server /data <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--console-address</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">":9001"</span></span></code></pre></div></div>
+</div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Install boto3 library</strong></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-filename="Install boto3 library" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">pip</span> install boto3</span></code></pre></div></div>
 </div>
-<div class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+<div id="26b1df33" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> boto3, botocore</span>
-<span id="cb2-2"><span class="im" style="color: #00769E;
+<span id="cb3-2"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> glob</span>
-<span id="cb2-3"></span>
-<span id="cb2-4">files <span class="op" style="color: #5E5E5E;
+<span id="cb3-3"></span>
+<span id="cb3-4">files <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> glob.glob(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'data/*'</span>) <span class="co" style="color: #5E5E5E;
+font-style: inherit;">"data/*"</span>)  <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">#to upload multiple files</span></span>
-<span id="cb2-5">files</span></code></pre></div></div>
+font-style: inherit;"># to upload multiple files</span></span>
+<span id="cb3-5">files</span></code></pre></div></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>['data/Player Data.xlsx',
  'data/30-days-create-folds.ipynb',
@@ -7873,38 +7909,79 @@ font-style: inherit;">#to upload multiple files</span></span>
  'data/star_pattern_turtlesim.png']</code></pre>
 </div>
 </div>
+</section>
 <section id="create-a-session-and-client" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-session-and-client">Create a session and client</h2>
 <p>Boto3’s region defaults to N-Virginia. To create buckets in another region, region name has to be explicitly mentioned using session object.</p>
-<div class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">session <span class="op" style="color: #5E5E5E;
+<div id="52ddf776" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">session <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> boto3.Session(region_name<span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> boto3.Session(</span>
+<span id="cb5-2">    region_name<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'us-east-2'</span>)</span>
-<span id="cb4-2">s3client <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"us-east-2"</span>,</span>
+<span id="cb5-3">    aws_access_key_id<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> session.client(<span class="st" style="color: #20794D;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'s3'</span>)</span>
-<span id="cb4-3">s3resource <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"minioadmin"</span>,</span>
+<span id="cb5-4">    aws_secret_access_key<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> boto3.resource(<span class="st" style="color: #20794D;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'s3'</span>)</span></code></pre></div></div>
+font-style: inherit;">"minioadmin"</span>,</span>
+<span id="cb5-5">)</span>
+<span id="cb5-6">s3client <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> session.client(</span>
+<span id="cb5-7">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s3"</span>,</span>
+<span id="cb5-8">    endpoint_url<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"http://localhost:9000"</span>,</span>
+<span id="cb5-9">    config<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>boto3.session.Config(signature_version<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s3v4"</span>),</span>
+<span id="cb5-10">)</span>
+<span id="cb5-11">s3resource <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> session.resource(</span>
+<span id="cb5-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s3"</span>,</span>
+<span id="cb5-13">    endpoint_url<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"http://localhost:9000"</span>,</span>
+<span id="cb5-14">    config<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>boto3.session.Config(signature_version<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"s3v4"</span>),</span>
+<span id="cb5-15">)</span></code></pre></div></div>
 </div>
 <p>S3 buckets have to follow bucket naming <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html">rules</a>.</p>
-<div class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">bucket_names <span class="op" style="color: #5E5E5E;
+<div id="00e6f6cb" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">bucket_names <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'my-s3bucket1-usohio-region'</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'my-s3bucket2-usohio-region'</span>]</span>
-<span id="cb5-2">s3location <span class="op" style="color: #5E5E5E;
+<span id="cb6-2">s3location <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
 background-color: null;
@@ -7916,57 +7993,57 @@ font-style: inherit;">'us-east-2'</span>}</span></code></pre></div></div>
 <section id="check-if-bucket-exists-in-s3" class="level2">
 <h2 class="anchored" data-anchor-id="check-if-bucket-exists-in-s3">Check if bucket exists in S3</h2>
 <p>Checking for something before creation is one of the important tasks to avoid unnecessary errors. Here we check if the buckets already exists.</p>
-<div class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="kw" style="color: #003B4F;
+<div id="ec617792" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> check_bucket(bucket):</span>
-<span id="cb6-2">    <span class="co" style="color: #5E5E5E;
+<span id="cb7-2">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""</span></span>
-<span id="cb6-3"><span class="co" style="color: #5E5E5E;
+<span id="cb7-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Checks if a bucket is present in S3</span></span>
-<span id="cb6-4"><span class="co" style="color: #5E5E5E;
+<span id="cb7-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    args:</span></span>
-<span id="cb6-5"><span class="co" style="color: #5E5E5E;
+<span id="cb7-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    bucket: takes bucket name</span></span>
-<span id="cb6-6"><span class="co" style="color: #5E5E5E;
+<span id="cb7-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    """</span></span>
-<span id="cb6-7">    <span class="cf" style="color: #003B4F;
+<span id="cb7-7">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">try</span>:</span>
-<span id="cb6-8">        s3client.head_bucket(Bucket<span class="op" style="color: #5E5E5E;
+<span id="cb7-8">        s3client.head_bucket(Bucket<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucket)</span>
-<span id="cb6-9">        <span class="bu" style="color: null;
+<span id="cb7-9">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Bucket exists'</span>)</span>
-<span id="cb6-10">        <span class="cf" style="color: #003B4F;
+<span id="cb7-10">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span>
-<span id="cb6-11">    <span class="cf" style="color: #003B4F;
+<span id="cb7-11">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">except</span> botocore.exceptions.ClientError <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> e:</span>
-<span id="cb6-12">        <span class="co" style="color: #5E5E5E;
+<span id="cb7-12">        <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># If a client error is thrown, then check that it was a 404 error.</span></span>
-<span id="cb6-13">        <span class="co" style="color: #5E5E5E;
+<span id="cb7-13">        <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># If it was a 404 error, then the bucket does not exist.</span></span>
-<span id="cb6-14">        error_code <span class="op" style="color: #5E5E5E;
+<span id="cb7-14">        error_code <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="bu" style="color: null;
 background-color: null;
@@ -7975,7 +8052,7 @@ background-color: null;
 font-style: inherit;">'Error'</span>][<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Code'</span>])</span>
-<span id="cb6-15">        <span class="cf" style="color: #003B4F;
+<span id="cb7-15">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> error_code <span class="op" style="color: #5E5E5E;
@@ -7983,18 +8060,18 @@ background-color: null;
 font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">403</span>:</span>
-<span id="cb6-16">            <span class="bu" style="color: null;
+<span id="cb7-16">            <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Private Bucket. Forbidden Access!"</span>)</span>
-<span id="cb6-17">            <span class="cf" style="color: #003B4F;
+<span id="cb7-17">            <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span>
-<span id="cb6-18">        <span class="cf" style="color: #003B4F;
+<span id="cb7-18">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">elif</span> error_code <span class="op" style="color: #5E5E5E;
@@ -8002,68 +8079,70 @@ background-color: null;
 font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">404</span>:</span>
-<span id="cb6-19">            <span class="bu" style="color: null;
+<span id="cb7-19">            <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Bucket Does Not Exist!"</span>)</span>
-<span id="cb6-20">            <span class="cf" style="color: #003B4F;
+<span id="cb7-20">            <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">False</span></span></code></pre></div></div>
 </div>
-<div class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="cf" style="color: #003B4F;
+<div id="ff0e4039" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket_names: </span>
-<span id="cb7-2">    <span class="bu" style="color: null;
+<span id="cb8-2">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(check_bucket(bucket))</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket exists
-True
-Bucket exists
-True</code></pre>
+<pre><code>Bucket Does Not Exist!
+False
+Bucket Does Not Exist!
+False</code></pre>
 </div>
 </div>
 </section>
 <section id="create-a-bucket-in-s3" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-bucket-in-s3">Create a bucket in S3</h2>
 <p>If the buckets don’t exist, we create them. We need to supply bucket name, a dictionary specifying in which region the bucket has to be created.</p>
-<div class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="cf" style="color: #003B4F;
+<div id="db084c6f" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket_name <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">in</span> bucket_names: </span>
-<span id="cb9-2">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">in</span> bucket_names:</span>
+<span id="cb10-2">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">not</span>(check_bucket(bucket_name)):</span>
-<span id="cb9-3">        <span class="bu" style="color: null;
+font-style: inherit;">not</span> (check_bucket(bucket_name)):</span>
+<span id="cb10-3">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Creating a bucket..'</span>)</span>
-<span id="cb9-4">        s3client.create_bucket(Bucket <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"Creating a bucket.."</span>)</span>
+<span id="cb10-4">        s3client.create_bucket(Bucket<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> bucket_name, CreateBucketConfiguration<span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span>bucket_name, CreateBucketConfiguration<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>s3location)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket exists
-Bucket exists</code></pre>
+<pre><code>Bucket Does Not Exist!
+Creating a bucket..
+Bucket Does Not Exist!
+Creating a bucket..</code></pre>
 </div>
 </div>
 </section>
@@ -8071,66 +8150,68 @@ Bucket exists</code></pre>
 <h2 class="anchored" data-anchor-id="bucket-versioning">Bucket Versioning</h2>
 <p>Bucket versioning initial state is not set by default. The response from when not initialised doesn’t carry status information rather status dict is absent. Status expects two return states: <strong>enabled</strong>, <strong>suspended</strong>. On first creation, the status is in disabled, an unknown state.</p>
 <p>So in order to make it appear in the REST response, bucket must be enabled by calling the <code>BucketVersioning()</code> boto3 resource function. If we then check the status, it will be present in the REST response.</p>
-<div class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="kw" style="color: #003B4F;
+<div id="8412a0cd" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> get_buckets_versioning_client(bucketname):</span>
-<span id="cb11-2">    <span class="co" style="color: #5E5E5E;
+<span id="cb12-2">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""</span></span>
-<span id="cb11-3"><span class="co" style="color: #5E5E5E;
+<span id="cb12-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Checks if bucket versioning is enabled/suspended or initialised</span></span>
-<span id="cb11-4"><span class="co" style="color: #5E5E5E;
+<span id="cb12-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Args:</span></span>
-<span id="cb11-5"><span class="co" style="color: #5E5E5E;
+<span id="cb12-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    bucketname: bucket name to check versioning</span></span>
-<span id="cb11-6"><span class="co" style="color: #5E5E5E;
+<span id="cb12-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Returns: response status - enabled or suspended</span></span>
-<span id="cb11-7"><span class="co" style="color: #5E5E5E;
+<span id="cb12-7"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    """</span></span>
-<span id="cb11-8">    response <span class="op" style="color: #5E5E5E;
+<span id="cb12-8">    response <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> s3client.get_bucket_versioning(Bucket <span class="op" style="color: #5E5E5E;
+font-style: inherit;">=</span> s3client.get_bucket_versioning(Bucket<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> bucketname)</span>
-<span id="cb11-9">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">=</span>bucketname)</span>
+<span id="cb12-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Status'</span> <span class="kw" style="color: #003B4F;
+font-style: inherit;">"Status"</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> response <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">and</span> (response[<span class="st" style="color: #20794D;
+font-style: inherit;">and</span> (</span>
+<span id="cb12-10">        response[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Status'</span>] <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"Status"</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Enabled'</span> <span class="kw" style="color: #003B4F;
+font-style: inherit;">"Enabled"</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">or</span> response[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Status'</span>] <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"Status"</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Suspended'</span>):</span>
-<span id="cb11-10">        <span class="bu" style="color: null;
+font-style: inherit;">"Suspended"</span></span>
+<span id="cb12-11">    ):</span>
+<span id="cb12-12">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'Bucket </span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f"Bucket </span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>bucketname<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -8140,57 +8221,59 @@ font-style: inherit;"> status: </span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>response[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Status"</span>]<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">'Status'</span>]<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'</span>)</span>
-<span id="cb11-11">        <span class="cf" style="color: #003B4F;
+font-style: inherit;">"</span>)</span>
+<span id="cb12-13">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> response[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Status'</span>]</span>
-<span id="cb11-12">    <span class="cf" style="color: #003B4F;
+font-style: inherit;">"Status"</span>]</span>
+<span id="cb12-14">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">else</span>:</span>
-<span id="cb11-13">        <span class="bu" style="color: null;
+<span id="cb12-15">        <span class="bu" style="color: null;
 background-color: null;
-font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+font-style: inherit;">print</span>(</span>
+<span id="cb12-16">            <span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'Bucket versioning not initialised for bucket: </span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f"Bucket versioning not initialised for bucket: </span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>bucketname<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">. Enabling...'</span>)</span>
-<span id="cb11-14">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
+font-style: inherit;">. Enabling..."</span></span>
+<span id="cb12-17">        )</span>
+<span id="cb12-18">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucketname).enable()</span>
-<span id="cb11-15">        enable_response <span class="op" style="color: #5E5E5E;
+<span id="cb12-19">        enable_response <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span>bucket_name).status</span>
-<span id="cb11-16">        <span class="cf" style="color: #003B4F;
+font-style: inherit;">=</span>bucketname).status</span>
+<span id="cb12-20">        <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">return</span> enable_response</span></code></pre></div></div>
 </div>
-<div class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="cf" style="color: #003B4F;
+<div id="c60e8fcf" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket_name <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket_names: </span>
-<span id="cb12-2">    version_status <span class="op" style="color: #5E5E5E;
+<span id="cb13-2">    version_status <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb12-3">    <span class="bu" style="color: null;
+<span id="cb13-3">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -8202,27 +8285,27 @@ font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket my-s3bucket1-usohio-region status: Enabled
+<pre><code>Bucket versioning not initialised for bucket: my-s3bucket1-usohio-region. Enabling...
 Versioning status: Enabled
-Bucket my-s3bucket2-usohio-region status: Enabled
+Bucket versioning not initialised for bucket: my-s3bucket2-usohio-region. Enabling...
 Versioning status: Enabled</code></pre>
 </div>
 </div>
 </section>
 <section id="to-suspend-bucket-versioning" class="level2">
 <h2 class="anchored" data-anchor-id="to-suspend-bucket-versioning">To suspend bucket versioning</h2>
-<div class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="cf" style="color: #003B4F;
+<div id="0146d307" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket_name <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket_names:</span>
-<span id="cb14-2">    version_status <span class="op" style="color: #5E5E5E;
+<span id="cb15-2">    version_status <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb14-3">    <span class="bu" style="color: null;
+<span id="cb15-3">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -8233,7 +8316,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb14-4">    <span class="cf" style="color: #003B4F;
+<span id="cb15-4">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> version_status <span class="op" style="color: #5E5E5E;
@@ -8241,12 +8324,12 @@ background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Enabled'</span>:</span>
-<span id="cb14-5">        <span class="bu" style="color: null;
+<span id="cb15-5">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Disabling again..'</span>)</span>
-<span id="cb14-6">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
+<span id="cb15-6">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucket_name).suspend()</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
@@ -8261,18 +8344,18 @@ Disabling again..</code></pre>
 </section>
 <section id="to-enable-bucket-versioning" class="level2">
 <h2 class="anchored" data-anchor-id="to-enable-bucket-versioning">To enable bucket versioning</h2>
-<div class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><span class="cf" style="color: #003B4F;
+<div id="c559c18b" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket_name <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket_names:</span>
-<span id="cb16-2">    version_status <span class="op" style="color: #5E5E5E;
+<span id="cb17-2">    version_status <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb16-3">    <span class="bu" style="color: null;
+<span id="cb17-3">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -8283,7 +8366,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb16-4">    <span class="cf" style="color: #003B4F;
+<span id="cb17-4">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> version_status <span class="op" style="color: #5E5E5E;
@@ -8291,12 +8374,12 @@ background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Suspended'</span>:</span>
-<span id="cb16-5">        <span class="bu" style="color: null;
+<span id="cb17-5">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Enabling again..'</span>)</span>
-<span id="cb16-6">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
+<span id="cb17-6">        s3resource.BucketVersioning(bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucket_name).enable()</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
@@ -8312,11 +8395,11 @@ Enabling again..</code></pre>
 <section id="get-bucket-list-from-s3" class="level2">
 <h2 class="anchored" data-anchor-id="get-bucket-list-from-s3">Get bucket list from S3</h2>
 <p>We can list the buckets in S3 using <code>list_buckets()</code> client function. It return a dict. We can iterate through <code>Buckets</code> key to find the names of the buckets.</p>
-<div class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">buckets_list <span class="op" style="color: #5E5E5E;
+<div id="e17315c4" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">buckets_list <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> s3client.list_buckets()</span>
-<span id="cb18-2"><span class="cf" style="color: #003B4F;
+<span id="cb19-2"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket <span class="kw" style="color: #003B4F;
@@ -8325,17 +8408,14 @@ font-weight: bold;
 font-style: inherit;">in</span> buckets_list[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Buckets'</span>]:</span>
-<span id="cb18-3">    <span class="bu" style="color: null;
+<span id="cb19-3">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(bucket[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Name'</span>])</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>mlops-project-sales-forecast-bucket
-mlops-project-sales-forecast-bucket-dr563105-mlops-project
-my-s3bucket1-usohio-region
-my-s3bucket2-usohio-region
-s3-for-terraform-state</code></pre>
+<pre><code>my-s3bucket1-usohio-region
+my-s3bucket2-usohio-region</code></pre>
 </div>
 </div>
 </section>
@@ -8345,8 +8425,8 @@ s3-for-terraform-state</code></pre>
 <pre><code>1. filename of the file to be uploaded
 2. bucket_name, Into which bucket the file would be uploaded
 3. key, name of the file in S3</code></pre>
-<div class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><span class="kw" style="color: #003B4F;
+<div id="6047fb87" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> upload_files_to_s3(filename, bucket_name, key<span class="op" style="color: #5E5E5E;
@@ -8358,31 +8438,31 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>):</span>
-<span id="cb21-2">    <span class="co" style="color: #5E5E5E;
+<span id="cb22-2">    <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">"""</span></span>
-<span id="cb21-3"><span class="co" style="color: #5E5E5E;
+<span id="cb22-3"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Uploads file to S3 bucket</span></span>
-<span id="cb21-4"><span class="co" style="color: #5E5E5E;
+<span id="cb22-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    Args:</span></span>
-<span id="cb21-5"><span class="co" style="color: #5E5E5E;
+<span id="cb22-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    filename: takes local filename to be uploaded</span></span>
-<span id="cb21-6"><span class="co" style="color: #5E5E5E;
+<span id="cb22-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    bucker_name: name of the bucket into which the file is uploaded</span></span>
-<span id="cb21-7"><span class="co" style="color: #5E5E5E;
+<span id="cb22-7"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    key: name of the file in the bucket. Default:None</span></span>
-<span id="cb21-8"><span class="co" style="color: #5E5E5E;
+<span id="cb22-8"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    ExtraArgs: other arguments. Default:None</span></span>
-<span id="cb21-9"><span class="co" style="color: #5E5E5E;
+<span id="cb22-9"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">    """</span></span>
-<span id="cb21-10">    <span class="cf" style="color: #003B4F;
+<span id="cb22-10">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">if</span> key <span class="kw" style="color: #003B4F;
@@ -8391,16 +8471,16 @@ font-weight: bold;
 font-style: inherit;">is</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span>:</span>
-<span id="cb21-11">        key <span class="op" style="color: #5E5E5E;
+<span id="cb22-11">        key <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> filename</span>
-<span id="cb21-12">    </span>
-<span id="cb21-13">    <span class="cf" style="color: #003B4F;
+<span id="cb22-12">    </span>
+<span id="cb22-13">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">try</span>:</span>
-<span id="cb21-14">        s3client.upload_file(filename,bucket_name,key)</span>
-<span id="cb21-15">        <span class="bu" style="color: null;
+<span id="cb22-14">        s3client.upload_file(filename,bucket_name,key)</span>
+<span id="cb22-15">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -8411,41 +8491,41 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb21-16">    <span class="cf" style="color: #003B4F;
+<span id="cb22-16">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">except</span> botocore.exceptions.ClientError <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> e:</span>
-<span id="cb21-17">        <span class="bu" style="color: null;
+<span id="cb22-17">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(e)</span></code></pre></div></div>
 </div>
 <p>We can make use of <code>glob</code> module to upload multiple files in a folder</p>
-<div class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1">bucket1_files <span class="op" style="color: #5E5E5E;
+<div id="d1ae177c" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1">bucket1_files <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [files[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>],files[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>]]</span>
-<span id="cb22-2">bucket2_files <span class="op" style="color: #5E5E5E;
+<span id="cb23-2">bucket2_files <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [files[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>],files[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>]]</span>
-<span id="cb22-3">bucket1_files, bucket2_files</span></code></pre></div></div>
+<span id="cb23-3">bucket1_files, bucket2_files</span></code></pre></div></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>(['data/30-days-create-folds.ipynb',
   'data/ARK_GENOMIC_REVOLUTION_ETF_ARKG_HOLDINGS.csv'],
  ['data/Player Data.xlsx', 'data/star_pattern_turtlesim.png'])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><span class="cf" style="color: #003B4F;
+<div id="f7fa6f5e" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> <span class="bu" style="color: null;
@@ -8454,7 +8534,7 @@ font-style: inherit;">file</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket1_files:</span>
-<span id="cb24-2">    upload_files_to_s3(<span class="bu" style="color: null;
+<span id="cb25-2">    upload_files_to_s3(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">file</span>,bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8466,8 +8546,8 @@ font-style: inherit;">0</span>])</span></code></pre></div></div>
 uploaded file:data/ARK_GENOMIC_REVOLUTION_ETF_ARKG_HOLDINGS.csv</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><span class="cf" style="color: #003B4F;
+<div id="eeff54cc" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> <span class="bu" style="color: null;
@@ -8476,7 +8556,7 @@ font-style: inherit;">file</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket2_files:</span>
-<span id="cb26-2">    upload_files_to_s3(<span class="bu" style="color: null;
+<span id="cb27-2">    upload_files_to_s3(<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">file</span>,bucket_name<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -8492,15 +8572,15 @@ uploaded file:data/star_pattern_turtlesim.png</code></pre>
 <section id="get-files-list" class="level2">
 <h2 class="anchored" data-anchor-id="get-files-list">Get files list</h2>
 <p>Getting the files list from each bucket done using <code>list_objects</code> client function. It returns dict and we can iterate through <code>Contents</code> key to retrieve the filenames.</p>
-<div class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><span class="cf" style="color: #003B4F;
+<div id="1e7a5e6e" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> bucket <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">in</span> bucket_names:</span>
-<span id="cb28-2">    <span class="bu" style="color: null;
+<span id="cb29-2">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
@@ -8511,12 +8591,12 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span>
-<span id="cb28-3">    list_obj_response <span class="op" style="color: #5E5E5E;
+<span id="cb29-3">    list_obj_response <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> s3client.list_objects(Bucket<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucket)</span>
-<span id="cb28-4">    <span class="cf" style="color: #003B4F;
+<span id="cb29-4">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> obj <span class="kw" style="color: #003B4F;
@@ -8525,12 +8605,12 @@ font-weight: bold;
 font-style: inherit;">in</span> list_obj_response[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Contents'</span>]:</span>
-<span id="cb28-5">        <span class="bu" style="color: null;
+<span id="cb29-5">        <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(obj[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Key'</span>])</span>
-<span id="cb28-6">    <span class="bu" style="color: null;
+<span id="cb29-6">    <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
@@ -8548,12 +8628,12 @@ data/star_pattern_turtlesim.png
 <section id="download-files" class="level2">
 <h2 class="anchored" data-anchor-id="download-files">Download files</h2>
 <p>Downloading a file is very similar to uploading one. We need specify bucket name, name of the file to be downloaded, and the destination filename.</p>
-<div class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><span class="bu" style="color: null;
+<div id="6cc7d779" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">f'Downloading files from bucket:</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">f"Downloading files from bucket:</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">{</span>bucket_names[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -8561,20 +8641,24 @@ font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'</span>)</span>
-<span id="cb30-2">s3client.download_file(Bucket<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"</span>)</span>
+<span id="cb31-2">s3client.download_file(</span>
+<span id="cb31-3">    Bucket<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>bucket_names[<span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>],Key<span class="op" style="color: #5E5E5E;
+font-style: inherit;">1</span>],</span>
+<span id="cb31-4">    Key<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'data/star_pattern_turtlesim.png'</span>,Filename<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"data/star_pattern_turtlesim.png"</span>,</span>
+<span id="cb31-5">    Filename<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'downloaded_turtlesim.jpg'</span>)</span></code></pre></div></div>
+font-style: inherit;">"downloaded_turtlesim.jpg"</span>,</span>
+<span id="cb31-6">)</span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Downloading files from bucket:my-s3bucket2-usohio-region</code></pre>
 </div>
@@ -8770,7 +8854,7 @@ Important
   <media:content url="https://deepakramani.github.io/posts/2023-02-06-skim-vimtex/neovim-logo1.png" medium="image" type="image/png" height="38" width="144"/>
 </item>
 <item>
-  <title>Using json_normalize Pandas function</title>
+  <title>Flattening JSON with pandas (like a pancake, but for data)</title>
   <dc:creator>Deepak Ramani</dc:creator>
   <link>https://deepakramani.github.io/posts/2022-09-24-using-json-normalize/</link>
   <description><![CDATA[ 
@@ -8779,53 +8863,42 @@ Important
 
 
 
-<p><strong>J</strong>ava<strong>s</strong>cript <strong>O</strong>bject <strong>N</strong>otation(JSON) is a widely used format for storing and exchanging data. Coming from the relational database, it could be difficult to understand NoSQL databases that use JSON to store data and similarly REST API’s response. JSON is also used in storing football event data. It allows easy addition of features in the future.</p>
-<p>Though JSON format allows for easier exchange of data, for analysis, a tabular form would be appropriate. A JSON structure can be of two forms: a JSON object and list of JSON objects. Since our programming language of choice is Python, those structures can be somewhat called as a dictionary object or list of dicts.</p>
-<p><img src="https://deepakramani.github.io/posts/2022-09-24-using-json-normalize/jsonobjectimage.png" title="source: B. Chen" class="img-fluid"><sup>1</sup></p>
-<p>Importing pandas library,</p>
-<div class="cell" data-execution_count="1">
+<p><strong>JSON</strong> — the data format that loves to nest things like a Russian doll.<br>
+Beautiful for APIs, terrible for analysis. Enter <code>json_normalize</code>, the flattening hammer.</p>
+<div id="5f15d45a" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
 background-color: null;
-font-style: inherit;">as</span> pd</span></code></pre></div></div>
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> json</span></code></pre></div></div>
 </div>
-<section id="flattening-a-simple-json" class="level2">
-<h2 class="anchored" data-anchor-id="flattening-a-simple-json">Flattening a simple JSON</h2>
-<p><strong>A dict</strong></p>
-<p>Let us consider a simple dictionary: 3 keys and their respective values.</p>
-<div class="cell" data-execution_count="2">
+<section id="the-simplest-case-one-lonely-dict" class="level2">
+<h2 class="anchored" data-anchor-id="the-simplest-case-one-lonely-dict">1. The simplest case: one lonely dict</h2>
+<div id="318ba406" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">viv <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {</span>
 <span id="cb2-2">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"player_id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">15623</span>, </span>
+font-style: inherit;">15623</span>,</span>
 <span id="cb2-3">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
+font-style: inherit;">"player_name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Vivianne Miedema"</span>, </span>
+font-style: inherit;">"Vivianne Miedema"</span>,</span>
 <span id="cb2-4">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"jersey_number"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"jersey_number"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">11</span>}</span>
-<span id="cb2-5">viv</span></code></pre></div></div>
+font-style: inherit;">11</span></span>
+<span id="cb2-5">}</span>
+<span id="cb2-6">pd.json_normalize(viv)</span></code></pre></div></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
-<pre><code>{'player_id': 15623, 'player_name': 'Vivianne Miedema', 'jersey_number': 11}</code></pre>
-</div>
-</div>
-<p>We use the <code>json_normalize</code> API<sup>2</sup> to flatten a JSON dict.</p>
-<div class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">df <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> pd.json_normalize(viv)<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">;</span>df</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -8851,122 +8924,79 @@ font-style: inherit;">;</span>df</span></code></pre></div></div>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">df.info()</span></code></pre></div></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 1 entries, 0 to 0
-Data columns (total 3 columns):
- #   Column         Non-Null Count  Dtype 
----  ------         --------------  ----- 
- 0   player_id      1 non-null      int64 
- 1   player_name    1 non-null      object
- 2   jersey_number  1 non-null      int64 
-dtypes: int64(2), object(1)
-memory usage: 152.0+ bytes</code></pre>
-</div>
-</div>
 <blockquote class="blockquote">
-<p><strong>Side Note</strong>: If the data contains something that is not compatible with python, in this case a <code>null</code> variable, there are two choices:</p>
+<p><strong>Take‑away</strong>: Keys → columns, values → rows. No drama.</p>
 </blockquote>
-<blockquote class="blockquote">
-<ul>
-<li>Change <code>null</code> to <code>None</code></li>
-<li>Pass the data through <code>json.loads</code> function</li>
-</ul>
-</blockquote>
-<p><strong>Change <code>null</code> to <code>None</code></strong></p>
-<div class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">null <span class="op" style="color: #5E5E5E;
+</section>
+<section id="when-null-sneaks-in" class="level2">
+<h2 class="anchored" data-anchor-id="when-null-sneaks-in">2. When <code>null</code> sneaks in</h2>
+<p>Python doesn’t know <code>null</code> from a hole in the ground. Two quick fixes:</p>
+<div id="d5fbbf87" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Trick A: Pretend null is None</span></span>
+<span id="cb3-2">null <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">None</span></span>
-<span id="cb7-2">viv1 <span class="op" style="color: #5E5E5E;
+<span id="cb3-3">viv1 <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> { <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"player_id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">15623</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
+font-style: inherit;">"player_nickname"</span>: null }</span>
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"Vivianne Miedema"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"jersey_number"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_nickname"</span> : null}</span>
-<span id="cb7-3">viv1</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>{'player_id': 15623,
- 'player_name': 'Vivianne Miedema',
- 'jersey_number': 11,
- 'player_nickname': None}</code></pre>
-</div>
-</div>
-<p><strong>Make data as string and pass to <code>json.loads</code></strong></p>
-<div class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="im" style="color: #00769E;
+font-style: inherit;"># Trick B: Let json.loads handle it</span></span>
+<span id="cb3-6"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> json</span>
-<span id="cb9-2">viv1 <span class="op" style="color: #5E5E5E;
+<span id="cb3-7">viv2 <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> json.loads(<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'{ "player_id" : 15623, "player_name" : "Vivianne Miedema", "jersey_number" : 11, "player_nickname" : null}'</span></span>
-<span id="cb9-3">viv1 <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> json.loads(viv1)</span>
-<span id="cb9-4">viv1</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>{'player_id': 15623,
- 'player_name': 'Vivianne Miedema',
- 'jersey_number': 11,
- 'player_nickname': None}</code></pre>
+font-style: inherit;">'{ "player_id": 15623, "player_nickname": null }'</span>)</span></code></pre></div></div>
 </div>
-</div>
-<section id="a-list-of-dicts" class="level3">
-<h3 class="anchored" data-anchor-id="a-list-of-dicts">A list of dicts</h3>
-<div class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1">player_list <span class="op" style="color: #5E5E5E;
+<p>Both give you a clean dict ready for <code>json_normalize</code>.</p>
+</section>
+<section id="a-whole-list-of-dicts" class="level2">
+<h2 class="anchored" data-anchor-id="a-whole-list-of-dicts">3. A whole list of dicts</h2>
+<div id="ef8704e5" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">player_list <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [</span>
-<span id="cb11-2">    { <span class="st" style="color: #20794D;
+<span id="cb4-2">    { <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"player_id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">15623</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
+font-style: inherit;">"player_name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Vivianne Miedema"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"jersey_number"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"jersey_number"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">11</span> },</span>
+<span id="cb4-3">    { <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_nickname"</span> : null },</span>
-<span id="cb11-3">    { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
+font-style: inherit;">"player_id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10658</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
+font-style: inherit;">"player_name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Danielle van de Donk"</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"Danielle van de Donk"</span> }  <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"jersey_number"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_nickname"</span> : null }</span>
-<span id="cb11-4">]</span>
-<span id="cb11-5">pd.json_normalize(player_list)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+font-style: inherit;"># missing jersey</span></span>
+<span id="cb4-4">]</span>
+<span id="cb4-5">pd.json_normalize(player_list)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -8977,74 +9007,6 @@ font-style: inherit;">"player_nickname"</span> : null }</span>
 <th data-quarto-table-cell-role="th">player_id</th>
 <th data-quarto-table-cell-role="th">player_name</th>
 <th data-quarto-table-cell-role="th">jersey_number</th>
-<th data-quarto-table-cell-role="th">player_nickname</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>15623</td>
-<td>Vivianne Miedema</td>
-<td>11</td>
-<td>None</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>10658</td>
-<td>Danielle van de Donk</td>
-<td>7</td>
-<td>None</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>We have the JSON list of dicts in a tabular form. All the keys become columns and their values as entries.</p>
-<p>When we flattern a list with a key-value pair missing for an entry, instead of an error, <strong>NaN</strong>(not a number) is stored.</p>
-<div class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">player_list <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [</span>
-<span id="cb12-2">    { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15623</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Vivianne Miedema"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"jersey_number"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_nickname"</span> : null },</span>
-<span id="cb12-3">    { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10658</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player_name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Danielle van de Donk"</span>}</span>
-<span id="cb12-4">]</span>
-<span id="cb12-5">pd.json_normalize(player_list)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">player_id</th>
-<th data-quarto-table-cell-role="th">player_name</th>
-<th data-quarto-table-cell-role="th">jersey_number</th>
-<th data-quarto-table-cell-role="th">player_nickname</th>
 </tr>
 </thead>
 <tbody>
@@ -9053,14 +9015,12 @@ font-style: inherit;">"Danielle van de Donk"</span>}</span>
 <td>15623</td>
 <td>Vivianne Miedema</td>
 <td>11.0</td>
-<td>NaN</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>10658</td>
 <td>Danielle van de Donk</td>
 <td>NaN</td>
-<td>NaN</td>
 </tr>
 </tbody>
 </table>
@@ -9068,126 +9028,67 @@ font-style: inherit;">"Danielle van de Donk"</span>}</span>
 </div>
 </div>
 </div>
-<p><strong>Note</strong>: See how <code>player_nickname</code> when not specified also turns to <strong>NaN</strong> from <strong>None</strong>.</p>
+<p>Missing keys become <code>NaN</code>. No whining, just numbers.<br>
+(The same happens if you used <code>None</code> above.)</p>
 </section>
-</section>
-<section id="flattening-a-multi-level-json" class="level2">
-<h2 class="anchored" data-anchor-id="flattening-a-multi-level-json">Flattening a multi-level JSON</h2>
-<section id="a-simple-dict" class="level3">
-<h3 class="anchored" data-anchor-id="a-simple-dict">A simple dict</h3>
-<div class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">at_kick0ff <span class="op" style="color: #5E5E5E;
+<section id="multilevel-json-the-nesting-begins" class="level2">
+<h2 class="anchored" data-anchor-id="multilevel-json-the-nesting-begins">4. Multi‑level JSON: the nesting begins</h2>
+<div id="a75a7b36" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1">at_kickoff <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {</span>
-<span id="cb13-2">  <span class="st" style="color: #20794D;
+<span id="cb5-2">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"id"</span>:<span class="st" style="color: #20794D;
+font-style: inherit;">"id"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"d712fb93-c464-4621-98ba-f2bdcd5641db"</span>,</span>
-<span id="cb13-3">  <span class="st" style="color: #20794D;
+font-style: inherit;">"d712fb93"</span>,</span>
+<span id="cb5-3">    <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"timestamp"</span>:<span class="st" style="color: #20794D;
+font-style: inherit;">"lineup"</span>: {</span>
+<span id="cb5-4">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"00:00:00.000"</span>,</span>
-<span id="cb13-4">  <span class="st" style="color: #20794D;
+font-style: inherit;">"player"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"duration"</span>:<span class="fl" style="color: #AD0000;
+font-style: inherit;">"id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0.0</span>,</span>
-<span id="cb13-5">  <span class="st" style="color: #20794D;
+font-style: inherit;">15623</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"lineup"</span>:{</span>
-<span id="cb13-6">      <span class="st" style="color: #20794D;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"player"</span>:{</span>
-<span id="cb13-7">        <span class="st" style="color: #20794D;
+font-style: inherit;">"Vivianne Miedema"</span>},</span>
+<span id="cb5-5">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
+font-style: inherit;">"position"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">15623</span>,</span>
-<span id="cb13-8">        <span class="st" style="color: #20794D;
+font-style: inherit;">"id"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
+font-style: inherit;">23</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"Vivianne Miedema"</span></span>
-<span id="cb13-9">      },</span>
-<span id="cb13-10">      <span class="st" style="color: #20794D;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"position"</span>:{</span>
-<span id="cb13-11">        <span class="st" style="color: #20794D;
+font-style: inherit;">"Center Forward"</span>},</span>
+<span id="cb5-6">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">23</span>,</span>
-<span id="cb13-12">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Center Forward"</span></span>
-<span id="cb13-13">      },</span>
-<span id="cb13-14">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"jersey_number"</span>:<span class="dv" style="color: #AD0000;
+font-style: inherit;">"jersey_number"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">11</span></span>
-<span id="cb13-15">    }</span>
-<span id="cb13-16">}</span>
-<span id="cb13-17">at_kick0ff</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<pre><code>{'id': 'd712fb93-c464-4621-98ba-f2bdcd5641db',
- 'timestamp': '00:00:00.000',
- 'duration': 0.0,
- 'lineup': {'player': {'id': 15623, 'name': 'Vivianne Miedema'},
-  'position': {'id': 23, 'name': 'Center Forward'},
-  'jersey_number': 11}}</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">pd.json_normalize(at_kick0ff)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">id</th>
-<th data-quarto-table-cell-role="th">timestamp</th>
-<th data-quarto-table-cell-role="th">duration</th>
-<th data-quarto-table-cell-role="th">lineup.player.id</th>
-<th data-quarto-table-cell-role="th">lineup.player.name</th>
-<th data-quarto-table-cell-role="th">lineup.position.id</th>
-<th data-quarto-table-cell-role="th">lineup.position.name</th>
-<th data-quarto-table-cell-role="th">lineup.jersey_number</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>d712fb93-c464-4621-98ba-f2bdcd5641db</td>
-<td>00:00:00.000</td>
-<td>0.0</td>
-<td>15623</td>
-<td>Vivianne Miedema</td>
-<td>23</td>
-<td>Center Forward</td>
-<td>11</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>You can see that <em>lineup</em> dictionary key’s nested key-value pairs have been expanded into individual columns. If you feel that is unnecessary, we can restrict expansion by using <em>max_level</em> argument. With <code>max_level=1</code>, the flattening goes one level deeper.</p>
-<div class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">pd.json_normalize(at_kick0ff, max_level<span class="op" style="color: #5E5E5E;
+<span id="cb5-7">    }</span>
+<span id="cb5-8">}</span>
+<span id="cb5-9"></span>
+<span id="cb5-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Fully flattened – like a steamrolled box</span></span>
+<span id="cb5-11">pd.json_normalize(at_kickoff)</span>
+<span id="cb5-12"></span>
+<span id="cb5-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Keep the top layer intact with max_level=1</span></span>
+<span id="cb5-14">pd.json_normalize(at_kickoff, max_level<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
 
@@ -9196,8 +9097,6 @@ font-style: inherit;">1</span>)</span></code></pre></div></div>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">id</th>
-<th data-quarto-table-cell-role="th">timestamp</th>
-<th data-quarto-table-cell-role="th">duration</th>
 <th data-quarto-table-cell-role="th">lineup.player</th>
 <th data-quarto-table-cell-role="th">lineup.position</th>
 <th data-quarto-table-cell-role="th">lineup.jersey_number</th>
@@ -9206,9 +9105,7 @@ font-style: inherit;">1</span>)</span></code></pre></div></div>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>d712fb93-c464-4621-98ba-f2bdcd5641db</td>
-<td>00:00:00.000</td>
-<td>0.0</td>
+<td>d712fb93</td>
 <td>{'id': 15623, 'name': 'Vivianne Miedema'}</td>
 <td>{'id': 23, 'name': 'Center Forward'}</td>
 <td>11</td>
@@ -9219,497 +9116,109 @@ font-style: inherit;">1</span>)</span></code></pre></div></div>
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
+<p><strong>Mental model</strong>: <code>max_level</code> is the number of nested layers you allow pandas to smash.<br>
+<code>max_level=0</code> means “don’t even look inside”.</p>
+</blockquote>
 </section>
-<section id="a-list-of-dicts-1" class="level3">
-<h3 class="anchored" data-anchor-id="a-list-of-dicts-1">A list of dicts</h3>
-<div class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1">first_pass <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [</span>
-<span id="cb17-2">  {</span>
-<span id="cb17-3">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"15758edb-58cd-49c4-a817-d2ef48ba3bcf"</span>,</span>
-<span id="cb17-4">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"timestamp"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"00:00:00.504"</span>,</span>
-<span id="cb17-5">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"type"</span>:{</span>
-<span id="cb17-6">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>,</span>
-<span id="cb17-7">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Pass"</span></span>
-<span id="cb17-8">    },</span>
-<span id="cb17-9">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"play_pattern"</span>:{</span>
-<span id="cb17-10">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span>,</span>
-<span id="cb17-11">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"From Kick Off"</span></span>
-<span id="cb17-12">    },</span>
-<span id="cb17-13">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player"</span>:{</span>
-<span id="cb17-14">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15623</span>,</span>
-<span id="cb17-15">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Vivianne Miedema"</span></span>
-<span id="cb17-16">    },</span>
-<span id="cb17-17">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pass"</span>:{</span>
-<span id="cb17-18">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"recipient"</span>:{</span>
-<span id="cb17-19">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10666</span>,</span>
-<span id="cb17-20">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Dominique Johanna Anna Bloodworth"</span></span>
-<span id="cb17-21">      },</span>
-<span id="cb17-22">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"length"</span>:<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">25.455845</span>,</span>
-<span id="cb17-23">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"angle"</span>:<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2.3561945</span>,</span>
-<span id="cb17-24">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"height"</span>:{</span>
-<span id="cb17-25">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span>:<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,</span>
-<span id="cb17-26">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>:<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Ground Pass"</span></span>
-<span id="cb17-27">      },</span>
-<span id="cb17-28">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"end_location"</span>:[</span>
-<span id="cb17-29">        <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">42.0</span>,</span>
-<span id="cb17-30">        <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">22.0</span></span>
-<span id="cb17-31">      ]</span>
-<span id="cb17-32">    }</span>
-<span id="cb17-33">  }, {</span>
-<span id="cb17-34">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ab5674a4-e824-4143-9f6f-3f1645557413"</span>,</span>
-<span id="cb17-35">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"timestamp"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"00:00:04.201"</span>,</span>
-<span id="cb17-36">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"type"</span> : {</span>
-<span id="cb17-37">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>,</span>
-<span id="cb17-38">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Pass"</span></span>
-<span id="cb17-39">  },</span>
-<span id="cb17-40">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"play_pattern"</span> : {</span>
-<span id="cb17-41">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span>,</span>
-<span id="cb17-42">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"From Kick Off"</span></span>
-<span id="cb17-43">  },</span>
-<span id="cb17-44">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"player"</span> : {</span>
-<span id="cb17-45">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10666</span>,</span>
-<span id="cb17-46">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Dominique Johanna Anna Bloodworth"</span></span>
-<span id="cb17-47">  },</span>
-<span id="cb17-48">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"location"</span> : [ <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">45.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">29.0</span> ],</span>
-<span id="cb17-49">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"duration"</span> : <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.795201</span>,</span>
-<span id="cb17-50">  <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"pass"</span> : {</span>
-<span id="cb17-51">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"length"</span> : <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">51.62364</span>,</span>
-<span id="cb17-52">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"angle"</span> : <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.55038595</span>,</span>
-<span id="cb17-53">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"height"</span> : {</span>
-<span id="cb17-54">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"id"</span> : <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>,</span>
-<span id="cb17-55">      <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span> : <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"High Pass"</span></span>
-<span id="cb17-56">    },</span>
-<span id="cb17-57">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"end_location"</span> : [ <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">89.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">56.0</span> ]</span>
-<span id="cb17-58">  }</span>
-<span id="cb17-59">}</span>
-<span id="cb17-60">]</span>
-<span id="cb17-61">    </span>
-<span id="cb17-62">pd.json_normalize(first_pass)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">id</th>
-<th data-quarto-table-cell-role="th">timestamp</th>
-<th data-quarto-table-cell-role="th">type.id</th>
-<th data-quarto-table-cell-role="th">type.name</th>
-<th data-quarto-table-cell-role="th">play_pattern.id</th>
-<th data-quarto-table-cell-role="th">play_pattern.name</th>
-<th data-quarto-table-cell-role="th">player.id</th>
-<th data-quarto-table-cell-role="th">player.name</th>
-<th data-quarto-table-cell-role="th">pass.recipient.id</th>
-<th data-quarto-table-cell-role="th">pass.recipient.name</th>
-<th data-quarto-table-cell-role="th">pass.length</th>
-<th data-quarto-table-cell-role="th">pass.angle</th>
-<th data-quarto-table-cell-role="th">pass.height.id</th>
-<th data-quarto-table-cell-role="th">pass.height.name</th>
-<th data-quarto-table-cell-role="th">pass.end_location</th>
-<th data-quarto-table-cell-role="th">location</th>
-<th data-quarto-table-cell-role="th">duration</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>15758edb-58cd-49c4-a817-d2ef48ba3bcf</td>
-<td>00:00:00.504</td>
-<td>30</td>
-<td>Pass</td>
-<td>9</td>
-<td>From Kick Off</td>
-<td>15623</td>
-<td>Vivianne Miedema</td>
-<td>10666.0</td>
-<td>Dominique Johanna Anna Bloodworth</td>
-<td>25.455845</td>
-<td>-2.356194</td>
-<td>1</td>
-<td>Ground Pass</td>
-<td>[42.0, 22.0]</td>
-<td>NaN</td>
-<td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>ab5674a4-e824-4143-9f6f-3f1645557413</td>
-<td>00:00:04.201</td>
-<td>30</td>
-<td>Pass</td>
-<td>9</td>
-<td>From Kick Off</td>
-<td>10666</td>
-<td>Dominique Johanna Anna Bloodworth</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>51.623640</td>
-<td>0.550386</td>
-<td>3</td>
-<td>High Pass</td>
-<td>[89.0, 56.0]</td>
-<td>[45.0, 29.0]</td>
-<td>1.795201</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>Limiting the levels…</p>
-<div class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">pd.json_normalize(first_pass, max_level<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">id</th>
-<th data-quarto-table-cell-role="th">timestamp</th>
-<th data-quarto-table-cell-role="th">type</th>
-<th data-quarto-table-cell-role="th">play_pattern</th>
-<th data-quarto-table-cell-role="th">player</th>
-<th data-quarto-table-cell-role="th">pass</th>
-<th data-quarto-table-cell-role="th">location</th>
-<th data-quarto-table-cell-role="th">duration</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>15758edb-58cd-49c4-a817-d2ef48ba3bcf</td>
-<td>00:00:00.504</td>
-<td>{'id': 30, 'name': 'Pass'}</td>
-<td>{'id': 9, 'name': 'From Kick Off'}</td>
-<td>{'id': 15623, 'name': 'Vivianne Miedema'}</td>
-<td>{'recipient': {'id': 10666, 'name': 'Dominique...</td>
-<td>NaN</td>
-<td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>ab5674a4-e824-4143-9f6f-3f1645557413</td>
-<td>00:00:04.201</td>
-<td>{'id': 30, 'name': 'Pass'}</td>
-<td>{'id': 9, 'name': 'From Kick Off'}</td>
-<td>{'id': 10666, 'name': 'Dominique Johanna Anna ...</td>
-<td>{'length': 51.62364, 'angle': 0.55038595, 'hei...</td>
-<td>[45.0, 29.0]</td>
-<td>1.795201</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="flattening-a-json-nested-list" class="level2">
-<h2 class="anchored" data-anchor-id="flattening-a-json-nested-list">Flattening a JSON nested list</h2>
-<section id="a-simple-dict-1" class="level3">
-<h3 class="anchored" data-anchor-id="a-simple-dict-1">A simple dict</h3>
-<p>For this case, let us consider a simpler example than of football event data. The key <code>info</code> has list of dictionaries inside its structure. We call it <em>nested dict</em>.</p>
-<div class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1">awfc <span class="op" style="color: #5E5E5E;
+<section id="nested-lists-the-record_path-extraction" class="level2">
+<h2 class="anchored" data-anchor-id="nested-lists-the-record_path-extraction">5. Nested lists: the <code>record_path</code> extraction</h2>
+<p>Sometimes a JSON object has a key that holds a list of sub‑records (e.g., <code>players</code>).<br>
+We want each list item as a row, not a mangled single column.</p>
+<div id="0022e4e1" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">awfc <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {</span>
-<span id="cb19-2">    <span class="st" style="color: #20794D;
+<span id="cb6-2">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'AWFC'</span>,</span>
-<span id="cb19-3">    <span class="st" style="color: #20794D;
+<span id="cb6-3">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'location'</span>: <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'London'</span>,</span>
-<span id="cb19-4">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'ranking'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,</span>
-<span id="cb19-5">    <span class="st" style="color: #20794D;
+<span id="cb6-4">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'info'</span>: {</span>
-<span id="cb19-6">        <span class="st" style="color: #20794D;
+<span id="cb6-5">        <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'manager'</span>: <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Joe'</span>,</span>
-<span id="cb19-7">        <span class="st" style="color: #20794D;
+<span id="cb6-6">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'contacts'</span>: {</span>
-<span id="cb19-8">          <span class="st" style="color: #20794D;
+font-style: inherit;">'contacts'</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'email'</span>: {</span>
-<span id="cb19-9">              <span class="st" style="color: #20794D;
+font-style: inherit;">'email'</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'coaching'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'joe@afc.com'</span>,</span>
-<span id="cb19-10">              <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'general'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info@afc.com'</span></span>
-<span id="cb19-11">          },</span>
-<span id="cb19-12">          <span class="st" style="color: #20794D;
+font-style: inherit;">'joe@afc.com'</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'tel'</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'123456789'</span>,</span>
-<span id="cb19-13">      }</span>
-<span id="cb19-14">    },</span>
-<span id="cb19-15">    <span class="st" style="color: #20794D;
+font-style: inherit;">'123456789'</span>}</span>
+<span id="cb6-7">    },</span>
+<span id="cb6-8">    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'players'</span>: [</span>
-<span id="cb19-16">      { <span class="st" style="color: #20794D;
+<span id="cb6-9">        {<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Viv'</span> },</span>
-<span id="cb19-17">      { <span class="st" style="color: #20794D;
+font-style: inherit;">'Viv'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">101</span>},</span>
+<span id="cb6-10">        {<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'DvD'</span> },</span>
-<span id="cb19-18">      { <span class="st" style="color: #20794D;
+font-style: inherit;">'DvD'</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">'Kim'</span> }</span>
-<span id="cb19-19">    ],</span>
-<span id="cb19-20">}<span class="op" style="color: #5E5E5E;
+font-style: inherit;">60</span>}</span>
+<span id="cb6-11">    ]</span>
+<span id="cb6-12">}</span>
+<span id="cb6-13"></span>
+<span id="cb6-14"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">;</span>awfc</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>{'team': 'AWFC',
- 'location': 'London',
- 'ranking': 1,
- 'info': {'manager': 'Joe',
-  'contacts': {'email': {'coaching': 'joe@afc.com', 'general': 'info@afc.com'},
-   'tel': '123456789'}},
- 'players': [{'name': 'Viv'}, {'name': 'DvD'}, {'name': 'Kim'}]}</code></pre>
-</div>
-</div>
-<p>The <em>players</em> column has a list of dicts. So, we can flatten that column using <em>record_path</em> argument.</p>
-<div class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1">pd.json_normalize(awfc, record_path<span class="op" style="color: #5E5E5E;
+font-style: inherit;"># Only the players, stripped of team context</span></span>
+<span id="cb6-15">pd.json_normalize(awfc, record_path<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>])</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>Viv</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>DvD</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Kim</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>But, making a separate table with no reference id has no meaning. To prevent that we can append revelant columns to the new table using <em>meta</em> argument. Here we want their <em>team</em> and <em>Telephone number</em>. The <em>tel</em> key lies within <code>info-&gt;contacts-&gt;tel</code>. So, we need provide that path like so <code>['info', 'contacts', 'tel']</code>.</p>
-<div class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1">pd.json_normalize(awfc, record_path<span class="op" style="color: #5E5E5E;
+font-style: inherit;">'players'</span>])</span>
+<span id="cb6-16"></span>
+<span id="cb6-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Bring along some metadata so we know whose players these are</span></span>
+<span id="cb6-18">pd.json_normalize(</span>
+<span id="cb6-19">    awfc,</span>
+<span id="cb6-20">    record_path<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>], meta<span class="op" style="color: #5E5E5E;
+font-style: inherit;">'players'</span>],</span>
+<span id="cb6-21">    meta<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'team'</span>,[<span class="st" style="color: #20794D;
+font-style: inherit;">'team'</span>, [<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'contacts'</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'tel'</span>]])</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+font-style: inherit;">'tel'</span>], [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'manager'</span>]]</span>
+<span id="cb6-22">)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -9718,65 +9227,7 @@ font-style: inherit;">'tel'</span>]])</span></code></pre></div></div>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">team</th>
-<th data-quarto-table-cell-role="th">info.contacts.tel</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>Viv</td>
-<td>AWFC</td>
-<td>123456789</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>DvD</td>
-<td>AWFC</td>
-<td>123456789</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Kim</td>
-<td>AWFC</td>
-<td>123456789</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>The order in which those paths are mentioned, the order in which those columns are appended.</p>
-<div class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1">pd.json_normalize(awfc, record_path<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>], meta<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>,[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'contacts'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'tel'</span>],[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'manager'</span>]])</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">goals</th>
 <th data-quarto-table-cell-role="th">team</th>
 <th data-quarto-table-cell-role="th">info.contacts.tel</th>
 <th data-quarto-table-cell-role="th">info.manager</th>
@@ -9786,6 +9237,7 @@ font-style: inherit;">'manager'</span>]])</span></code></pre></div></div>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>Viv</td>
+<td>101</td>
 <td>AWFC</td>
 <td>123456789</td>
 <td>Joe</td>
@@ -9793,13 +9245,7 @@ font-style: inherit;">'manager'</span>]])</span></code></pre></div></div>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>DvD</td>
-<td>AWFC</td>
-<td>123456789</td>
-<td>Joe</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Kim</td>
+<td>60</td>
 <td>AWFC</td>
 <td>123456789</td>
 <td>Joe</td>
@@ -9810,757 +9256,160 @@ font-style: inherit;">'manager'</span>]])</span></code></pre></div></div>
 </div>
 </div>
 </div>
-</section>
-<section id="a-list-of-dicts-2" class="level3">
-<h3 class="anchored" data-anchor-id="a-list-of-dicts-2">A list of dicts</h3>
-<div class="cell" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1">json_list <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [</span>
-<span id="cb24-2">    { </span>
-<span id="cb24-3">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'arsenal'</span>, </span>
-<span id="cb24-4">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'red-white'</span>,</span>
-<span id="cb24-5">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb24-6">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb24-7">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'xxxx'</span>, </span>
-<span id="cb24-8">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'yyyy'</span> </span>
-<span id="cb24-9">            }</span>
-<span id="cb24-10">        },</span>
-<span id="cb24-11">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb24-12">            { </span>
-<span id="cb24-13">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Viv'</span>, </span>
-<span id="cb24-14">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb24-15">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">40</span> } </span>
-<span id="cb24-16">            },</span>
-<span id="cb24-17">            { </span>
-<span id="cb24-18">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Beth'</span>, </span>
-<span id="cb24-19">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb24-20">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">60</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">25</span> } </span>
-<span id="cb24-21">            },</span>
-<span id="cb24-22">        ]</span>
-<span id="cb24-23">    },</span>
-<span id="cb24-24">    { </span>
-<span id="cb24-25">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'city'</span>, </span>
-<span id="cb24-26">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'blue'</span>,</span>
-<span id="cb24-27">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb24-28">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb24-29">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'aaaa'</span>, </span>
-<span id="cb24-30">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'bbbb'</span> </span>
-<span id="cb24-31">            }</span>
-<span id="cb24-32">        },</span>
-<span id="cb24-33">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb24-34">            { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Steph'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb24-35">            { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Lucy'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb24-36">        ]</span>
-<span id="cb24-37">    },</span>
-<span id="cb24-38">]</span>
-<span id="cb24-39"></span>
-<span id="cb24-40">pd.json_normalize(json_list)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">team</th>
-<th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">players</th>
-<th data-quarto-table-cell-role="th">info.staff.physio</th>
-<th data-quarto-table-cell-role="th">info.staff.doctor</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>arsenal</td>
-<td>red-white</td>
-<td>[{'name': 'Viv', 'sex': 'F', 'stats': {'goals'...</td>
-<td>xxxx</td>
-<td>yyyy</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>city</td>
-<td>blue</td>
-<td>[{'name': 'Steph', 'sex': 'F'}, {'name': 'Lucy...</td>
-<td>aaaa</td>
-<td>bbbb</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<div class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1">pd.json_normalize(json_list, record_path <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>])</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">sex</th>
-<th data-quarto-table-cell-role="th">stats.goals</th>
-<th data-quarto-table-cell-role="th">stats.assists</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>Viv</td>
-<td>F</td>
-<td>101.0</td>
-<td>40.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>Beth</td>
-<td>F</td>
-<td>60.0</td>
-<td>25.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Steph</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Lucy</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>How about we now append the players’ team, colour, and their physio.</p>
-<div class="cell" data-execution_count="20">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">pd.json_normalize(</span>
-<span id="cb26-2">    json_list, </span>
-<span id="cb26-3">    record_path <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>], </span>
-<span id="cb26-4">    meta<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>, [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>]]</span>
-<span id="cb26-5">)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">sex</th>
-<th data-quarto-table-cell-role="th">stats.goals</th>
-<th data-quarto-table-cell-role="th">stats.assists</th>
-<th data-quarto-table-cell-role="th">team</th>
-<th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">info.staff.physio</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>Viv</td>
-<td>F</td>
-<td>101.0</td>
-<td>40.0</td>
-<td>arsenal</td>
-<td>red-white</td>
-<td>xxxx</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>Beth</td>
-<td>F</td>
-<td>60.0</td>
-<td>25.0</td>
-<td>arsenal</td>
-<td>red-white</td>
-<td>xxxx</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Steph</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>aaaa</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Lucy</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>aaaa</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="ignoring-key-errors" class="level2">
-<h2 class="anchored" data-anchor-id="ignoring-key-errors">Ignoring key errors</h2>
-<div class="cell" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1">json_list <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> [</span>
-<span id="cb27-2">    { </span>
-<span id="cb27-3">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'arsenal'</span>, </span>
-<span id="cb27-4">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'red-white'</span>,</span>
-<span id="cb27-5">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb27-6">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb27-7">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'xxxx'</span>, </span>
-<span id="cb27-8">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'yyyy'</span> </span>
-<span id="cb27-9">            }</span>
-<span id="cb27-10">        },</span>
-<span id="cb27-11">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb27-12">            { </span>
-<span id="cb27-13">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Viv'</span>, </span>
-<span id="cb27-14">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb27-15">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">101</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">40</span> } </span>
-<span id="cb27-16">            },</span>
-<span id="cb27-17">            { </span>
-<span id="cb27-18">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Beth'</span>, </span>
-<span id="cb27-19">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb27-20">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">60</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">25</span> } </span>
-<span id="cb27-21">            },</span>
-<span id="cb27-22">        ]</span>
-<span id="cb27-23">    },</span>
-<span id="cb27-24">    { </span>
-<span id="cb27-25">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'city'</span>, </span>
-<span id="cb27-26">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'blue'</span>,</span>
-<span id="cb27-27">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb27-28">            <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb27-29">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'bbbb'</span> </span>
-<span id="cb27-30">            }</span>
-<span id="cb27-31">        },</span>
-<span id="cb27-32">        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb27-33">            { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Steph'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb27-34">            { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'Lucy'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb27-35">        ]</span>
-<span id="cb27-36">    },</span>
-<span id="cb27-37">]</span></code></pre></div></div>
-</div>
-<p>Notice that the key <em>physio</em> is missing from the entry <code>team=city</code>. What happens if we try to access <em>physio</em> key inside <code>meta</code>?</p>
-<div class="cell" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1">pd.json_normalize(</span>
-<span id="cb28-2">    json_list, </span>
-<span id="cb28-3">    record_path <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>], </span>
-<span id="cb28-4">    meta<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>, [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>]],</span>
-<span id="cb28-5">)</span></code></pre></div></div>
-<div class="cell-output cell-output-error">
-<pre><code>KeyError: "Key 'physio' not found. To replace missing values of 'physio' with np.nan, pass in errors='ignore'"</code></pre>
-</div>
-</div>
-<p>How come <code>stats.goals</code> and <code>stats.assists</code> didn’t generate an error but that above does? <strong>Because, the <em>meta</em> argument expects values to be present for listed keys in meta by default.</strong> We can ignore those errors(as suggested) using <code>errors='ignore'</code></p>
-<div class="cell" data-execution_count="23">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1">pd.json_normalize(</span>
-<span id="cb30-2">    json_list, </span>
-<span id="cb30-3">    record_path <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'players'</span>], </span>
-<span id="cb30-4">    meta<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'team'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'colour'</span>, [<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>]],</span>
-<span id="cb30-5">    errors<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'ignore'</span></span>
-<span id="cb30-6">)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">sex</th>
-<th data-quarto-table-cell-role="th">stats.goals</th>
-<th data-quarto-table-cell-role="th">stats.assists</th>
-<th data-quarto-table-cell-role="th">team</th>
-<th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">info.staff.physio</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>Viv</td>
-<td>F</td>
-<td>101.0</td>
-<td>40.0</td>
-<td>arsenal</td>
-<td>red-white</td>
-<td>xxxx</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>Beth</td>
-<td>F</td>
-<td>60.0</td>
-<td>25.0</td>
-<td>arsenal</td>
-<td>red-white</td>
-<td>xxxx</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Steph</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Lucy</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>NaN</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-</section>
-<section id="custom-separator-sep" class="level2">
-<h2 class="anchored" data-anchor-id="custom-separator-sep">Custom separator <code>sep</code></h2>
-<p>We notice that by default pandas uses <code>.</code> to indicate the direction of the path. We can change that using the <code>sep</code> argument.</p>
 <blockquote class="blockquote">
-<p><strong>Tip</strong>: Usually an <code>underscore</code> is used instead of <code>.</code></p>
+<p><strong>Syntax rule</strong>: <code>meta</code> paths are like breadcrumbs.<br>
+<code>['info', 'contacts', 'tel']</code> → <code>info.contacts.tel</code> in the output.</p>
 </blockquote>
-<div class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1">json_list <span class="op" style="color: #5E5E5E;
+</section>
+<section id="a-whole-gang-of-records-list-of-dicts" class="level2">
+<h2 class="anchored" data-anchor-id="a-whole-gang-of-records-list-of-dicts">6. A whole gang of records (list of dicts)</h2>
+<p>Same idea, but now the outer JSON is a list. Pandas happily loops over each dict.</p>
+<div id="efa2e5d6" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">json_list <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [</span>
-<span id="cb31-2">    { </span>
-<span id="cb31-3">        <span class="st" style="color: #20794D;
+<span id="cb7-2">    {</span>
+<span id="cb7-3">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'arsenal'</span>, </span>
-<span id="cb31-4">        <span class="st" style="color: #20794D;
+font-style: inherit;">"arsenal"</span>,</span>
+<span id="cb7-4">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"colour"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'red-white'</span>,</span>
-<span id="cb31-5">        <span class="st" style="color: #20794D;
+font-style: inherit;">"red-white"</span>,</span>
+<span id="cb7-5">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb31-6">            <span class="st" style="color: #20794D;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb31-7">                <span class="st" style="color: #20794D;
+font-style: inherit;">"staff"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'physio'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"physio"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'xxxx'</span>, </span>
-<span id="cb31-8">                <span class="st" style="color: #20794D;
+font-style: inherit;">"xxxx"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"doctor"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'yyyy'</span> </span>
-<span id="cb31-9">            }</span>
-<span id="cb31-10">        },</span>
-<span id="cb31-11">        <span class="st" style="color: #20794D;
+font-style: inherit;">"yyyy"</span>}},</span>
+<span id="cb7-6">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb31-12">            { </span>
-<span id="cb31-13">                <span class="st" style="color: #20794D;
+font-style: inherit;">"players"</span>: [</span>
+<span id="cb7-7">            {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Viv'</span>, </span>
-<span id="cb31-14">                <span class="st" style="color: #20794D;
+font-style: inherit;">"Viv"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"stats"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb31-15">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
+font-style: inherit;">"goals"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">101</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
+font-style: inherit;">"assists"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40</span> } </span>
-<span id="cb31-16">            },</span>
-<span id="cb31-17">            { </span>
-<span id="cb31-18">                <span class="st" style="color: #20794D;
+font-style: inherit;">40</span>}},</span>
+<span id="cb7-8">            {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Beth'</span>, </span>
-<span id="cb31-19">                <span class="st" style="color: #20794D;
+font-style: inherit;">"Beth"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"stats"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'F'</span>, </span>
-<span id="cb31-20">                <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'stats'</span>: { <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'goals'</span>: <span class="dv" style="color: #AD0000;
+font-style: inherit;">"goals"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">60</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'assists'</span>: <span class="dv" style="color: #AD0000;
+font-style: inherit;">"assists"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">25</span> } </span>
-<span id="cb31-21">            },</span>
-<span id="cb31-22">        ]</span>
-<span id="cb31-23">    },</span>
-<span id="cb31-24">    { </span>
-<span id="cb31-25">        <span class="st" style="color: #20794D;
+font-style: inherit;">25</span>}},</span>
+<span id="cb7-9">        ],</span>
+<span id="cb7-10">    },</span>
+<span id="cb7-11">    {</span>
+<span id="cb7-12">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'team'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'city'</span>, </span>
-<span id="cb31-26">        <span class="st" style="color: #20794D;
+font-style: inherit;">"city"</span>,</span>
+<span id="cb7-13">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'colour'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"colour"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'blue'</span>,</span>
-<span id="cb31-27">        <span class="st" style="color: #20794D;
+font-style: inherit;">"blue"</span>,</span>
+<span id="cb7-14">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'info'</span>: {</span>
-<span id="cb31-28">            <span class="st" style="color: #20794D;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'staff'</span>: { </span>
-<span id="cb31-29">                <span class="st" style="color: #20794D;
+font-style: inherit;">"staff"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'physio'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"physio"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'aaaa'</span>, </span>
-<span id="cb31-30">                <span class="st" style="color: #20794D;
+font-style: inherit;">"aaaa"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'doctor'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"doctor"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'bbbb'</span> </span>
-<span id="cb31-31">            }</span>
-<span id="cb31-32">        },</span>
-<span id="cb31-33">        <span class="st" style="color: #20794D;
+font-style: inherit;">"bbbb"</span>}},</span>
+<span id="cb7-15">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>: [</span>
-<span id="cb31-34">            { <span class="st" style="color: #20794D;
+font-style: inherit;">"players"</span>: [</span>
+<span id="cb7-16">            {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Steph'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"Steph"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">"stats"</span>: {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb31-35">            { <span class="st" style="color: #20794D;
+font-style: inherit;">"goals"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">'name'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">30</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'Lucy'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"assists"</span>: <span class="dv" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">'sex'</span>: <span class="st" style="color: #20794D;
+font-style: inherit;">15</span>}},</span>
+<span id="cb7-17">            {<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'F'</span> },</span>
-<span id="cb31-36">        ]</span>
-<span id="cb31-37">    },</span>
-<span id="cb31-38">]</span></code></pre></div></div>
-</div>
-<div class="cell" data-execution_count="25">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1">pd.json_normalize(</span>
-<span id="cb32-2">    json_list, </span>
-<span id="cb32-3">    record_path <span class="op" style="color: #5E5E5E;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Lucy"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"stats"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"goals"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"assists"</span>: <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>}},</span>
+<span id="cb7-18">        ],</span>
+<span id="cb7-19">    },</span>
+<span id="cb7-20">]</span>
+<span id="cb7-21"></span>
+<span id="cb7-22">pd.json_normalize(</span>
+<span id="cb7-23">    json_list,</span>
+<span id="cb7-24">    record_path<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>], </span>
-<span id="cb32-4">    meta<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"players"</span>],</span>
+<span id="cb7-25">    meta<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'team'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"team"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'colour'</span>, [<span class="st" style="color: #20794D;
+font-style: inherit;">"colour"</span>, [<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"info"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'staff'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"staff"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'physio'</span>]],</span>
-<span id="cb32-5">    sep<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'-&gt;'</span></span>
-<span id="cb32-6">)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="25">
+font-style: inherit;">"physio"</span>]],</span>
+<span id="cb7-26">)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -10569,21 +9418,19 @@ font-style: inherit;">'-&gt;'</span></span>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">sex</th>
-<th data-quarto-table-cell-role="th">stats-&gt;goals</th>
-<th data-quarto-table-cell-role="th">stats-&gt;assists</th>
+<th data-quarto-table-cell-role="th">stats.goals</th>
+<th data-quarto-table-cell-role="th">stats.assists</th>
 <th data-quarto-table-cell-role="th">team</th>
 <th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">info-&gt;staff-&gt;physio</th>
+<th data-quarto-table-cell-role="th">info.staff.physio</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>Viv</td>
-<td>F</td>
-<td>101.0</td>
-<td>40.0</td>
+<td>101</td>
+<td>40</td>
 <td>arsenal</td>
 <td>red-white</td>
 <td>xxxx</td>
@@ -10591,9 +9438,8 @@ font-style: inherit;">'-&gt;'</span></span>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>Beth</td>
-<td>F</td>
-<td>60.0</td>
-<td>25.0</td>
+<td>60</td>
+<td>25</td>
 <td>arsenal</td>
 <td>red-white</td>
 <td>xxxx</td>
@@ -10601,9 +9447,8 @@ font-style: inherit;">'-&gt;'</span></span>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>Steph</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
+<td>30</td>
+<td>15</td>
 <td>city</td>
 <td>blue</td>
 <td>aaaa</td>
@@ -10611,9 +9456,8 @@ font-style: inherit;">'-&gt;'</span></span>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>Lucy</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
+<td>25</td>
+<td>20</td>
 <td>city</td>
 <td>blue</td>
 <td>aaaa</td>
@@ -10624,47 +9468,97 @@ font-style: inherit;">'-&gt;'</span></span>
 </div>
 </div>
 </div>
+<p>Every player gets their team, colour, and physio stamped on them. Lovely.</p>
 </section>
-<section id="adding-context-to-record-and-meta-data-using-record_prefix-and-meta_prefix" class="level2">
-<h2 class="anchored" data-anchor-id="adding-context-to-record-and-meta-data-using-record_prefix-and-meta_prefix">Adding context to record and meta data using <em>record_prefix</em> and <em>meta_prefix</em></h2>
-<div class="cell" data-execution_count="26">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1">pd.json_normalize(</span>
-<span id="cb33-2">    json_list, </span>
-<span id="cb33-3">    record_path<span class="op" style="color: #5E5E5E;
+<section id="missing-meta-keys-dont-panic" class="level2">
+<h2 class="anchored" data-anchor-id="missing-meta-keys-dont-panic">7. Missing meta keys? Don’t panic</h2>
+<p>What if <code>city</code> forgot to hire a physio? (It happens.)<br>
+Without <code>errors='ignore'</code>, pandas throws a <code>KeyError</code>.</p>
+<div id="29de068a" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">json_list <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb8-2">    {</span>
+<span id="cb8-3">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arsenal"</span>,</span>
+<span id="cb8-4">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"staff"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"physio"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xxxx"</span>}},</span>
+<span id="cb8-5">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"players"</span>: [{<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Viv"</span>}],</span>
+<span id="cb8-6">    },</span>
+<span id="cb8-7">    {</span>
+<span id="cb8-8">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"city"</span>,</span>
+<span id="cb8-9">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"staff"</span>: {}},</span>
+<span id="cb8-10">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"players"</span>: [{<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Steph"</span>}],</span>
+<span id="cb8-11">    },  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># no physio!</span></span>
+<span id="cb8-12">]</span>
+<span id="cb8-13"></span>
+<span id="cb8-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This will error out (uncomment to see the KeyError):</span></span>
+<span id="cb8-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># pd.json_normalize(json_list, record_path=['players'], meta=[['info', 'staff', 'physio']])</span></span>
+<span id="cb8-16"></span>
+<span id="cb8-17"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Safer: ignore absent keys</span></span>
+<span id="cb8-18">pd.json_normalize(</span>
+<span id="cb8-19">    json_list,</span>
+<span id="cb8-20">    record_path<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'players'</span>], </span>
-<span id="cb33-4">    meta<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"players"</span>],</span>
+<span id="cb8-21">    meta<span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+font-style: inherit;">=</span>[[<span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'team'</span>, <span class="st" style="color: #20794D;
+font-style: inherit;">"info"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'colour'</span>, [<span class="st" style="color: #20794D;
+font-style: inherit;">"staff"</span>, <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'info'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'staff'</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'physio'</span>]],</span>
-<span id="cb33-5">    meta_prefix<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"physio"</span>]],</span>
+<span id="cb8-22">    errors<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">'meta-'</span>,</span>
-<span id="cb33-6">    record_prefix<span class="op" style="color: #5E5E5E;
+font-style: inherit;">"ignore"</span>,  <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'player-'</span>,</span>
-<span id="cb33-7">    sep<span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">'-&gt;'</span></span>
-<span id="cb33-8">)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
+font-style: inherit;"># "Missing? Just put NaN and carry on."</span></span>
+<span id="cb8-23">)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -10672,55 +9566,20 @@ font-style: inherit;">'-&gt;'</span></span>
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">player-name</th>
-<th data-quarto-table-cell-role="th">player-sex</th>
-<th data-quarto-table-cell-role="th">player-stats-&gt;goals</th>
-<th data-quarto-table-cell-role="th">player-stats-&gt;assists</th>
-<th data-quarto-table-cell-role="th">meta-team</th>
-<th data-quarto-table-cell-role="th">meta-colour</th>
-<th data-quarto-table-cell-role="th">meta-info-&gt;staff-&gt;physio</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">info.staff.physio</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
 <td>Viv</td>
-<td>F</td>
-<td>101.0</td>
-<td>40.0</td>
-<td>arsenal</td>
-<td>red-white</td>
 <td>xxxx</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>Beth</td>
-<td>F</td>
-<td>60.0</td>
-<td>25.0</td>
-<td>arsenal</td>
-<td>red-white</td>
-<td>xxxx</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
 <td>Steph</td>
-<td>F</td>
 <td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>aaaa</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Lucy</td>
-<td>F</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>city</td>
-<td>blue</td>
-<td>aaaa</td>
 </tr>
 </tbody>
 </table>
@@ -10729,17 +9588,147 @@ font-style: inherit;">'-&gt;'</span></span>
 </div>
 </div>
 </section>
-<section id="working-with-a-local-file" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-a-local-file">Working with a local file</h2>
-<p>In most scenarios, we won’t be making new JSON object ourselves instead use JSON formatted files. We make use python’s <code>json</code> module and read the file, then use pandas’ <code>json_normalize</code> to flatten it into a dataframe.</p>
-<div class="cell" data-execution_count="27">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><span class="im" style="color: #00769E;
+<section id="styling-the-output-separators-prefixes" class="level2">
+<h2 class="anchored" data-anchor-id="styling-the-output-separators-prefixes">8. Styling the output: separators &amp; prefixes</h2>
+<p>Dot‑separated column names (<code>info.staff.physio</code>) can be a pain in pandas later.<br>
+Swap the dot, and add some leading labels.</p>
+<div id="1a824726" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">json_list <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">import</span> json</span>
-<span id="cb34-2"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">=</span> [</span>
+<span id="cb9-2">    {</span>
+<span id="cb9-3">        <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;"># load data using Python JSON module</span></span>
-<span id="cb34-3"><span class="cf" style="color: #003B4F;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arsenal"</span>,</span>
+<span id="cb9-4">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"staff"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"physio"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"xxxx"</span>}},</span>
+<span id="cb9-5">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"players"</span>: [{<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Viv"</span>}],</span>
+<span id="cb9-6">    },</span>
+<span id="cb9-7">    {</span>
+<span id="cb9-8">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"team"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"city"</span>,</span>
+<span id="cb9-9">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"info"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"staff"</span>: {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"physio"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"aaa"</span>}},</span>
+<span id="cb9-10">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"players"</span>: [{<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Steph"</span>}],</span>
+<span id="cb9-11">    },</span>
+<span id="cb9-12">]</span>
+<span id="cb9-13">pd.json_normalize(</span>
+<span id="cb9-14">    json_list,</span>
+<span id="cb9-15">    record_path<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"players"</span>],</span>
+<span id="cb9-16">    meta<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"team"</span>, [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"info"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"staff"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"physio"</span>]],</span>
+<span id="cb9-17">    sep<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"_"</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># goodbye dots, hello underscores</span></span>
+<span id="cb9-18">    record_prefix<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pl_"</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># every record column starts with pl_</span></span>
+<span id="cb9-19">    meta_prefix<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"meta_"</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># every meta column starts with meta_</span></span>
+<span id="cb9-20">)</span>
+<span id="cb9-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Now we get: pl_name, pl_stats.goals, meta_team, meta_info_staff_physio, etc.</span></span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">pl_name</th>
+<th data-quarto-table-cell-role="th">meta_team</th>
+<th data-quarto-table-cell-role="th">meta_info_staff_physio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Viv</td>
+<td>arsenal</td>
+<td>xxxx</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Steph</td>
+<td>city</td>
+<td>aaa</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Pro tip</strong>: <code>sep</code> changes the inner connector, while <code>record_prefix</code>/<code>meta_prefix</code> are global labels for the two column families.</p>
+</blockquote>
+</section>
+<section id="real-data-files-urls" class="level2">
+<h2 class="anchored" data-anchor-id="real-data-files-urls">9. Real data: files &amp; URLs</h2>
+<div id="3feef897" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># From a local file (like the movies.json you keep in the same folder)</span></span>
+<span id="cb10-2"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">with</span> <span class="bu" style="color: null;
@@ -10749,278 +9738,27 @@ background-color: null;
 font-style: inherit;">'movies.json'</span>) <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> f:</span>
-<span id="cb34-4">    data <span class="op" style="color: #5E5E5E;
+<span id="cb10-3">    data <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> json.load(f)</span>
-<span id="cb34-5">    </span>
-<span id="cb34-6"><span class="co" style="color: #5E5E5E;
+<span id="cb10-4">pd.json_normalize(data)</span>
+<span id="cb10-5"></span>
+<span id="cb10-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># Normalizing data</span></span>
-<span id="cb34-7">pd.json_normalize(data)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">Title</th>
-<th data-quarto-table-cell-role="th">US Gross</th>
-<th data-quarto-table-cell-role="th">Worldwide Gross</th>
-<th data-quarto-table-cell-role="th">US DVD Sales</th>
-<th data-quarto-table-cell-role="th">Production Budget</th>
-<th data-quarto-table-cell-role="th">Release Date</th>
-<th data-quarto-table-cell-role="th">MPAA Rating</th>
-<th data-quarto-table-cell-role="th">Running Time min</th>
-<th data-quarto-table-cell-role="th">Distributor</th>
-<th data-quarto-table-cell-role="th">Source</th>
-<th data-quarto-table-cell-role="th">Major Genre</th>
-<th data-quarto-table-cell-role="th">Creative Type</th>
-<th data-quarto-table-cell-role="th">Director</th>
-<th data-quarto-table-cell-role="th">Rotten Tomatoes Rating</th>
-<th data-quarto-table-cell-role="th">IMDB Rating</th>
-<th data-quarto-table-cell-role="th">IMDB Votes</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>The Land Girls</td>
-<td>146083</td>
-<td>146083</td>
-<td>NaN</td>
-<td>8000000</td>
-<td>Jun 12 1998</td>
-<td>R</td>
-<td>NaN</td>
-<td>Gramercy</td>
-<td>None</td>
-<td>None</td>
-<td>None</td>
-<td>None</td>
-<td>NaN</td>
-<td>6.1</td>
-<td>1071.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>First Love, Last Rites</td>
-<td>10876</td>
-<td>10876</td>
-<td>NaN</td>
-<td>300000</td>
-<td>Aug 07 1998</td>
-<td>R</td>
-<td>NaN</td>
-<td>Strand</td>
-<td>None</td>
-<td>Drama</td>
-<td>None</td>
-<td>None</td>
-<td>NaN</td>
-<td>6.9</td>
-<td>207.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>I Married a Strange Person</td>
-<td>203134</td>
-<td>203134</td>
-<td>NaN</td>
-<td>250000</td>
-<td>Aug 28 1998</td>
-<td>None</td>
-<td>NaN</td>
-<td>Lionsgate</td>
-<td>None</td>
-<td>Comedy</td>
-<td>None</td>
-<td>None</td>
-<td>NaN</td>
-<td>6.8</td>
-<td>865.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Four Rooms</td>
-<td>4301000</td>
-<td>4301000</td>
-<td>NaN</td>
-<td>4000000</td>
-<td>Dec 25 1995</td>
-<td>R</td>
-<td>NaN</td>
-<td>Miramax</td>
-<td>Original Screenplay</td>
-<td>Comedy</td>
-<td>Contemporary Fiction</td>
-<td>Robert Rodriguez</td>
-<td>14.0</td>
-<td>6.4</td>
-<td>34328.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>The Four Seasons</td>
-<td>42488161</td>
-<td>42488161</td>
-<td>NaN</td>
-<td>6500000</td>
-<td>May 22 1981</td>
-<td>None</td>
-<td>NaN</td>
-<td>Universal</td>
-<td>Original Screenplay</td>
-<td>Comedy</td>
-<td>Contemporary Fiction</td>
-<td>Alan Alda</td>
-<td>71.0</td>
-<td>7.0</td>
-<td>1814.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">...</th>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">63</th>
-<td>Big Things</td>
-<td>0</td>
-<td>0</td>
-<td>NaN</td>
-<td>50000</td>
-<td>Dec 31 2009</td>
-<td>None</td>
-<td>NaN</td>
-<td>None</td>
-<td>None</td>
-<td>None</td>
-<td>None</td>
-<td>None</td>
-<td>NaN</td>
-<td>NaN</td>
-<td>NaN</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">64</th>
-<td>Bogus</td>
-<td>4357406</td>
-<td>4357406</td>
-<td>NaN</td>
-<td>32000000</td>
-<td>Sep 06 1996</td>
-<td>PG</td>
-<td>NaN</td>
-<td>Warner Bros.</td>
-<td>Original Screenplay</td>
-<td>Comedy</td>
-<td>Fantasy</td>
-<td>Norman Jewison</td>
-<td>40.0</td>
-<td>4.8</td>
-<td>2742.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">65</th>
-<td>Beverly Hills Cop</td>
-<td>234760478</td>
-<td>316300000</td>
-<td>NaN</td>
-<td>15000000</td>
-<td>Dec 05 1984</td>
-<td>None</td>
-<td>NaN</td>
-<td>Paramount Pictures</td>
-<td>Original Screenplay</td>
-<td>Action</td>
-<td>Contemporary Fiction</td>
-<td>Martin Brest</td>
-<td>83.0</td>
-<td>7.3</td>
-<td>45065.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">66</th>
-<td>Beverly Hills Cop II</td>
-<td>153665036</td>
-<td>276665036</td>
-<td>NaN</td>
-<td>20000000</td>
-<td>May 20 1987</td>
-<td>R</td>
-<td>NaN</td>
-<td>Paramount Pictures</td>
-<td>Original Screenplay</td>
-<td>Action</td>
-<td>Contemporary Fiction</td>
-<td>Tony Scott</td>
-<td>46.0</td>
-<td>6.1</td>
-<td>29712.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">67</th>
-<td>Beverly Hills Cop III</td>
-<td>42586861</td>
-<td>119180938</td>
-<td>NaN</td>
-<td>50000000</td>
-<td>May 25 1994</td>
-<td>R</td>
-<td>NaN</td>
-<td>Paramount Pictures</td>
-<td>Original Screenplay</td>
-<td>Action</td>
-<td>Contemporary Fiction</td>
-<td>John Landis</td>
-<td>10.0</td>
-<td>5.0</td>
-<td>21199.0</td>
-</tr>
-</tbody>
-</table>
-
-<p>68 rows × 16 columns</p>
-</div>
-</div>
-</div>
-</section>
-<section id="working-with-url" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-url">Working with URL</h2>
-<p>Reading a JSON file from an url needs an extra module in <code>requests</code> as any data from the Internet carries overheads that are necessary for efficient exchange of information(REST API). So, in order to read the file contents, we call upon <em>requests’</em> <code>text</code> attribute which fetches the contents of the file.</p>
-<p>Here, we use <code>json.loads</code> and not <code>json.load</code> as <code>loads</code> function expects contents(string) rather than a file pointer. If looked closely into the <code>json</code> module, the <code>load</code> calls <code>loads</code> using <code>read()</code> on the file.</p>
-<div class="cell" data-execution_count="28">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><span class="im" style="color: #00769E;
+font-style: inherit;"># From the wild web</span></span>
+<span id="cb10-7"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> requests</span>
-<span id="cb35-2"></span>
-<span id="cb35-3">URL <span class="op" style="color: #5E5E5E;
+<span id="cb10-8">URL <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'https://vega.github.io/vega-datasets/data/cars.json'</span></span>
-<span id="cb35-4"></span>
-<span id="cb35-5">data <span class="op" style="color: #5E5E5E;
+<span id="cb10-9">data <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> json.loads(requests.get(URL).text)</span>
-<span id="cb35-6">pd.json_normalize(data)</span></code></pre></div></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<span id="cb10-10">pd.json_normalize(data)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -11179,22 +9917,66 @@ font-style: inherit;">=</span> json.loads(requests.get(URL).text)</span>
 </div>
 </div>
 </div>
+<p>No surprises – the same flattening magic.</p>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>We saw the use of <code>json_normalize</code> function in pandas library. It helps take a JSON data, flatten it, and make it as a dataframe for easier analysis.</p>
+<section id="quick-refresher-cheat-sheet" class="level2">
+<h2 class="anchored" data-anchor-id="quick-refresher-cheat-sheet">Quick Refresher Cheat Sheet</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 60%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>I want to…</th>
+<th>I type…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Flatten a simple dict</td>
+<td><code>pd.json_normalize(dict)</code></td>
+</tr>
+<tr class="even">
+<td>Flatten a list of dicts</td>
+<td><code>pd.json_normalize(list)</code></td>
+</tr>
+<tr class="odd">
+<td>Stop after one level of nesting</td>
+<td><code>pd.json_normalize(data, max_level=1)</code></td>
+</tr>
+<tr class="even">
+<td>Extract a list inside a key</td>
+<td><code>pd.json_normalize(data, record_path=['key'])</code></td>
+</tr>
+<tr class="odd">
+<td>Keep parent info alongside</td>
+<td><code>meta=['key1', ['key2', 'key3']]</code></td>
+</tr>
+<tr class="even">
+<td>Survive missing meta keys</td>
+<td><code>errors='ignore'</code></td>
+</tr>
+<tr class="odd">
+<td>Use underscores instead of dots</td>
+<td><code>sep='_'</code></td>
+</tr>
+<tr class="even">
+<td>Label record columns differently</td>
+<td><code>record_prefix='r_'</code></td>
+</tr>
+<tr class="odd">
+<td>Label meta columns differently</td>
+<td><code>meta_prefix='m_'</code></td>
+</tr>
+</tbody>
+</table>
+<p>That’s it. Now go flatten some JSON and make your future self proud.</p>
 
 
 </section>
 
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>B. Chen, https://towardsdatascience.com/all-pandas-json-normalize-you-should-know-for-flattening-json-13eae1dfb7dd↩︎</p></li>
-<li id="fn2"><p>Pandas documentation, https://pandas.pydata.org/pandas-docs/version/1.2.0/reference/api/pandas.json_normalize.html↩︎</p></li>
-</ol>
-</section></div> ]]></description>
+ ]]></description>
   <category>pandas</category>
   <category>json</category>
   <category>jupyter</category>

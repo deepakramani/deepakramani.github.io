@@ -237,7 +237,8 @@ cookieconsent.run({
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
-  <li><a href="#create-a-session-and-client" id="toc-create-a-session-and-client" class="nav-link active" data-scroll-target="#create-a-session-and-client">Create a session and client</a></li>
+  <li><a href="#start-minio-docker-instance" id="toc-start-minio-docker-instance" class="nav-link active" data-scroll-target="#start-minio-docker-instance">Start MinIO docker instance</a></li>
+  <li><a href="#create-a-session-and-client" id="toc-create-a-session-and-client" class="nav-link" data-scroll-target="#create-a-session-and-client">Create a session and client</a></li>
   <li><a href="#check-if-bucket-exists-in-s3" id="toc-check-if-bucket-exists-in-s3" class="nav-link" data-scroll-target="#check-if-bucket-exists-in-s3">Check if bucket exists in S3</a></li>
   <li><a href="#create-a-bucket-in-s3" id="toc-create-a-bucket-in-s3" class="nav-link" data-scroll-target="#create-a-bucket-in-s3">Create a bucket in S3</a></li>
   <li><a href="#bucket-versioning" id="toc-bucket-versioning" class="nav-link" data-scroll-target="#bucket-versioning">Bucket Versioning</a></li>
@@ -263,18 +264,30 @@ cookieconsent.run({
 
 
 <p><strong>Boto3</strong> is an AWS python SDK that allows access to AWS services like EC2 and S3. It provides a python object-oriented API and as well as low-level access to AWS services</p>
+<p><strong>Note:</strong> This post uses minIO to simulate S3 locally so you don’t incur AWS costs. If you’re using real AWS, remove the <code>endpoint_url</code> parameter and ensure your credentials are configured.</p>
+<section id="start-minio-docker-instance" class="level2">
+<h2 class="anchored" data-anchor-id="start-minio-docker-instance">Start MinIO docker instance</h2>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>Terminal</strong></pre>
+<pre><strong>Run docker instance</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install boto3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-filename="Run docker instance"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="at">--rm</span> <span class="at">-p</span> 9000:9000 <span class="at">-p</span> 9001:9001 <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-e</span> MINIO_ROOT_USER=minioadmin <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-e</span> MINIO_ROOT_PASSWORD=minioadmin <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  minio/minio server /data <span class="at">--console-address</span> <span class="st">":9001"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3, botocore</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> glob.glob(<span class="st">'data/*'</span>) <span class="co">#to upload multiple files</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Install boto3 library</strong></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-filename="Install boto3 library"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install boto3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="26b1df33" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3, botocore</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>files <span class="op">=</span> glob.glob(<span class="st">"data/*"</span>)  <span class="co"># to upload multiple files</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="1">
 <pre><code>['data/Player Data.xlsx',
  'data/30-days-create-folds.ipynb',
@@ -282,67 +295,82 @@ cookieconsent.run({
  'data/star_pattern_turtlesim.png']</code></pre>
 </div>
 </div>
+</section>
 <section id="create-a-session-and-client" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-session-and-client">Create a session and client</h2>
 <p>Boto3’s region defaults to N-Virginia. To create buckets in another region, region name has to be explicitly mentioned using session object.</p>
-<div class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> boto3.Session(region_name<span class="op">=</span><span class="st">'us-east-2'</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>s3client <span class="op">=</span> session.client(<span class="st">'s3'</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>s3resource <span class="op">=</span> boto3.resource(<span class="st">'s3'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="52ddf776" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>session <span class="op">=</span> boto3.Session(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    region_name<span class="op">=</span><span class="st">"us-east-2"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    aws_access_key_id<span class="op">=</span><span class="st">"minioadmin"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    aws_secret_access_key<span class="op">=</span><span class="st">"minioadmin"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>s3client <span class="op">=</span> session.client(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    endpoint_url<span class="op">=</span><span class="st">"http://localhost:9000"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    config<span class="op">=</span>boto3.session.Config(signature_version<span class="op">=</span><span class="st">"s3v4"</span>),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>s3resource <span class="op">=</span> session.resource(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"s3"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    endpoint_url<span class="op">=</span><span class="st">"http://localhost:9000"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    config<span class="op">=</span>boto3.session.Config(signature_version<span class="op">=</span><span class="st">"s3v4"</span>),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>S3 buckets have to follow bucket naming <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html">rules</a>.</p>
-<div class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bucket_names <span class="op">=</span> [<span class="st">'my-s3bucket1-usohio-region'</span>, <span class="st">'my-s3bucket2-usohio-region'</span>]</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>s3location <span class="op">=</span> {<span class="st">'LocationConstraint'</span>: <span class="st">'us-east-2'</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="00e6f6cb" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>bucket_names <span class="op">=</span> [<span class="st">'my-s3bucket1-usohio-region'</span>, <span class="st">'my-s3bucket2-usohio-region'</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>s3location <span class="op">=</span> {<span class="st">'LocationConstraint'</span>: <span class="st">'us-east-2'</span>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="check-if-bucket-exists-in-s3" class="level2">
 <h2 class="anchored" data-anchor-id="check-if-bucket-exists-in-s3">Check if bucket exists in S3</h2>
 <p>Checking for something before creation is one of the important tasks to avoid unnecessary errors. Here we check if the buckets already exists.</p>
-<div class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_bucket(bucket):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Checks if a bucket is present in S3</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">    bucket: takes bucket name</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        s3client.head_bucket(Bucket<span class="op">=</span>bucket)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Bucket exists'</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> botocore.exceptions.ClientError <span class="im">as</span> e:</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If a client error is thrown, then check that it was a 404 error.</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If it was a 404 error, then the bucket does not exist.</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        error_code <span class="op">=</span> <span class="bu">int</span>(e.response[<span class="st">'Error'</span>][<span class="st">'Code'</span>])</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> error_code <span class="op">==</span> <span class="dv">403</span>:</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Private Bucket. Forbidden Access!"</span>)</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> error_code <span class="op">==</span> <span class="dv">404</span>:</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Bucket Does Not Exist!"</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ec617792" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_bucket(bucket):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Checks if a bucket is present in S3</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">    args:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    bucket: takes bucket name</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        s3client.head_bucket(Bucket<span class="op">=</span>bucket)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Bucket exists'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> botocore.exceptions.ClientError <span class="im">as</span> e:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If a client error is thrown, then check that it was a 404 error.</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If it was a 404 error, then the bucket does not exist.</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        error_code <span class="op">=</span> <span class="bu">int</span>(e.response[<span class="st">'Error'</span>][<span class="st">'Code'</span>])</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> error_code <span class="op">==</span> <span class="dv">403</span>:</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Private Bucket. Forbidden Access!"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> error_code <span class="op">==</span> <span class="dv">404</span>:</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">"Bucket Does Not Exist!"</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> bucket_names: </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(check_bucket(bucket))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="ff0e4039" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> bucket_names: </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(check_bucket(bucket))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket exists
-True
-Bucket exists
-True</code></pre>
+<pre><code>Bucket Does Not Exist!
+False
+Bucket Does Not Exist!
+False</code></pre>
 </div>
 </div>
 </section>
 <section id="create-a-bucket-in-s3" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-bucket-in-s3">Create a bucket in S3</h2>
 <p>If the buckets don’t exist, we create them. We need to supply bucket name, a dictionary specifying in which region the bucket has to be created.</p>
-<div class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names: </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span>(check_bucket(bucket_name)):</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Creating a bucket..'</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        s3client.create_bucket(Bucket <span class="op">=</span> bucket_name, CreateBucketConfiguration<span class="op">=</span>s3location)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="db084c6f" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> (check_bucket(bucket_name)):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Creating a bucket.."</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        s3client.create_bucket(Bucket<span class="op">=</span>bucket_name, CreateBucketConfiguration<span class="op">=</span>s3location)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket exists
-Bucket exists</code></pre>
+<pre><code>Bucket Does Not Exist!
+Creating a bucket..
+Bucket Does Not Exist!
+Creating a bucket..</code></pre>
 </div>
 </div>
 </section>
@@ -350,45 +378,49 @@ Bucket exists</code></pre>
 <h2 class="anchored" data-anchor-id="bucket-versioning">Bucket Versioning</h2>
 <p>Bucket versioning initial state is not set by default. The response from when not initialised doesn’t carry status information rather status dict is absent. Status expects two return states: <strong>enabled</strong>, <strong>suspended</strong>. On first creation, the status is in disabled, an unknown state.</p>
 <p>So in order to make it appear in the REST response, bucket must be enabled by calling the <code>BucketVersioning()</code> boto3 resource function. If we then check the status, it will be present in the REST response.</p>
-<div class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_buckets_versioning_client(bucketname):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Checks if bucket versioning is enabled/suspended or initialised</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">    bucketname: bucket name to check versioning</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns: response status - enabled or suspended</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> s3client.get_bucket_versioning(Bucket <span class="op">=</span> bucketname)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'Status'</span> <span class="kw">in</span> response <span class="kw">and</span> (response[<span class="st">'Status'</span>] <span class="op">==</span> <span class="st">'Enabled'</span> <span class="kw">or</span> response[<span class="st">'Status'</span>] <span class="op">==</span> <span class="st">'Suspended'</span>):</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Bucket </span><span class="sc">{</span>bucketname<span class="sc">}</span><span class="ss"> status: </span><span class="sc">{</span>response[<span class="st">"Status"</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> response[<span class="st">'Status'</span>]</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Bucket versioning not initialised for bucket: </span><span class="sc">{</span>bucketname<span class="sc">}</span><span class="ss">. Enabling...'</span>)</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucketname).enable()</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        enable_response <span class="op">=</span> s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucket_name).status</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> enable_response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8412a0cd" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_buckets_versioning_client(bucketname):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Checks if bucket versioning is enabled/suspended or initialised</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">    bucketname: bucket name to check versioning</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns: response status - enabled or suspended</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> s3client.get_bucket_versioning(Bucket<span class="op">=</span>bucketname)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">"Status"</span> <span class="kw">in</span> response <span class="kw">and</span> (</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        response[<span class="st">"Status"</span>] <span class="op">==</span> <span class="st">"Enabled"</span> <span class="kw">or</span> response[<span class="st">"Status"</span>] <span class="op">==</span> <span class="st">"Suspended"</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Bucket </span><span class="sc">{</span>bucketname<span class="sc">}</span><span class="ss"> status: </span><span class="sc">{</span>response[<span class="st">'Status'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> response[<span class="st">"Status"</span>]</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"Bucket versioning not initialised for bucket: </span><span class="sc">{</span>bucketname<span class="sc">}</span><span class="ss">. Enabling..."</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucketname).enable()</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        enable_response <span class="op">=</span> s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucketname).status</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> enable_response</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names: </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c60e8fcf" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names: </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bucket my-s3bucket1-usohio-region status: Enabled
+<pre><code>Bucket versioning not initialised for bucket: my-s3bucket1-usohio-region. Enabling...
 Versioning status: Enabled
-Bucket my-s3bucket2-usohio-region status: Enabled
+Bucket versioning not initialised for bucket: my-s3bucket2-usohio-region. Enabling...
 Versioning status: Enabled</code></pre>
 </div>
 </div>
 </section>
 <section id="to-suspend-bucket-versioning" class="level2">
 <h2 class="anchored" data-anchor-id="to-suspend-bucket-versioning">To suspend bucket versioning</h2>
-<div class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names:</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> version_status <span class="op">==</span> <span class="st">'Enabled'</span>:</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Disabling again..'</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucket_name).suspend()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0146d307" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> version_status <span class="op">==</span> <span class="st">'Enabled'</span>:</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Disabling again..'</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucket_name).suspend()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bucket my-s3bucket1-usohio-region status: Enabled
 Versioning status: Enabled
@@ -401,13 +433,13 @@ Disabling again..</code></pre>
 </section>
 <section id="to-enable-bucket-versioning" class="level2">
 <h2 class="anchored" data-anchor-id="to-enable-bucket-versioning">To enable bucket versioning</h2>
-<div class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names:</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> version_status <span class="op">==</span> <span class="st">'Suspended'</span>:</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Enabling again..'</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucket_name).enable()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c559c18b" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket_name <span class="kw">in</span> bucket_names:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    version_status <span class="op">=</span> get_buckets_versioning_client(bucket_name)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Versioning status: </span><span class="sc">{</span>version_status<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> version_status <span class="op">==</span> <span class="st">'Suspended'</span>:</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'Enabling again..'</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        s3resource.BucketVersioning(bucket_name<span class="op">=</span>bucket_name).enable()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bucket my-s3bucket1-usohio-region status: Suspended
 Versioning status: Suspended
@@ -421,16 +453,13 @@ Enabling again..</code></pre>
 <section id="get-bucket-list-from-s3" class="level2">
 <h2 class="anchored" data-anchor-id="get-bucket-list-from-s3">Get bucket list from S3</h2>
 <p>We can list the buckets in S3 using <code>list_buckets()</code> client function. It return a dict. We can iterate through <code>Buckets</code> key to find the names of the buckets.</p>
-<div class="cell" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>buckets_list <span class="op">=</span> s3client.list_buckets()</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> buckets_list[<span class="st">'Buckets'</span>]:</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(bucket[<span class="st">'Name'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="e17315c4" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>buckets_list <span class="op">=</span> s3client.list_buckets()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> buckets_list[<span class="st">'Buckets'</span>]:</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(bucket[<span class="st">'Name'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>mlops-project-sales-forecast-bucket
-mlops-project-sales-forecast-bucket-dr563105-mlops-project
-my-s3bucket1-usohio-region
-my-s3bucket2-usohio-region
-s3-for-terraform-state</code></pre>
+<pre><code>my-s3bucket1-usohio-region
+my-s3bucket2-usohio-region</code></pre>
 </div>
 </div>
 </section>
@@ -440,47 +469,47 @@ s3-for-terraform-state</code></pre>
 <pre><code>1. filename of the file to be uploaded
 2. bucket_name, Into which bucket the file would be uploaded
 3. key, name of the file in S3</code></pre>
-<div class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> upload_files_to_s3(filename, bucket_name, key<span class="op">=</span><span class="va">None</span>, ExtraArgs<span class="op">=</span><span class="va">None</span>):</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Uploads file to S3 bucket</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">    filename: takes local filename to be uploaded</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">    bucker_name: name of the bucket into which the file is uploaded</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">    key: name of the file in the bucket. Default:None</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ExtraArgs: other arguments. Default:None</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> key <span class="kw">is</span> <span class="va">None</span>:</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        key <span class="op">=</span> filename</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        s3client.upload_file(filename,bucket_name,key)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'uploaded file:</span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> botocore.exceptions.ClientError <span class="im">as</span> e:</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6047fb87" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> upload_files_to_s3(filename, bucket_name, key<span class="op">=</span><span class="va">None</span>, ExtraArgs<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Uploads file to S3 bucket</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">    filename: takes local filename to be uploaded</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">    bucker_name: name of the bucket into which the file is uploaded</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">    key: name of the file in the bucket. Default:None</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">    ExtraArgs: other arguments. Default:None</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> key <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        key <span class="op">=</span> filename</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        s3client.upload_file(filename,bucket_name,key)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'uploaded file:</span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> botocore.exceptions.ClientError <span class="im">as</span> e:</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(e)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We can make use of <code>glob</code> module to upload multiple files in a folder</p>
-<div class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>bucket1_files <span class="op">=</span> [files[<span class="dv">1</span>],files[<span class="dv">2</span>]]</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>bucket2_files <span class="op">=</span> [files[<span class="dv">0</span>],files[<span class="dv">3</span>]]</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>bucket1_files, bucket2_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d1ae177c" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>bucket1_files <span class="op">=</span> [files[<span class="dv">1</span>],files[<span class="dv">2</span>]]</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>bucket2_files <span class="op">=</span> [files[<span class="dv">0</span>],files[<span class="dv">3</span>]]</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>bucket1_files, bucket2_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>(['data/30-days-create-folds.ipynb',
   'data/ARK_GENOMIC_REVOLUTION_ETF_ARKG_HOLDINGS.csv'],
  ['data/Player Data.xlsx', 'data/star_pattern_turtlesim.png'])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> bucket1_files:</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    upload_files_to_s3(<span class="bu">file</span>,bucket_name<span class="op">=</span>bucket_names[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="f7fa6f5e" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> bucket1_files:</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    upload_files_to_s3(<span class="bu">file</span>,bucket_name<span class="op">=</span>bucket_names[<span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>uploaded file:data/30-days-create-folds.ipynb
 uploaded file:data/ARK_GENOMIC_REVOLUTION_ETF_ARKG_HOLDINGS.csv</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> bucket2_files:</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    upload_files_to_s3(<span class="bu">file</span>,bucket_name<span class="op">=</span>bucket_names[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="eeff54cc" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> bucket2_files:</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    upload_files_to_s3(<span class="bu">file</span>,bucket_name<span class="op">=</span>bucket_names[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>uploaded file:data/Player Data.xlsx
 uploaded file:data/star_pattern_turtlesim.png</code></pre>
@@ -490,13 +519,13 @@ uploaded file:data/star_pattern_turtlesim.png</code></pre>
 <section id="get-files-list" class="level2">
 <h2 class="anchored" data-anchor-id="get-files-list">Get files list</h2>
 <p>Getting the files list from each bucket done using <code>list_objects</code> client function. It returns dict and we can iterate through <code>Contents</code> key to retrieve the filenames.</p>
-<div class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> bucket_names:</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Listing object inside bucket:</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    list_obj_response <span class="op">=</span> s3client.list_objects(Bucket<span class="op">=</span>bucket)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> obj <span class="kw">in</span> list_obj_response[<span class="st">'Contents'</span>]:</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(obj[<span class="st">'Key'</span>])</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="1e7a5e6e" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bucket <span class="kw">in</span> bucket_names:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Listing object inside bucket:</span><span class="sc">{</span>bucket<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    list_obj_response <span class="op">=</span> s3client.list_objects(Bucket<span class="op">=</span>bucket)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> obj <span class="kw">in</span> list_obj_response[<span class="st">'Contents'</span>]:</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(obj[<span class="st">'Key'</span>])</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Listing object inside bucket:my-s3bucket1-usohio-region
 data/30-days-create-folds.ipynb
@@ -512,9 +541,13 @@ data/star_pattern_turtlesim.png
 <section id="download-files" class="level2">
 <h2 class="anchored" data-anchor-id="download-files">Download files</h2>
 <p>Downloading a file is very similar to uploading one. We need specify bucket name, name of the file to be downloaded, and the destination filename.</p>
-<div class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Downloading files from bucket:</span><span class="sc">{</span>bucket_names[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>s3client.download_file(Bucket<span class="op">=</span>bucket_names[<span class="dv">1</span>],Key<span class="op">=</span><span class="st">'data/star_pattern_turtlesim.png'</span>,Filename<span class="op">=</span><span class="st">'downloaded_turtlesim.jpg'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6cc7d779" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Downloading files from bucket:</span><span class="sc">{</span>bucket_names[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>s3client.download_file(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    Bucket<span class="op">=</span>bucket_names[<span class="dv">1</span>],</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    Key<span class="op">=</span><span class="st">"data/star_pattern_turtlesim.png"</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    Filename<span class="op">=</span><span class="st">"downloaded_turtlesim.jpg"</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Downloading files from bucket:my-s3bucket2-usohio-region</code></pre>
 </div>
