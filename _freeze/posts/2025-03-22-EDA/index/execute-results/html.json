@@ -1,0 +1,12 @@
+{
+  "hash": "cf28e09b3ae1d120adb04c7fb5be98b8",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"EDA on ETL project\"\nauthor: \"Deepak Ramani\"\ndate: \"2025-03-22\"\ndate-modified: \"2025-03-23\"\ncategories: [\"EDA\", \"SQL\", \"Analysis\"]\n---\n\n```{.r}\n#| label: write-db\n#| echo: false\n#| eval: false\ncon_gold <- DBI::dbConnect(\n    duckdb::duckdb(), \n    dbdir = \"./quarto.duckdb\", \n    read_only= FALSE)\n\n```\n\n```{sql}\n#| connection: con_gold\n\nfrom gold.dim_products limit 10;\n```\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
