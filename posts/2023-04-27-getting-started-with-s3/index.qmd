@@ -11,6 +11,16 @@ execute:
 
 **Boto3** is an AWS python SDK that allows access to AWS services like EC2 and S3. It provides a python object-oriented API and as well as low-level access to AWS services
 
+**Note:** This post uses minIO to simulate S3 locally so you don't incur AWS costs. If you're using real AWS, remove the `endpoint_url` parameter and ensure your credentials are configured.
+
+## Start MinIO docker instance
+```{.bash filename="Terminal"}
+docker run -d --rm -p 9000:9000 -p 9001:9001 \
+  -e MINIO_ROOT_USER=minioadmin \
+  -e MINIO_ROOT_PASSWORD=minioadmin \
+  minio/minio server /data --console-address ":9001"
+```
+
 ```{.bash filename="Terminal"}
 pip install boto3
 ```
@@ -19,7 +29,7 @@ pip install boto3
 import boto3, botocore
 import glob
 
-files = glob.glob('data/*') #to upload multiple files
+files = glob.glob("data/*")  # to upload multiple files
 files
 ```
 
@@ -28,9 +38,21 @@ files
 Boto3's region defaults to N-Virginia. To create buckets in another region, region name has to be explicitly mentioned using session object.
 
 ```{python}
-session = boto3.Session(region_name='us-east-2')
-s3client = session.client('s3')
-s3resource = boto3.resource('s3')
+session = boto3.Session(
+    region_name="us-east-2",
+    aws_access_key_id="minioadmin",
+    aws_secret_access_key="minioadmin",
+)
+s3client = session.client(
+    "s3",
+    endpoint_url="http://localhost:9000",
+    config=boto3.session.Config(signature_version="s3v4"),
+)
+s3resource = session.resource(
+    "s3",
+    endpoint_url="http://localhost:9000",
+    config=boto3.session.Config(signature_version="s3v4"),
+)
 ```
 
 S3 buckets have to follow bucket naming [rules](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html). 
@@ -79,10 +101,10 @@ If the buckets don't exist, we create them. We need to supply bucket name, a dic
 
 ```{python}
 #| scrolled: true
-for bucket_name in bucket_names: 
-    if not(check_bucket(bucket_name)):
-        print('Creating a bucket..')
-        s3client.create_bucket(Bucket = bucket_name, CreateBucketConfiguration=s3location)
+for bucket_name in bucket_names:
+    if not (check_bucket(bucket_name)):
+        print("Creating a bucket..")
+        s3client.create_bucket(Bucket=bucket_name, CreateBucketConfiguration=s3location)
 ```
 
 ## Bucket Versioning
@@ -99,16 +121,19 @@ def get_buckets_versioning_client(bucketname):
     bucketname: bucket name to check versioning
     Returns: response status - enabled or suspended
     """
-    response = s3client.get_bucket_versioning(Bucket = bucketname)
-    if 'Status' in response and (response['Status'] == 'Enabled' or response['Status'] == 'Suspended'):
-        print(f'Bucket {bucketname} status: {response["Status"]}')
-        return response['Status']
+    response = s3client.get_bucket_versioning(Bucket=bucketname)
+    if "Status" in response and (
+        response["Status"] == "Enabled" or response["Status"] == "Suspended"
+    ):
+        print(f"Bucket {bucketname} status: {response['Status']}")
+        return response["Status"]
     else:
-        print(f'Bucket versioning not initialised for bucket: {bucketname}. Enabling...')
+        print(
+            f"Bucket versioning not initialised for bucket: {bucketname}. Enabling..."
+        )
         s3resource.BucketVersioning(bucket_name=bucketname).enable()
-        enable_response = s3resource.BucketVersioning(bucket_name=bucket_name).status
+        enable_response = s3resource.BucketVersioning(bucket_name=bucketname).status
         return enable_response
-    
 ```
 
 ```{python}
@@ -215,8 +240,12 @@ Downloading a file is very similar to uploading one. We need specify bucket name
 
 ```{python}
 #| scrolled: true
-print(f'Downloading files from bucket:{bucket_names[1]}')
-s3client.download_file(Bucket=bucket_names[1],Key='data/star_pattern_turtlesim.png',Filename='downloaded_turtlesim.jpg')
+print(f"Downloading files from bucket:{bucket_names[1]}")
+s3client.download_file(
+    Bucket=bucket_names[1],
+    Key="data/star_pattern_turtlesim.png",
+    Filename="downloaded_turtlesim.jpg",
+)
 ```
 
 ## Conclusion
