@@ -14,7 +14,7 @@ listing:
     fields: [title, date, description, reading-time]
     feed: true
     # image-align: left
-    page-size: 4
+    page-size: 7
   - id: project-listing
     contents: [ "projects/data/de.yml", "projects/data/mlops.yml" ]
     type: table

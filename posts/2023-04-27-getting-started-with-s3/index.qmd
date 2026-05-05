@@ -3,6 +3,7 @@ title: Getting started with S3 using boto3
 description: "An introduction to S3 with boto3 AWS python SDK"
 jupyter: python3
 date: "2023-04-27"
+date-modified: "2026-05-05"
 image: logo_awss3.png #s3-logo.png
 categories: [boto3, s3, aws]
 execute: 
@@ -14,14 +15,14 @@ execute:
 **Note:** This post uses minIO to simulate S3 locally so you don't incur AWS costs. If you're using real AWS, remove the `endpoint_url` parameter and ensure your credentials are configured.
 
 ## Start MinIO docker instance
-```{.bash filename="Terminal"}
+```{.bash filename="Run docker instance"}
 docker run -d --rm -p 9000:9000 -p 9001:9001 \
   -e MINIO_ROOT_USER=minioadmin \
   -e MINIO_ROOT_PASSWORD=minioadmin \
   minio/minio server /data --console-address ":9001"
 ```
 
-```{.bash filename="Terminal"}
+```{.bash filename="Install boto3 library"}
 pip install boto3
 ```
 

@@ -9,7 +9,7 @@ website:
   favicon: logo.png
   title: "Deepak Ramani blog"
   description: "This is Deepak Ramani personal blog."
-  site-url: "https://deepakramani.github.io/"
+  site-url: "https://deepakramani.github.io"
   repo-url: "https://github.com/deepakramani/dr563105.github.io"
   repo-actions: source
   repo-branch: master
@@ -54,14 +54,14 @@ website:
     tracking-id: "G-V08NSV8XPF"
   cookie-consent:
     type: implied
-    palette: light
+    palette: dark
     prefs-text: " "
   search: 
     location: navbar
     copy-button: true
     keyboard-shortcut: ["/"]
   page-footer:
-    left: Copyright 2025, Deepak Ramani |
+    left: Copyright 2026, Deepak Ramani |
           powered by [Quarto](https://quarto.org)
     right:
       - text: "{{< iconify width='20' height='27' mage archive-drawer >}}"
@@ -73,9 +73,7 @@ website:
         
 format:
   html:
-    theme: 
-      light: [_includes/light-theme.scss]
-      dark: [_includes/dark-theme.scss]
+    theme: [_includes/dark-theme.scss]
     highlight-style: dracula
     # css: _includes/styles.css
     # include-in-header:
@@ -88,4 +86,4 @@ format:
     canonical-url: true
 
 execute: 
-  freeze: auto
+  freeze: false

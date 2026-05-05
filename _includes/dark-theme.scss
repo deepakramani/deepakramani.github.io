@@ -2,88 +2,183 @@
 $teal: #147C91;
 $cream: #e7e3de;
 $cream-darker: #aca08c;
-$dark-sage-green: #44493f;
+$dark-sage-green: #2a2f26;
 $light-sage-green: #D1D9CE;
-$light-gray: #aebfca;
+$light-gray: #c8d4e0;
 $purple: #6253ba;
 $black: #383434;
 $callout-color-important: #eb0a0a;
-
-// use litera as the base
-// $theme: "slate" !default;
+$code-bg-dark: #1e1e1e;
+$code-text-dark: #d4d4d4;
+$text-primary: #e0e0e0;
+$text-secondary: #b0b0b0;
+$link-color-dark: #4fc3f7;
+$link-hover-dark: #81d4fa;
+$title-banner-bg: #1a1f18; // Darker than page background
+$title-banner-text: #f0e6d0; // Light text for title
+$footer-bg-color: #1a1f18; // Darker footer background
+$footer-text-color: #c0b8a0; // Footer text color
+$footer-icon-color: #4fc3f7; // Footer icon color
 
 // import google fonts
 @import 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap';
 @import 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap';
 
-// use Atkinson Hyperlegible font if available
-$font-family-sans-serif:      "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif: "Atkinson Hyperlegible", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
 /*-- Base document colours --*/
-$navbar-bg: $cream-darker; // navbar
-$navbar-fg: $black; // navbar foreground elements
-$body-bg: $dark-sage-green; // page background 
-$body-color: $light-gray; // page text 
-$footer-bg: $cream-darker; // footer 
-$footer-fg: $black;
-$code-color: $cream;
+$navbar-bg: $cream-darker;
+$navbar-fg: $black;
+$body-bg: $dark-sage-green;
+$body-color: $text-primary;
+$footer-bg: $footer-bg-color;
+$footer-fg: $footer-text-color;
+$code-color: $code-text-dark;
+
+/*-- Code block colours --*/
+$code-block-bg: #1a1a1a;
+$code-block-border-color: #333;
 
 /*-- scss:rules --*/
-// litera is serif by default: revert to san-serif
+// Force dark background on all elements
+html,
+body,
+.quarto-content,
+.page-columns,
+.page-layout-article {
+  background-color: $dark-sage-green !important;
+}
+
 p {
   font-family: $font-family-sans-serif;
+  line-height: 1.6;
+  color: $text-primary;
 }
 
-//section number colour
+// Code blocks
+pre code {
+  background-color: $code-bg-dark;
+  color: $code-text-dark;
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+}
+
+div.sourceCode {
+  background-color: $code-block-bg;
+  border: 1px solid $code-block-border-color;
+  border-radius: 6px;
+  padding: 1em;
+}
+
+// Inline code
+code:not(.sourceCode) {
+  background-color: #2a2a2a;
+  color: #f8c555;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #e8dcc8;
+}
+
+// Links
+a {
+  color: $link-color-dark;
+
+  &:hover {
+    color: $link-hover-dark;
+  }
+}
+
+// Table styling
+.table {
+  color: $text-primary;
+  background-color: #353a30;
+
+  th {
+    background-color: #40453a;
+    color: #e0e0e0;
+  }
+
+  td {
+    border-color: #50554a;
+  }
+}
+
+// Blockquotes
+blockquote {
+  border-left: 4px solid $teal;
+  background-color: #353a30;
+  padding: 0.5em 1em;
+  color: $text-primary;
+}
+
+// Callouts
+div.callout {
+  border-radius: 6px;
+}
+
+// Section numbers
 .header-section-number {
-    color: #e08362dd
+  color: #e08362dd;
 }
 
-.title{
-    color: #ab8339;
- }
-
-//toc sidebar link colour when active
-.sidebar nav[role=doc-toc] ul>li>a.active,.sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
-    border-left: 1.5px solid #0d6efd;
-    color: #14a6bd !important
+// Title
+.title {
+  color: #d4a84a;
 }
 
-//callout important header background
-div.callout-important.callout-style-default > .callout-header {
-background-color: #000000;//#c93141;
+// TOC sidebar
+.sidebar nav[role=doc-toc] ul>li>a.active,
+.sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
+  border-left: 1.5px solid #0d6efd;
+  color: #14a6bd !important;
 }
 
-//callout text colour
+// Callout important header
+div.callout-important.callout-style-default>.callout-header {
+  background-color: #000000;
+}
+
+// Callout text
 div.callout.callout-style-default:not(.no-icon) div.callout-title-container {
   color: #fbf9f9;
 }
 
-//callout warning header background
-div.callout-warning.callout-style-default > .callout-header {
-background-color: #0b0a02;
+// Callout warning header
+div.callout-warning.callout-style-default>.callout-header {
+  background-color: #0b0a02;
 }
 
-//code-annotation tippy box(bubble) background
+// Code annotation
 .tippy-box[data-theme~=quarto] {
   background-color: #c9ce2d;
   color: black;
 }
 
-//quarto categories colours
+// Categories
 .quarto-title .quarto-categories .quarto-category {
-    color: #0e143d;
-    font-family: "Fira Code",monospace;
+  color: #0e143d;
+  font-family: "Fira Code", monospace;
 }
 
+// Nav links
 a.nav-link {
-    color: #0d4865;
+  color: #0d4865;
 }
 
-a.nav-link::before{
+a.nav-link::before {
   transition: all 0.5;
 }
-a.nav-link::after{
+
+a.nav-link::after {
   content: '';
   position: absolute;
   width: 100%;
@@ -102,18 +197,114 @@ a.nav-link:hover::after {
   transition: all 0.4s;
 }
 
-.nav-tabs .nav-link.active,.nav-tabs .nav-item.show .nav-link {
-    color: $cream;
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: $cream;
 }
 
-.nav-footer p{
-    font-size: 13px
+// Footer styling
+.nav-footer {
+  background-color: $footer-bg-color !important;
+  color: $footer-text-color !important;
+  border-top: 2px solid $teal !important;
+  padding: 1em 0 !important;
+}
+
+.nav-footer p {
+  font-size: 13px;
+  color: $footer-text-color !important;
+}
+
+.nav-footer a {
+  color: $footer-icon-color !important;
+
+  &:hover {
+    color: $link-hover-dark !important;
+  }
+}
+
+// Footer icons
+.nav-footer .iconify,
+.nav-footer .bi,
+.nav-footer .fa,
+.nav-footer svg {
+  color: $footer-icon-color !important;
+  fill: $footer-icon-color !important;
+}
+
+// Footer RSS icon
+.nav-footer .bi-rss {
+  color: #f26522 !important; // Keep RSS orange for recognition
 }
 
 .page-item.disabled .page-link {
-  color: #150505; /* Change the color to a darker gray or another visible color */
-  background-color: #857a7a; /* Change the background color to a light gray or another contrasting color */
-  border-color: #ccc; /* Add or adjust the border color for better definition */
-  opacity: 1; /* Ensure opacity is set to 1 to make it fully visible */
-  pointer-events: none; /* prevent hover effects and clicks on the disabled item */
+  color: #150505;
+  background-color: #857a7a;
+  border-color: #ccc;
+  opacity: 1;
+  pointer-events: none;
+}
+
+// Title block banner - make it distinguishable from page
+.quarto-title-banner {
+  background-color: $title-banner-bg !important;
+  padding: 2em 0 !important;
+  border-bottom: 3px solid $teal !important;
+}
+
+.quarto-title-banner .title {
+  color: $title-banner-text !important;
+  font-size: 2.5em !important;
+  font-weight: 700 !important;
+}
+
+.quarto-title-banner .description {
+  color: #c0b8a0 !important;
+  font-size: 1.1em !important;
+}
+
+.quarto-title-banner .quarto-categories .quarto-category {
+  color: $teal !important;
+  background-color: rgba(20, 124, 145, 0.15) !important;
+  padding: 0.2em 0.6em !important;
+  border-radius: 4px !important;
+}
+
+// Listing tables
+.listing-table {
+  background-color: #353a30;
+  color: $text-primary;
+}
+
+// Matplotlib plot styling for dark mode
+div.cell-output-display {
+  background-color: transparent !important;
+}
+
+// Style matplotlib figures
+img[src*="plot"],
+img[src*="figure"],
+div.cell-output img,
+div.cell-output-display img {
+  background-color: #1a1a1a !important;
+  border-radius: 6px;
+  padding: 10px;
+  border: 1px solid #333;
+}
+
+// Style matplotlib figure containers
+.figure {
+  background-color: transparent;
+}
+
+.figure-caption {
+  color: $text-secondary;
+}
+
+// Invert matplotlib plot colors for dark background
+div.cell-output-display img,
+div.cell-output img {
+  filter: invert(0.85) hue-rotate(180deg) !important;
+  background-color: transparent !important;
+  border-radius: 6px;
 }
