@@ -1,0 +1,35 @@
+## Zookeeper
+
+Kafka requires Zookeeper(ZK) to handle its configurations. Zookeeper is a meta-data management service tool.
+
+Kafka brokers use ZK to determine which broker is the leader of a given partition and topic and perform leader elections.
+
+ZK stores configurations for topics and permissions.
+
+ZK sends notifications to Kafka in case of changes such as new topic, broker died, broker restarted.
+
+## Kafka Listeners
+
+This note is learnings from [this blog post](https://www.confluent.io/blog/kafka-listeners-explained/) on Kafka listeners.
+
+Kafka listeners are important server properties in Kafka. Both `KAFKA_ADVERTISED_LISTENERS` and `KAFKA_LISTENERS` configure how Kafka brokers interact with each other and with others. Kafka being a distributed system utilises these properties to manage interactions.
+
+On a single machine everything can be `localhost` but in a distributed system it is not often so. Most often Kafka is run in Kubernetes cloud within docker. To interact with individual brokers, we need to address each broker specifically. The blog details configurations clearly. For simpler cases, these are my takeaways:
+
+- A listener is combination of Host/IP, Port and Protocol.
+
+- `KAFKA_ADVERTISED_LISTENERS` and `KAFKA_LISTENERS` have two components – one host/ip to interact internally with themselves(defined by `KAFKA_INTER_BROKER_LISTENER_NAME`) and one to interact with others.
+
+- Internally it is usually docker hostname `kafka` followed by a port number. Example: `kafka:9092`.
+
+- Externally, it is usually `localhost` with a port.
+
+- Debezium which connects to kafka, uses internal listener. `kafka:9092` as bootstrap-server.
+
+## Schema Registry
+
+Schema Registry provides a centralized repository for managing and validating schemas for topic message data, and for serialization and deserialization of the data over the network. Producers and consumers to Kafka topics can use schemas to ensure data consistency and compatibility as schemas evolve.
+
+Schema Registry is a key component for data governance, helping to ensure data quality, adherence to standards, visibility into data lineage, audit capabilities, collaboration across teams, efficient application development protocols, and system performance.
+
+Back to top

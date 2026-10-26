@@ -1,0 +1,287 @@
+**JSON** — the data format that loves to nest things like a Russian doll.\
+Beautiful for APIs, terrible for analysis. Enter `json_normalize`, the flattening hammer.
+
+``` python
+import pandas as pd
+import json
+```
+
+## 1. The simplest case: one lonely dict
+
+``` python
+viv = {
+    "player_id": 15623,
+    "player_name": "Vivianne Miedema",
+    "jersey_number": 11
+}
+pd.json_normalize(viv)
+```
+
+|     | player_id | player_name      | jersey_number |
+|-----|-----------|------------------|---------------|
+| 0   | 15623     | Vivianne Miedema | 11            |
+
+> **Take‑away**: Keys → columns, values → rows. No drama.
+
+## 2. When `null` sneaks in
+
+Python doesn’t know `null` from a hole in the ground. Two quick fixes:
+
+``` python
+# Trick A: Pretend null is None
+null = None
+viv1 = { "player_id": 15623, "player_nickname": null }
+
+# Trick B: Let json.loads handle it
+import json
+viv2 = json.loads('{ "player_id": 15623, "player_nickname": null }')
+```
+
+Both give you a clean dict ready for `json_normalize`.
+
+## 3. A whole list of dicts
+
+``` python
+player_list = [
+    { "player_id": 15623, "player_name": "Vivianne Miedema", "jersey_number": 11 },
+    { "player_id": 10658, "player_name": "Danielle van de Donk" }  # missing jersey
+]
+pd.json_normalize(player_list)
+```
+
+|     | player_id | player_name          | jersey_number |
+|-----|-----------|----------------------|---------------|
+| 0   | 15623     | Vivianne Miedema     | 11.0          |
+| 1   | 10658     | Danielle van de Donk | NaN           |
+
+Missing keys become `NaN`. No whining, just numbers.\
+(The same happens if you used `None` above.)
+
+## 4. Multi‑level JSON: the nesting begins
+
+``` python
+at_kickoff = {
+    "id": "d712fb93",
+    "lineup": {
+        "player": {"id": 15623, "name": "Vivianne Miedema"},
+        "position": {"id": 23, "name": "Center Forward"},
+        "jersey_number": 11
+    }
+}
+
+# Fully flattened – like a steamrolled box
+pd.json_normalize(at_kickoff)
+
+# Keep the top layer intact with max_level=1
+pd.json_normalize(at_kickoff, max_level=1)
+```
+
+|  | id | lineup.player | lineup.position | lineup.jersey_number |
+|----|----|----|----|----|
+| 0 | d712fb93 | {'id': 15623, 'name': 'Vivianne Miedema'} | {'id': 23, 'name': 'Center Forward'} | 11 |
+
+> **Mental model**: `max_level` is the number of nested layers you allow pandas to smash.\
+> `max_level=0` means “don’t even look inside”.
+
+## 5. Nested lists: the `record_path` extraction
+
+Sometimes a JSON object has a key that holds a list of sub‑records (e.g., `players`).\
+We want each list item as a row, not a mangled single column.
+
+``` python
+awfc = {
+    'team': 'AWFC',
+    'location': 'London',
+    'info': {
+        'manager': 'Joe',
+        'contacts': {'email': 'joe@afc.com', 'tel': '123456789'}
+    },
+    'players': [
+        {'name': 'Viv', 'goals': 101},
+        {'name': 'DvD', 'goals': 60}
+    ]
+}
+
+# Only the players, stripped of team context
+pd.json_normalize(awfc, record_path=['players'])
+
+# Bring along some metadata so we know whose players these are
+pd.json_normalize(
+    awfc,
+    record_path=['players'],
+    meta=['team', ['info', 'contacts', 'tel'], ['info', 'manager']]
+)
+```
+
+|     | name | goals | team | info.contacts.tel | info.manager |
+|-----|------|-------|------|-------------------|--------------|
+| 0   | Viv  | 101   | AWFC | 123456789         | Joe          |
+| 1   | DvD  | 60    | AWFC | 123456789         | Joe          |
+
+> **Syntax rule**: `meta` paths are like breadcrumbs.\
+> `['info', 'contacts', 'tel']` → `info.contacts.tel` in the output.
+
+## 6. A whole gang of records (list of dicts)
+
+Same idea, but now the outer JSON is a list. Pandas happily loops over each dict.
+
+``` python
+json_list = [
+    {
+        "team": "arsenal",
+        "colour": "red-white",
+        "info": {"staff": {"physio": "xxxx", "doctor": "yyyy"}},
+        "players": [
+            {"name": "Viv", "stats": {"goals": 101, "assists": 40}},
+            {"name": "Beth", "stats": {"goals": 60, "assists": 25}},
+        ],
+    },
+    {
+        "team": "city",
+        "colour": "blue",
+        "info": {"staff": {"physio": "aaaa", "doctor": "bbbb"}},
+        "players": [
+            {"name": "Steph", "stats": {"goals": 30, "assists": 15}},
+            {"name": "Lucy", "stats": {"goals": 25, "assists": 20}},
+        ],
+    },
+]
+
+pd.json_normalize(
+    json_list,
+    record_path=["players"],
+    meta=["team", "colour", ["info", "staff", "physio"]],
+)
+```
+
+|     | name  | stats.goals | stats.assists | team    | colour    | info.staff.physio |
+|-----|-------|-------------|---------------|---------|-----------|-------------------|
+| 0   | Viv   | 101         | 40            | arsenal | red-white | xxxx              |
+| 1   | Beth  | 60          | 25            | arsenal | red-white | xxxx              |
+| 2   | Steph | 30          | 15            | city    | blue      | aaaa              |
+| 3   | Lucy  | 25          | 20            | city    | blue      | aaaa              |
+
+Every player gets their team, colour, and physio stamped on them. Lovely.
+
+## 7. Missing meta keys? Don’t panic
+
+What if `city` forgot to hire a physio? (It happens.)\
+Without `errors='ignore'`, pandas throws a `KeyError`.
+
+``` python
+json_list = [
+    {
+        "team": "arsenal",
+        "info": {"staff": {"physio": "xxxx"}},
+        "players": [{"name": "Viv"}],
+    },
+    {
+        "team": "city",
+        "info": {"staff": {}},
+        "players": [{"name": "Steph"}],
+    },  # no physio!
+]
+
+# This will error out (uncomment to see the KeyError):
+# pd.json_normalize(json_list, record_path=['players'], meta=[['info', 'staff', 'physio']])
+
+# Safer: ignore absent keys
+pd.json_normalize(
+    json_list,
+    record_path=["players"],
+    meta=[["info", "staff", "physio"]],
+    errors="ignore",  # "Missing? Just put NaN and carry on."
+)
+```
+
+|     | name  | info.staff.physio |
+|-----|-------|-------------------|
+| 0   | Viv   | xxxx              |
+| 1   | Steph | NaN               |
+
+## 8. Styling the output: separators & prefixes
+
+Dot‑separated column names (`info.staff.physio`) can be a pain in pandas later.\
+Swap the dot, and add some leading labels.
+
+``` python
+json_list = [
+    {
+        "team": "arsenal",
+        "info": {"staff": {"physio": "xxxx"}},
+        "players": [{"name": "Viv"}],
+    },
+    {
+        "team": "city",
+        "info": {"staff": {"physio": "aaa"}},
+        "players": [{"name": "Steph"}],
+    },
+]
+pd.json_normalize(
+    json_list,
+    record_path=["players"],
+    meta=["team", ["info", "staff", "physio"]],
+    sep="_",  # goodbye dots, hello underscores
+    record_prefix="pl_",  # every record column starts with pl_
+    meta_prefix="meta_",  # every meta column starts with meta_
+)
+# Now we get: pl_name, pl_stats.goals, meta_team, meta_info_staff_physio, etc.
+```
+
+|     | pl_name | meta_team | meta_info_staff_physio |
+|-----|---------|-----------|------------------------|
+| 0   | Viv     | arsenal   | xxxx                   |
+| 1   | Steph   | city      | aaa                    |
+
+> **Pro tip**: `sep` changes the inner connector, while `record_prefix`/`meta_prefix` are global labels for the two column families.
+
+## 9. Real data: files & URLs
+
+``` python
+# From a local file (like the movies.json you keep in the same folder)
+with open('movies.json') as f:
+    data = json.load(f)
+pd.json_normalize(data)
+
+# From the wild web
+import requests
+URL = 'https://vega.github.io/vega-datasets/data/cars.json'
+data = json.loads(requests.get(URL).text)
+pd.json_normalize(data)
+```
+
+|  | Name | Miles_per_Gallon | Cylinders | Displacement | Horsepower | Weight_in_lbs | Acceleration | Year | Origin |
+|----|----|----|----|----|----|----|----|----|----|
+| 0 | chevrolet chevelle malibu | 18.0 | 8 | 307.0 | 130.0 | 3504 | 12.0 | 1970-01-01 | USA |
+| 1 | buick skylark 320 | 15.0 | 8 | 350.0 | 165.0 | 3693 | 11.5 | 1970-01-01 | USA |
+| 2 | plymouth satellite | 18.0 | 8 | 318.0 | 150.0 | 3436 | 11.0 | 1970-01-01 | USA |
+| 3 | amc rebel sst | 16.0 | 8 | 304.0 | 150.0 | 3433 | 12.0 | 1970-01-01 | USA |
+| 4 | ford torino | 17.0 | 8 | 302.0 | 140.0 | 3449 | 10.5 | 1970-01-01 | USA |
+| ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 401 | ford mustang gl | 27.0 | 4 | 140.0 | 86.0 | 2790 | 15.6 | 1982-01-01 | USA |
+| 402 | vw pickup | 44.0 | 4 | 97.0 | 52.0 | 2130 | 24.6 | 1982-01-01 | Europe |
+| 403 | dodge rampage | 32.0 | 4 | 135.0 | 84.0 | 2295 | 11.6 | 1982-01-01 | USA |
+| 404 | ford ranger | 28.0 | 4 | 120.0 | 79.0 | 2625 | 18.6 | 1982-01-01 | USA |
+| 405 | chevy s-10 | 31.0 | 4 | 119.0 | 82.0 | 2720 | 19.4 | 1982-01-01 | USA |
+
+406 rows × 9 columns
+
+No surprises – the same flattening magic.
+
+## Quick Refresher Cheat Sheet
+
+| I want to… | I type… |
+|----|----|
+| Flatten a simple dict | `pd.json_normalize(dict)` |
+| Flatten a list of dicts | `pd.json_normalize(list)` |
+| Stop after one level of nesting | `pd.json_normalize(data, max_level=1)` |
+| Extract a list inside a key | `pd.json_normalize(data, record_path=['key'])` |
+| Keep parent info alongside | `meta=['key1', ['key2', 'key3']]` |
+| Survive missing meta keys | `errors='ignore'` |
+| Use underscores instead of dots | `sep='_'` |
+| Label record columns differently | `record_prefix='r_'` |
+| Label meta columns differently | `meta_prefix='m_'` |
+
+That’s it. Now go flatten some JSON and make your future self proud.
+
+Back to top

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.11.6">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -15,10 +15,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,14 +79,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-70bba17f54d0d4d57e9a26002654b9c6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-3978f374695de4ef1d00a8eb948ae22a.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-4be46a29ba495b8a0a585e09b6f026be.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-5cfd04728c532b29461f5498fb8b6be1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -155,14 +159,14 @@ cookieconsent.run({
 <link rel="canonical" href="https://deepakramani.github.io/posts/2023-08-29-cdc-debezium-kafka-pg/">
 </head>
 
-<body class="floating nav-fixed quarto-light">
+<body class="floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -180,10 +184,6 @@ cookieconsent.run({
   <li class="nav-item">
     <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../resume.pdf"> 
-<span class="menu-text">Resume</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -245,8 +245,8 @@ cookieconsent.run({
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
@@ -272,14 +272,14 @@ cookieconsent.run({
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-08-29-cdc-debezium-kafka-pg/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/main/posts/2023-08-29-cdc-debezium-kafka-pg/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content" tabindex="-1">
 
 
 
@@ -355,7 +355,12 @@ cookieconsent.run({
 <div class="code-with-filename-file">
 <pre><strong>clone and install prerequisites</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="clone and install prerequisites"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install git make <span class="at">-y</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="clone and install prerequisites" data-llms-code-original="sudo apt update &amp;&amp; sudo apt install git make -y
+git clone https://github.com/deepakramani/cdc-debezium-kafka.git
+cd cdc-debezium-kafka
+make install_conda # <1> 
+make install_docker # <2>
+source ~/.bashrc"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install git make <span class="at">-y</span></span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/deepakramani/cdc-debezium-kafka.git</span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> cdc-debezium-kafka</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install_conda</span>
@@ -422,7 +427,16 @@ cookieconsent.run({
 <div class="code-with-filename-file">
 <pre><strong>testing</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="testing"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TEST_POSTGRES_USER</span><span class="op">=</span>test_postgres</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="testing" data-llms-code-original="export TEST_POSTGRES_USER=test_postgres
+export TEST_POSTGRES_PASSWORD=test_postgres
+export TEST_POSTGRES_DB=test_cdc-demo-db
+export TEST_POSTGRES_HOST=test_postgres
+export TEST_DB_SCHEMA=commerce
+export TEST_AWS_KEY_ID=test_minio
+export TEST_AWS_SECRET_KEY=test_minio123
+export TEST_AWS_BUCKET_NAME=commerce
+make tup # <1>
+make ci # <2>"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TEST_POSTGRES_USER</span><span class="op">=</span>test_postgres</span>
 <span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TEST_POSTGRES_PASSWORD</span><span class="op">=</span>test_postgres</span>
 <span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TEST_POSTGRES_DB</span><span class="op">=</span>test_cdc-demo-db</span>
 <span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">TEST_POSTGRES_HOST</span><span class="op">=</span>test_postgres</span>
@@ -457,7 +471,8 @@ Important
 </div>
 </div>
 <p>To shutdown after testing,</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> tdown</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" data-llms-code-original="make tdown
+sudo rm -rf test_psql_vol/ # <1>"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> tdown</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> rm <span class="at">-rf</span> test_psql_vol/</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -491,7 +506,29 @@ Warning
 <div class="code-with-filename-file">
 <pre><strong>init.sql</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="init.sql"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- create schema commerce</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="init.sql" data-llms-code-original="-- create schema commerce
+CREATE SCHEMA commerce;
+
+-- Use commerce schema
+SET search_path TO commerce;
+
+-- create a users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email_address TEXT NOT NULL 
+);
+
+CREATE TABLE IF NOT EXISTS products (
+   id SERIAL PRIMARY KEY, 
+   name VARCHAR(255) NOT NULL,
+   description TEXT,
+   price REAL NOT NULL -- <1>
+);
+
+ALTER TABLE users REPLICA IDENTITY FULL; -- <2>
+
+ALTER TABLE products REPLICA IDENTITY FULL;"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- create schema commerce</span></span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">SCHEMA</span> commerce;</span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Use commerce schema</span></span>
@@ -574,7 +611,27 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>user_product_data.py</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" data-filename="user_product_data.py"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>sleep(<span class="fl">0.3</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" data-filename="user_product_data.py" data-llms-code-original="sleep(0.3) # <1>
+# update 10 % of the time
+if random.randint(1, 100) >= 90:
+  curr.execute(&quot;UPDATE commerce.users \
+                SET username = %s\
+                WHERE id = %s&quot;,(fake.user_name(), id)
+              )
+  curr.execute(&quot;UPDATE commerce.products \
+                SET name = %s \
+                WHERE id = %s&quot;,(fake.user_name(), id)
+              )
+  conn.commit()
+
+sleep(0.4)
+# delete 5 % of the time
+if random.randint(1, 100) >= 95:
+  curr.execute(&quot;DELETE FROM commerce.users WHERE id = %s&quot;,(id,))
+  curr.execute(&quot;DELETE FROM commerce.products WHERE id = %s&quot;, (id,))
+
+conn.commit()
+curr.close()"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>sleep(<span class="fl">0.3</span>)</span>
 <span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># update 10 % of the time</span></span>
 <span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> random.randint(<span class="dv">1</span>, <span class="dv">100</span>) <span class="op">&gt;=</span> <span class="dv">90</span>:</span>
 <span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>  curr.execute(<span class="st">"UPDATE commerce.users </span><span class="op">\</span></span>
@@ -609,7 +666,37 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>docker-compose.yml for data upload into source DB</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-10" data-filename="docker-compose.yml for data upload into source DB"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cdc_commerce_postgres</span><span class="kw">:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-10" data-filename="docker-compose.yml for data upload into source DB" data-llms-code-original="cdc_commerce_postgres:
+    container_name: source-db
+    image: debezium/postgres:13-alpine
+    hostname: ${POSTGRES_HOST} # <1>
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # <1>
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # <1>
+      POSTGRES_DB: ${POSTGRES_DB} # <1>
+    volumes:
+      - &quot;./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql&quot; # <2>
+      - &quot;./psql_vol:/var/lib/postgresql/data:rw&quot;
+    networks:
+      - my_network
+
+  datagen:
+    build: ./generate-data
+    image: cdc-datagen
+    container_name: datagen
+    restart: on-failure
+    environment: # <3>
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      DB_SCHEMA: ${DB_SCHEMA}
+    depends_on:
+      - cdc_commerce_postgres # <4>
+    networks:
+      - my_network"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cdc_commerce_postgres</span><span class="kw">:</span></span>
 <span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> source-db</span></span>
 <span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> debezium/postgres:13-alpine</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-4" class="code-annotation-target"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">hostname</span><span class="kw">:</span><span class="at"> ${POSTGRES_HOST}</span></span>
@@ -671,7 +758,29 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>docker-compose config for Zookeeper and Kafka</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="docker-compose config for Zookeeper and Kafka"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zookeeper</span><span class="kw">:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="docker-compose config for Zookeeper and Kafka" data-llms-code-original="zookeeper:
+    image: debezium/zookeeper:2.4
+    container_name: zookeeper
+    ports:
+      - &quot;2181:2181&quot; # <1>
+    networks:
+      - my_network
+    
+  kafka:
+    container_name: kafka
+    image: debezium/kafka:latest
+    ports:
+      - &quot;9093:9093&quot; 
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181 # <2>
+      - KAFKA_INTER_BROKER_LISTENER_NAME=LISTENER_INT # <3>
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LISTENER_INT:PLAINTEXT,LISTENER_EXT:PLAINTEXT # <4>
+      - KAFKA_ADVERTISED_LISTENERS=LISTENER_INT://kafka:9092,LISTENER_EXT://localhost:9093 # <5>
+      - KAFKA_LISTENERS=LISTENER_INT://kafka:9092,LISTENER_EXT://0.0.0.0:9093 
+    depends_on:
+      - zookeeper
+    networks:
+      - my_network"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zookeeper</span><span class="kw">:</span></span>
 <span id="annotated-cell-11-2"><a href="#annotated-cell-11-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> debezium/zookeeper:2.4</span></span>
 <span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> zookeeper</span></span>
 <span id="annotated-cell-11-4"><a href="#annotated-cell-11-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
@@ -729,7 +838,18 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>docker-compose for Minio storage</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="docker-compose for Minio storage"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">minio</span><span class="kw">:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="docker-compose for Minio storage" data-llms-code-original="minio:
+    image: minio/minio:RELEASE.2022-05-26T05-48-41Z
+    hostname: minio
+    container_name: minio
+    ports:
+      - '9000:9000' 
+      - '9001:9001'
+    volumes:
+      - &quot;./minio/data:/data&quot; # <1>
+    environment:
+      MINIO_ROOT_USER: ${AWS_KEY_ID}  # <2>
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_KEY} # <2>"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">minio</span><span class="kw">:</span></span>
 <span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> minio/minio:RELEASE.2022-05-26T05-48-41Z</span></span>
 <span id="annotated-cell-12-3"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">hostname</span><span class="kw">:</span><span class="at"> minio</span></span>
 <span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> minio</span></span>
@@ -769,7 +889,22 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>docker-compose for Debezium connect</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13" data-filename="docker-compose for Debezium connect"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">debezium-connect</span><span class="kw">:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13" data-filename="docker-compose for Debezium connect" data-llms-code-original="  debezium-connect:
+    container_name: debezium-connect
+    build: ./sink-connector # <1>
+    ports:
+      - &quot;8083:8083&quot;
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092 # <2>
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+    depends_on:
+      - zookeeper
+      - kafka
+    networks:
+      - my_network"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">debezium-connect</span><span class="kw">:</span></span>
 <span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> debezium-connect</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">build</span><span class="kw">:</span><span class="at"> ./sink-connector</span></span>
 <span id="annotated-cell-13-4"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
@@ -819,7 +954,26 @@ Important
 <div class="code-with-filename-file">
 <pre><strong>setup-connections.sh</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-14" data-filename="setup-connections.sh"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--include</span> <span class="at">--request</span> POST <span class="at">--header</span> <span class="st">"Accept:application/json"</span> <span class="dt">\</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-14" data-filename="setup-connections.sh" data-llms-code-original="curl --include --request POST --header &quot;Accept:application/json&quot; \
+    --header &quot;Content-Type:application/json&quot; \
+    --url localhost:8083/connectors/ \
+    --data '{    
+        &quot;name&quot;: &quot;pg-src-connector&quot;,
+        &quot;config&quot;: {
+            &quot;connector.class&quot;: &quot;io.debezium.connector.postgresql.PostgresConnector&quot;, # <1>
+            &quot;tasks.max&quot;: &quot;1&quot;,
+            &quot;database.hostname&quot;: &quot;'&quot;${POSTGRES_USER}&quot;'&quot;, # <2>
+            &quot;database.port&quot;: &quot;5432&quot;,
+            &quot;database.user&quot;: &quot;'&quot;${POSTGRES_USER}&quot;'&quot;,
+            &quot;database.password&quot;: &quot;'&quot;${POSTGRES_PASSWORD}&quot;'&quot;,
+            &quot;database.dbname&quot;: &quot;'&quot;${POSTGRES_DB}&quot;'&quot;,
+            &quot;database.server.name&quot;: &quot;postgres&quot;,
+            &quot;database.include.list&quot;: &quot;postgres&quot;,
+            &quot;topic.prefix&quot;: &quot;debezium&quot;, # <3>
+            &quot;schema.include.list&quot;: &quot;commerce&quot;, # <3>
+            &quot;decimal.handling.mode&quot;: &quot;precise&quot; # <4>
+        }
+      }'"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--include</span> <span class="at">--request</span> POST <span class="at">--header</span> <span class="st">"Accept:application/json"</span> <span class="dt">\</span></span>
 <span id="annotated-cell-14-2"><a href="#annotated-cell-14-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--header</span> <span class="st">"Content-Type:application/json"</span> <span class="dt">\</span></span>
 <span id="annotated-cell-14-3"><a href="#annotated-cell-14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--url</span> localhost:8083/connectors/ <span class="dt">\</span></span>
 <span id="annotated-cell-14-4"><a href="#annotated-cell-14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--data</span> <span class="st">'{    </span></span>
@@ -863,7 +1017,25 @@ Important
 <div class="code-with-filename-file">
 <pre><strong>setup-connections.sh</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-15" data-filename="setup-connections.sh"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--include</span> <span class="at">--request</span> POST <span class="at">--header</span> <span class="st">"Accept:application/json"</span> <span class="dt">\</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-15" data-filename="setup-connections.sh" data-llms-code-original="curl --include --request POST --header &quot;Accept:application/json&quot; \
+    --header &quot;Content-Type:application/json&quot; \
+    --url localhost:8083/connectors/ \
+    --data '{
+        &quot;name&quot;: &quot;s3-sink&quot;,
+        &quot;config&quot;: {
+            &quot;connector.class&quot;: &quot;io.aiven.kafka.connect.s3.AivenKafkaConnectS3SinkConnector&quot;,
+            &quot;aws.access.key.id&quot;: &quot;'&quot;${AWS_KEY_ID}&quot;'&quot;,
+            &quot;aws.secret.access.key&quot;: &quot;'&quot;${AWS_SECRET_KEY}&quot;'&quot;,
+            &quot;aws.s3.bucket.name&quot;: &quot;'&quot;${AWS_BUCKET_NAME}&quot;'&quot;,
+            &quot;aws.s3.endpoint&quot;: &quot;http://minio:9000&quot;,
+            &quot;aws.s3.region&quot;: &quot;us-east-1&quot;,
+            &quot;format.output.type&quot;: &quot;jsonl&quot;,
+            &quot;topics&quot;: &quot;debezium.commerce.users,debezium.commerce.products&quot;, # <1>
+            &quot;file.compression.type&quot;: &quot;none&quot;,
+            &quot;flush.size&quot;: &quot;20&quot;,
+            &quot;file.name.template&quot;: &quot;/{{topic}}/{{timestamp:unit=yyyy}}-{{timestamp:unit=MM}}-{{timestamp:unit=dd}}/{{timestamp:unit=HH}}/{{partition:padding=true}}-{{start_offset:padding=true}}.json&quot; # <2>
+        }
+    }'"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--include</span> <span class="at">--request</span> POST <span class="at">--header</span> <span class="st">"Accept:application/json"</span> <span class="dt">\</span></span>
 <span id="annotated-cell-15-2"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--header</span> <span class="st">"Content-Type:application/json"</span> <span class="dt">\</span></span>
 <span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--url</span> localhost:8083/connectors/ <span class="dt">\</span></span>
 <span id="annotated-cell-15-4"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--data</span> <span class="st">'{</span></span>
@@ -901,7 +1073,8 @@ Important
 <div class="code-with-filename-file">
 <pre><strong>setup data pipeline</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-16" data-filename="setup data pipeline"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> up</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-16" data-filename="setup data pipeline" data-llms-code-original="make up # <1>
+make connections # <2>"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> up</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-2" class="code-annotation-target"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> connections</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -976,7 +1149,7 @@ Important
 
 </section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <!-- <div>
 <hr>
 <h3> Support my work with a coffee </h3>
@@ -1427,6 +1600,9 @@ Important
     }
   });
   </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
 <script src="https://utteranc.es/client.js" repo="deepakramani/blog_comments" issue-term="pathname" theme="github-dark" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
@@ -1437,7 +1613,7 @@ Important
 </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/posts/2023-08-29-cdc-debezium-kafka-pg/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/main/posts/2023-08-29-cdc-debezium-kafka-pg/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.11.6">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -39,13 +42,14 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-70bba17f54d0d4d57e9a26002654b9c6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3978f374695de4ef1d00a8eb948ae22a.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7c444a9b66a3691207c3f90264957f97.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-73c47df61bd7d237654e08843dbff8d0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script src="site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -113,14 +117,14 @@ cookieconsent.run({
 <link rel="canonical" href="https://deepakramani.github.io/about.html">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed fullcontent quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -138,10 +142,6 @@ cookieconsent.run({
   <li class="nav-item">
     <a class="nav-link active" href="./about.html" aria-current="page"> 
 <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./resume.pdf"> 
-<span class="menu-text">Resume</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -173,12 +173,12 @@ cookieconsent.run({
   </div>
 </header>
     <div class="about-links">
-  <a href="https://bsky.app/profile/itsdeepak5.bsky.social" class="about-link" rel="" target="">
-     <span class="about-link-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon> BlueSky</span>
-  </a>
-  <a href="https://twitter.com/thosegradients" class="about-link" rel="" target="">
+  <a href="https://x.com/thosegradients" class="about-link" rel="" target="">
     <i class="bi bi-twitter"></i>
      <span class="about-link-text">Twitter</span>
+  </a>
+  <a href="https://bsky.app/profile/itsdeepak5.bsky.social" class="about-link" rel="" target="">
+     <span class="about-link-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon> BlueSky</span>
   </a>
   <a href="https://www.linkedin.com/in/deepakr05/" class="about-link" rel="" target="">
     <i class="bi bi-linkedin"></i>
@@ -194,20 +194,21 @@ cookieconsent.run({
   </a>
 </div>
   </div>
-  <div class="about-contents"><main class="content" id="quarto-document-content">
-<p>Hello, I’m Deepak! I am a passionate software engineer with a strong interest in data engineering and analysis. I thrive on tackling complex problems and finding innovative solutions through collaborative teamwork. I tend to spend more time on making a workflow simpler and easier to execute. I spend my free time learning new tools and technologies. Currently my focus is on these topics,</p>
+  <div class="about-contents"><main class="content" id="quarto-document-content" tabindex="-1">
+<p>Hello, I’m Deepak! I am a passionate software engineer with a strong interest in data engineering and analysis. I thrive on tackling complex problems and finding innovative solutions through collaborative teamwork. I relish challenges that enable incremental daily progress. I have a tendency to think about the big picture and target audience before dwelling into problem solving. I enjoy hobbies like learning to play guitar, reading my favourite novels and web series, and gardening.</p>
+<p>Currently tackling these,</p>
 <ul>
-<li><p>Exploratory Data Analysis on the CRM-ERP-Sales dataset. I use <a href="https://www.youtube.com/watch?v=6cJ5Ji8zSDg">Data with Bara</a> video to do the analysis.</p></li>
-<li><p>Developing dashboard with Tableau. I use Rob Caroll’s <a href="https://www.youtube.com/playlist?list=PLchE8bhmmIxK94imJ4QZncXrbld_NGoiW">Tableau for sport</a> Youtube playlists more than other resources.</p></li>
-<li><p>Learning to use Pyspark. I use Jigsawlabs <a href="https://www.jigsawlabs.io/free-data-engineering-course">free course</a>.</p></li>
+<li><p><a href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781098119058/">Designing Data-Intensive Applications</a>, Martin Kleppmann and Chris Riccomini</p></li>
+<li><p><a href="https://sebastianraschka.com/llms-from-scratch/">Build a Large Language Model (From Scratch)</a>, Sebastian Raschka</p></li>
+<li><p><a href="https://hamel.dev/blog/posts/evals-faq/">AI Evals For Engineers &amp; PMs</a>, Hamel Husain and Shreya Shankar</p></li>
+<li><p><a href="https://www.youtube.com/playlist?list=PLJwa8GA7pXCWAnIeTQyw_mvy1L7ryxxPH">Absolutely Understand Guitar</a>, Scotty West</p></li>
 </ul>
-<p>With a background in software engineering I am driven by a desire to leverage the power of data to drive impactful results. During my master’s thesis, I developed an end-to-end system with a focus on implementing simpler CNN model architectures to achieve comparable performance to the latest models. This experience allowed me to deepen my understanding of data collection, combining various data sources, data transformation, data cleaning, data modelling and report generation.</p>
 <p>I spent my mid 20s to early 30s in Germany adapting to new culture, people etc. These formative years changed how I view professional and personal life.</p>
-<p>I am an enthusiastic learner who stays up-to-date with the latest industry trends and technologies. My strong problem-solving skills, combined with my passion for teamwork, enable me to contribute to challenging projects and deliver high-quality results. I am now seeking new opportunities to apply my skills and knowledge in data engineering, data analysis, and DevOps making a meaningful impact within a dynamic organization.</p>
-<p>Feel free to connect with me to explore collaboration opportunities, share insights, or discuss exciting projects in these fields. Let’s embark on this journey together to drive innovation and solve complex problems.</p>
+<p>I am looking for job opportunities in the field of data/software engineering.</p>
+<p>Hope to connect with you on shared interests.</p>
 
 
-</main></div>
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main></div>
 </div>
  <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -603,6 +604,9 @@ cookieconsent.run({
     }
   });
   </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -611,7 +615,7 @@ cookieconsent.run({
 </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/about.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
+<div class="toc-actions"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/main/about.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">

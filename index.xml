@@ -9,7 +9,7 @@
 <link>https://deepakramani.github.io/</link>
 <atom:link href="https://deepakramani.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>This is Deepak Ramani personal blog.</description>
-<generator>quarto-1.10.3</generator>
+<generator>quarto-1.11.6</generator>
 <lastBuildDate>Sat, 15 Mar 2025 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Build Data Warehouse for CRM/ERP dataset</title>
@@ -319,7 +319,7 @@ font-style: inherit;">make</span> down</span></code></pre></div></div>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>data warehousing</category>
   <category>sql</category>
   <category>medallion architecture</category>
@@ -365,7 +365,22 @@ font-style: inherit;">make</span> down</span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>tests directory structure</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="tests directory structure" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><span class="bu" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="tests directory structure" data-llms-code-original=".
+├── postgres
+│&nbsp;&nbsp; └── init.sql # <1>
+├── Makefile # <2>
+├── docker-compose-test.yml # <3>
+└── tests
+    ├── Pipfile # <4>
+    ├── Pipfile.lock
+    ├── integration
+    │&nbsp;&nbsp; └── test_datagen_db.py # <5> 
+    ├── test-setup-connections.sh # <6>
+    ├── test_Dockerfile # <7> 
+    ├── unit
+    │&nbsp;&nbsp; ├── test_datagen.py # <8>
+    │&nbsp;&nbsp; └── test_pg_src_db.py # <9>
+    └── user_product_data.py # <10>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">.</span></span>
 <span id="annotated-cell-1-2"><span class="ex" style="color: null;
@@ -731,7 +746,21 @@ font-style: inherit;">==</span> {KAFKA_TOPIC_USERS}</span></code></pre></div></d
 <ul>
 <li>Test to check if the total number of transactions is expected</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-8" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-8" data-llms-code-original="def test_total_transactions(get_consumer_users, get_consumer_products):
+  lsn_u=[]
+  lsn_p=[]
+  for msg in get_consumer_users:
+        if msg.value:
+            json_object = json.loads(msg.value)
+            lsn_u.append(json_object['payload']['source']['lsn']) # <1>
+
+  for msg in get_consumer_products:
+        if msg.value:
+            json_object = json.loads(msg.value)
+            lsn_p.append(json_object['payload']['source']['lsn'])
+
+  assert len(lsn_u) == 35
+  assert len(lsn_p) == 35" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-8-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> test_total_transactions(get_consumer_users, get_consumer_products):</span>
@@ -814,7 +843,28 @@ font-style: inherit;">35</span></span><div class="code-annotation-gutter-bg"></d
 <ul>
 <li>Test if a username from the DB is present in the message</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" data-llms-code-original="def test_username_present(get_db_connection):
+  
+  usernames =[]
+
+  consumer_users = KafkaConsumer( # <1>
+        KAFKA_TOPIC_USERS,
+        bootstrap_servers=['kafka:9092'],
+        auto_offset_reset=&quot;earliest&quot;,
+        consumer_timeout_ms=1000
+    )
+  for msg in consumer_users:
+        if msg.value:
+            json_object = json.loads(msg.value)
+            if json_object['payload']['after']:
+                usernames.append(json_object['payload']['after']['username'])
+
+  consumer_users.close()
+  cur = get_db_connection.cursor()
+  cur.execute(f&quot;SELECT username FROM {SCHEMA}.users&quot;)
+  result = cur.fetchone()[0]
+
+  assert result in usernames" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">def</span> test_username_present(get_db_connection):</span>
@@ -921,7 +971,7 @@ font-style: inherit;">in</span> usernames</span><div class="code-annotation-gutt
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>testing</category>
   <category>quality assurance</category>
   <category>pytest</category>
@@ -1476,7 +1526,7 @@ font-style: inherit;">    }'</span></span></code></pre></div></div>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>json</category>
   <category>secrets</category>
   <category>env variables</category>
@@ -1565,7 +1615,12 @@ font-style: inherit;">    }'</span></span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>clone and install prerequisites</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="clone and install prerequisites" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="clone and install prerequisites" data-llms-code-original="sudo apt update &amp;&amp; sudo apt install git make -y
+git clone https://github.com/deepakramani/cdc-debezium-kafka.git
+cd cdc-debezium-kafka
+make install_conda # <1> 
+make install_docker # <2>
+source ~/.bashrc" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sudo</span> apt update <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -1731,7 +1786,16 @@ font-style: inherit;"># sudo rm -rf minio/ psql_vol/</span></span></code></pre><
 <div class="code-with-filename-file">
 <pre><strong>testing</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="testing" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-5-1"><span class="bu" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="testing" data-llms-code-original="export TEST_POSTGRES_USER=test_postgres
+export TEST_POSTGRES_PASSWORD=test_postgres
+export TEST_POSTGRES_DB=test_cdc-demo-db
+export TEST_POSTGRES_HOST=test_postgres
+export TEST_DB_SCHEMA=commerce
+export TEST_AWS_KEY_ID=test_minio
+export TEST_AWS_SECRET_KEY=test_minio123
+export TEST_AWS_BUCKET_NAME=commerce
+make tup # <1>
+make ci # <2>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-5-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">export</span> <span class="va" style="color: #111111;
 background-color: null;
@@ -1818,7 +1882,8 @@ Important
 </div>
 </div>
 <p>To shutdown after testing,</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-6-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" data-llms-code-original="make tdown
+sudo rm -rf test_psql_vol/ # <1>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-6-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make</span> tdown</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-2" class="code-annotation-target"><span class="fu" style="color: #4758AB;
@@ -1858,7 +1923,29 @@ Warning
 <div class="code-with-filename-file">
 <pre><strong>init.sql</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="init.sql" style="background: #f1f3f5;"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-7-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="init.sql" data-llms-code-original="-- create schema commerce
+CREATE SCHEMA commerce;
+
+-- Use commerce schema
+SET search_path TO commerce;
+
+-- create a users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email_address TEXT NOT NULL 
+);
+
+CREATE TABLE IF NOT EXISTS products (
+   id SERIAL PRIMARY KEY, 
+   name VARCHAR(255) NOT NULL,
+   description TEXT,
+   price REAL NOT NULL -- <1>
+);
+
+ALTER TABLE users REPLICA IDENTITY FULL; -- <2>
+
+ALTER TABLE products REPLICA IDENTITY FULL;" style="background: #f1f3f5;"><pre class="sourceCode sql code-annotation-code code-with-copy code-annotated"><code class="sourceCode sql"><span id="annotated-cell-7-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-- create schema commerce</span></span>
 <span id="annotated-cell-7-2"><span class="kw" style="color: #003B4F;
@@ -2145,7 +2232,27 @@ font-style: inherit;">100.0</span>)</span>
 <div class="code-with-filename-file">
 <pre><strong>user_product_data.py</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" data-filename="user_product_data.py" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target">sleep(<span class="fl" style="color: #AD0000;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-9" data-filename="user_product_data.py" data-llms-code-original="sleep(0.3) # <1>
+# update 10 % of the time
+if random.randint(1, 100) >= 90:
+  curr.execute(&quot;UPDATE commerce.users \
+                SET username = %s\
+                WHERE id = %s&quot;,(fake.user_name(), id)
+              )
+  curr.execute(&quot;UPDATE commerce.products \
+                SET name = %s \
+                WHERE id = %s&quot;,(fake.user_name(), id)
+              )
+  conn.commit()
+
+sleep(0.4)
+# delete 5 % of the time
+if random.randint(1, 100) >= 95:
+  curr.execute(&quot;DELETE FROM commerce.users WHERE id = %s&quot;,(id,))
+  curr.execute(&quot;DELETE FROM commerce.products WHERE id = %s&quot;, (id,))
+
+conn.commit()
+curr.close()" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target">sleep(<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span>)</span>
 <span id="annotated-cell-9-2"><span class="co" style="color: #5E5E5E;
@@ -2264,7 +2371,37 @@ font-style: inherit;">id</span>,))</span>
 <div class="code-with-filename-file">
 <pre><strong>docker-compose.yml for data upload into source DB</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-10" data-filename="docker-compose.yml for data upload into source DB" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-10-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-10" data-filename="docker-compose.yml for data upload into source DB" data-llms-code-original="cdc_commerce_postgres:
+    container_name: source-db
+    image: debezium/postgres:13-alpine
+    hostname: ${POSTGRES_HOST} # <1>
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # <1>
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # <1>
+      POSTGRES_DB: ${POSTGRES_DB} # <1>
+    volumes:
+      - &quot;./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql&quot; # <2>
+      - &quot;./psql_vol:/var/lib/postgresql/data:rw&quot;
+    networks:
+      - my_network
+
+  datagen:
+    build: ./generate-data
+    image: cdc-datagen
+    container_name: datagen
+    restart: on-failure
+    environment: # <3>
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      DB_SCHEMA: ${DB_SCHEMA}
+    depends_on:
+      - cdc_commerce_postgres # <4>
+    networks:
+      - my_network" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-10-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">cdc_commerce_postgres</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -2568,7 +2705,29 @@ font-style: inherit;"> my_network</span></span><div class="code-annotation-gutte
 <div class="code-with-filename-file">
 <pre><strong>docker-compose config for Zookeeper and Kafka</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="docker-compose config for Zookeeper and Kafka" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-11-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="docker-compose config for Zookeeper and Kafka" data-llms-code-original="zookeeper:
+    image: debezium/zookeeper:2.4
+    container_name: zookeeper
+    ports:
+      - &quot;2181:2181&quot; # <1>
+    networks:
+      - my_network
+    
+  kafka:
+    container_name: kafka
+    image: debezium/kafka:latest
+    ports:
+      - &quot;9093:9093&quot; 
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181 # <2>
+      - KAFKA_INTER_BROKER_LISTENER_NAME=LISTENER_INT # <3>
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LISTENER_INT:PLAINTEXT,LISTENER_EXT:PLAINTEXT # <4>
+      - KAFKA_ADVERTISED_LISTENERS=LISTENER_INT://kafka:9092,LISTENER_EXT://localhost:9093 # <5>
+      - KAFKA_LISTENERS=LISTENER_INT://kafka:9092,LISTENER_EXT://0.0.0.0:9093 
+    depends_on:
+      - zookeeper
+    networks:
+      - my_network" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-11-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">zookeeper</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -2794,7 +2953,18 @@ font-style: inherit;"> my_network</span></span><div class="code-annotation-gutte
 <div class="code-with-filename-file">
 <pre><strong>docker-compose for Minio storage</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="docker-compose for Minio storage" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-12-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="docker-compose for Minio storage" data-llms-code-original="minio:
+    image: minio/minio:RELEASE.2022-05-26T05-48-41Z
+    hostname: minio
+    container_name: minio
+    ports:
+      - '9000:9000' 
+      - '9001:9001'
+    volumes:
+      - &quot;./minio/data:/data&quot; # <1>
+    environment:
+      MINIO_ROOT_USER: ${AWS_KEY_ID}  # <2>
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_KEY} # <2>" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-12-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">minio</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -2934,7 +3104,22 @@ font-style: inherit;"> ${AWS_SECRET_KEY}</span></span><div class="code-annotatio
 <div class="code-with-filename-file">
 <pre><strong>docker-compose for Debezium connect</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13" data-filename="docker-compose for Debezium connect" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-13-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-13" data-filename="docker-compose for Debezium connect" data-llms-code-original="  debezium-connect:
+    container_name: debezium-connect
+    build: ./sink-connector # <1>
+    ports:
+      - &quot;8083:8083&quot;
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092 # <2>
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+    depends_on:
+      - zookeeper
+      - kafka
+    networks:
+      - my_network" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-13-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">  </span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -3102,7 +3287,26 @@ Important
 <div class="code-with-filename-file">
 <pre><strong>setup-connections.sh</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-14" data-filename="setup-connections.sh" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-14-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-14" data-filename="setup-connections.sh" data-llms-code-original="curl --include --request POST --header &quot;Accept:application/json&quot; \
+    --header &quot;Content-Type:application/json&quot; \
+    --url localhost:8083/connectors/ \
+    --data '{    
+        &quot;name&quot;: &quot;pg-src-connector&quot;,
+        &quot;config&quot;: {
+            &quot;connector.class&quot;: &quot;io.debezium.connector.postgresql.PostgresConnector&quot;, # <1>
+            &quot;tasks.max&quot;: &quot;1&quot;,
+            &quot;database.hostname&quot;: &quot;'&quot;${POSTGRES_USER}&quot;'&quot;, # <2>
+            &quot;database.port&quot;: &quot;5432&quot;,
+            &quot;database.user&quot;: &quot;'&quot;${POSTGRES_USER}&quot;'&quot;,
+            &quot;database.password&quot;: &quot;'&quot;${POSTGRES_PASSWORD}&quot;'&quot;,
+            &quot;database.dbname&quot;: &quot;'&quot;${POSTGRES_DB}&quot;'&quot;,
+            &quot;database.server.name&quot;: &quot;postgres&quot;,
+            &quot;database.include.list&quot;: &quot;postgres&quot;,
+            &quot;topic.prefix&quot;: &quot;debezium&quot;, # <3>
+            &quot;schema.include.list&quot;: &quot;commerce&quot;, # <3>
+            &quot;decimal.handling.mode&quot;: &quot;precise&quot; # <4>
+        }
+      }'" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-14-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">curl</span> <span class="at" style="color: #657422;
 background-color: null;
@@ -3220,7 +3424,25 @@ font-style: inherit;">      }'</span></span><div class="code-annotation-gutter-b
 <div class="code-with-filename-file">
 <pre><strong>setup-connections.sh</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-15" data-filename="setup-connections.sh" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-15-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-15" data-filename="setup-connections.sh" data-llms-code-original="curl --include --request POST --header &quot;Accept:application/json&quot; \
+    --header &quot;Content-Type:application/json&quot; \
+    --url localhost:8083/connectors/ \
+    --data '{
+        &quot;name&quot;: &quot;s3-sink&quot;,
+        &quot;config&quot;: {
+            &quot;connector.class&quot;: &quot;io.aiven.kafka.connect.s3.AivenKafkaConnectS3SinkConnector&quot;,
+            &quot;aws.access.key.id&quot;: &quot;'&quot;${AWS_KEY_ID}&quot;'&quot;,
+            &quot;aws.secret.access.key&quot;: &quot;'&quot;${AWS_SECRET_KEY}&quot;'&quot;,
+            &quot;aws.s3.bucket.name&quot;: &quot;'&quot;${AWS_BUCKET_NAME}&quot;'&quot;,
+            &quot;aws.s3.endpoint&quot;: &quot;http://minio:9000&quot;,
+            &quot;aws.s3.region&quot;: &quot;us-east-1&quot;,
+            &quot;format.output.type&quot;: &quot;jsonl&quot;,
+            &quot;topics&quot;: &quot;debezium.commerce.users,debezium.commerce.products&quot;, # <1>
+            &quot;file.compression.type&quot;: &quot;none&quot;,
+            &quot;flush.size&quot;: &quot;20&quot;,
+            &quot;file.name.template&quot;: &quot;/{{topic}}/{{timestamp:unit=yyyy}}-{{timestamp:unit=MM}}-{{timestamp:unit=dd}}/{{timestamp:unit=HH}}/{{partition:padding=true}}-{{start_offset:padding=true}}.json&quot; # <2>
+        }
+    }'" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-15-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">curl</span> <span class="at" style="color: #657422;
 background-color: null;
@@ -3326,7 +3548,8 @@ font-style: inherit;">    }'</span></span><div class="code-annotation-gutter-bg"
 <div class="code-with-filename-file">
 <pre><strong>setup data pipeline</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-16" data-filename="setup data pipeline" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-16" data-filename="setup data pipeline" data-llms-code-original="make up # <1>
+make connections # <2>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-1" class="code-annotation-target"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">make</span> up</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-2" class="code-annotation-target"><span class="fu" style="color: #4758AB;
@@ -3803,7 +4026,7 @@ font-style: inherit;">20</span>;</span></code></pre></div></div>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Debezium</category>
   <category>Postgres</category>
   <category>Change Data Capture</category>
@@ -3859,7 +4082,22 @@ font-style: inherit;">20</span>;</span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>Github Secrets</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Github Secrets" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Github Secrets" data-llms-code-original="env:
+  AWS_DEFAULT_REGION: &quot;us-east-1&quot;
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  tf-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }} #<1>
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }} " style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">env</span><span class="kw" style="color: #003B4F;
 background-color: null;
@@ -4020,7 +4258,11 @@ font-style: inherit;"> ${{ env.AWS_DEFAULT_REGION }} </span></span><div class="c
 <div class="code-with-filename-file">
 <pre><strong>TF Plan</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="TF Plan" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="kw" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="TF Plan" data-llms-code-original="- name: TF plan
+   id: plan
+    working-directory: &quot;infrastructure&quot; #<1>
+     run: |
+      terraform init -backend-config=&quot;key=mlops-grocery-sales-prod.tfstate&quot; --reconfigure &amp;&amp; terraform plan --var-file vars/prod.tfvars" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">-</span><span class="at" style="color: #657422;
@@ -4155,7 +4397,8 @@ font-style: inherit;">|</span></span>
 <div class="code-with-filename-file">
 <pre><strong>tf-destroy</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="tf-destroy" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="tf-destroy" data-llms-code-original="terraform init -backend-config=&quot;key=mlops-grocery-sales-prod.tfstate&quot; --reconfigure #<1>
+terraform destroy -var-file=vars/prod.tfvars #<2>" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">terraform init -backend-config="key=mlops-grocery-sales-prod.tfstate" --reconfigure</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-2" class="code-annotation-target"><span class="at" style="color: #657422;
@@ -4182,7 +4425,7 @@ font-style: inherit;">terraform destroy -var-file=vars/prod.tfvars</span></span>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#create-an-example-workflow↩︎</p></li>
@@ -4221,7 +4464,20 @@ font-style: inherit;">terraform destroy -var-file=vars/prod.tfvars</span></span>
 <div class="code-with-filename-file">
 <pre><strong>Lambda IAM role</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Lambda IAM role" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-1" class="code-annotation-target"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Lambda IAM role" data-llms-code-original="resource &quot;aws_iam_role&quot; &quot;lambda_exec&quot; { #<1>
+  name = &quot;iam_${var.lambda_function_name}&quot;
+  assume_role_policy = jsonencode({
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [{
+        &quot;Action&quot;: &quot;sts:AssumeRole&quot;,
+        &quot;Principal&quot;: {
+            &quot;Service&quot;: &quot;lambda.amazonaws.com&quot; #<2>
+    },
+    &quot;Effect&quot;: &quot;Allow&quot;,
+    &quot;Sid&quot;: &quot;&quot;
+    }]
+  })
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-1" class="code-annotation-target"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_iam_role" "lambda_exec" {</span></span>
 <span id="annotated-cell-1-2"><span class="at" style="color: #657422;
@@ -4363,7 +4619,24 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>Lambda-S3 policy</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Lambda-S3 policy" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Lambda-S3 policy" data-llms-code-original="resource &quot;aws_iam_policy&quot; &quot;lambda_s3artifact_role_policy&quot; {
+  name = &quot;policy-s3-artifact-access-to-lambda&quot; #<1>
+  description = &quot;IAM Policy for s3-artifact-access-to-lambda&quot;
+  policy = jsonencode({
+&quot;Version&quot;: &quot;2012-10-17&quot;,
+&quot;Statement&quot;: [{
+    &quot;Sid&quot;: &quot;VisualEditor0&quot;,
+    &quot;Effect&quot;: &quot;Allow&quot;,
+    &quot;Action&quot;: [
+        &quot;s3:Get*&quot;,
+        &quot;s3:List*&quot; #<2>
+    ],
+    &quot;Resource&quot;: [
+        &quot;arn:aws:s3:::${var.artifact_bucket}&quot;,
+        &quot;arn:aws:s3:::${var.artifact_bucket}/*&quot; #<3>
+    ]}]
+ })
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_iam_policy" "lambda_s3artifact_role_policy" {</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-2" class="code-annotation-target"><span class="at" style="color: #657422;
@@ -4522,7 +4795,29 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>Lambda-DynamoDB policy</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Lambda-DynamoDB policy" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-3-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Lambda-DynamoDB policy" data-llms-code-original="resource &quot;aws_iam_policy&quot; &quot;lambda_dynamodb&quot; {
+  name = &quot;policy_lambda_access_to_dynamodb&quot;
+  description = &quot;&quot;
+  policy = jsonencode({
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [{
+        &quot;Effect&quot;: &quot;Allow&quot;,
+        &quot;Action&quot;: [
+            &quot;dynamodb:BatchGetItem&quot;,
+            &quot;dynamodb:GetItem&quot;,
+            &quot;dynamodb:Query&quot;,
+            &quot;dynamodb:Scan&quot;,
+            &quot;dynamodb:BatchWriteItem&quot;,
+            &quot;dynamodb:PutItem&quot;,
+            &quot;dynamodb:UpdateItem&quot;, #<1>
+            &quot;logs:CreateLogStream&quot;,
+            &quot;logs:PutLogEvents&quot;,
+            &quot;logs:CreateLogGroup&quot; #<2> 
+        ],
+        &quot;Resource&quot;: &quot;arn:aws:dynamodb:${var.dynamodb_region}:${var.dynamodb_accountid}:table/${var.dbtable_name}&quot; #<3>
+    }]
+  })
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-3-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_iam_policy" "lambda_dynamodb" {</span></span>
 <span id="annotated-cell-3-2"><span class="at" style="color: #657422;
@@ -4720,7 +5015,15 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>Attaching policies to role</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="Attaching policies to role" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-4-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="Attaching policies to role" data-llms-code-original="resource &quot;aws_iam_role_policy_attachment&quot; &quot;iam-s3-policy-attach&quot; {
+  role = aws_iam_role.lambda_exec.name #<1>
+  policy_arn = aws_iam_policy.lambda_s3artifact_role_policy.arn #<2>
+}
+
+resource &quot;aws_iam_role_policy_attachment&quot; &quot;iam-dynamodb-policy-attach&quot; {
+  role = aws_iam_role.lambda_exec.name
+  policy_arn = aws_iam_policy.lambda_dynamodb.arn
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-4-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_iam_role_policy_attachment" "iam-s3-policy-attach" {</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-2" class="code-annotation-target"><span class="at" style="color: #657422;
@@ -4765,7 +5068,7 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Terraform</category>
   <category>AWS</category>
   <category>IAM</category>
@@ -4803,7 +5106,14 @@ Figure&nbsp;1: Data Pipeline
 <section id="terraform-state-file.tfstate" class="level3">
 <h3 class="anchored" data-anchor-id="terraform-state-file.tfstate">Terraform state file(.tfstate)</h3>
 <p>Terraform stores its states in a file called <code>.tfstate</code>. This file can be local or in cloud. We will use a <code>S3</code> bucket for it. Since this is a file that has to be placed in this bucket, the bucket has to be manually created by us. Use the console and create a <code>S3</code> bucket with a unique name such as <code>s3-for-terraform-state-mlops</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-llms-code-original="terraform {
+  backend &quot;s3&quot; {
+    bucket = &quot;s3-for-terraform-state-mlops&quot; # <1>
+    key = &quot;mlops-grocery-sales_stg.tfstate2&quot; # <2>
+    region = &quot;us-east-1&quot;
+    encrypt = true
+  }
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">terraform {</span></span>
 <span id="annotated-cell-1-2"><span class="at" style="color: #657422;
@@ -4859,7 +5169,13 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>infrastructure/modules/ecr/main.tf</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="infrastructure/modules/ecr/main.tf" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="infrastructure/modules/ecr/main.tf" data-llms-code-original="module &quot;ecr_image&quot; {
+  source = &quot;./modules/ecr&quot; # <1>
+  ecr_repo_name = &quot;${var.ecr_repo_name}_${var.project_id}&quot;
+  account_id = local.account_id
+  lambda_function_local_path = var.lambda_function_local_path # <2>
+  docker_image_local_path = var.docker_image_local_path # <3>
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-2-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">module "ecr_image" {</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-2" class="code-annotation-target"><span class="at" style="color: #657422;
@@ -4903,7 +5219,21 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>infrastructure/modules/ecr/main.tf</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="infrastructure/modules/ecr/main.tf" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="infrastructure/modules/ecr/main.tf" data-llms-code-original="resource &quot;null_resource&quot; &quot;ecr_image&quot; { # <1>
+  triggers = {
+    &quot;python_file&quot; = md5(file(var.lambda_function_local_path))
+    &quot;docker_file&quot; = md5(file(var.docker_image_local_path))
+  }
+
+  provisioner &quot;local-exec&quot; { # <2>
+    command = <<EOF
+            aws ecr get-login-password --region ${var.ecr_region} | docker login --username AWS --password-stdin ${var.account_id}.dkr.ecr.${var.ecr_region}.amazonaws.com
+            cd ${path.module}/../..
+            docker build -t ${aws_ecr_repository.repo.repository_url}:${var.ecr_image_tag} .
+            docker push ${aws_ecr_repository.repo.repository_url}:${var.ecr_image_tag}
+        EOF
+  }
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "null_resource" "ecr_image" {</span></span>
 <span id="annotated-cell-3-2"><span class="at" style="color: #657422;
@@ -4975,7 +5305,30 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>infrastructure/modules/lambda/main.tf</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="infrastructure/modules/lambda/main.tf" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-4-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="infrastructure/modules/lambda/main.tf" data-llms-code-original="resource &quot;aws_lambda_function&quot; &quot;lambda_function&quot; {
+  function_name = var.lambda_function_name
+  description = &quot;Sales Forecast lambda function from ECR image from TF&quot;
+  image_uri = var.image_uri 
+  package_type = &quot;Image&quot;
+  role = aws_iam_role.lambda_exec.arn # <1>
+  tracing_config {
+    mode = &quot;Active&quot;
+  }
+  memory_size = 1024
+  timeout = 30
+  environment { # <2>
+    variables = {
+      S3_BUCKET_NAME = var.artifact_bucket 
+      RUN_ID = var.mlflow_run_id 
+      DBTABLE_NAME = var.dbtable_name
+    }
+  }
+}
+
+resource &quot;aws_cloudwatch_log_group&quot; &quot;lambda_log_group&quot; { # <3>
+  name = &quot;/aws/lambda/${aws_lambda_function.lambda_function.function_name}&quot;
+  retention_in_days = 30
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-4-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_lambda_function" "lambda_function" {</span></span>
 <span id="annotated-cell-4-2"><span class="at" style="color: #657422;
@@ -5068,7 +5421,20 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <div class="code-with-filename-file">
 <pre><strong>IAM Role-&gt;lambda_exec</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="IAM Role->lambda_exec" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-5-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="IAM Role->lambda_exec" data-llms-code-original="resource &quot;aws_iam_role&quot; &quot;lambda_exec&quot; {
+    name = &quot;iam_${var.lambda_function_name}&quot;
+    assume_role_policy = jsonencode({
+        &quot;Version&quot;: &quot;2012-10-17&quot;,
+        &quot;Statement&quot;: [{
+                &quot;Action&quot;: &quot;sts:AssumeRole&quot;,
+                &quot;Principal&quot;: {
+                    &quot;Service&quot;: &quot;lambda.amazonaws.com&quot; # <1>
+                },
+                &quot;Effect&quot;: &quot;Allow&quot;,
+                &quot;Sid&quot;:&quot;&quot;
+          }]
+  }) 
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-5-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_iam_role" "lambda_exec" {</span></span>
 <span id="annotated-cell-5-2"><span class="at" style="color: #657422;
@@ -5199,7 +5565,23 @@ font-style: inherit;">}</span></span><div class="code-annotation-gutter-bg"></di
 <section id="module-block-3---dynamodb" class="level2">
 <h2 class="anchored" data-anchor-id="module-block-3---dynamodb">Module block 3 - Dynamodb</h2>
 <p>Similar to the previous two blocks, dynamodb module is called with necessary arguments.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-6-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" data-llms-code-original="resource &quot;aws_dynamodb_table&quot; &quot;sales_preds_table_fromtf&quot; {
+  name = var.dynamodb_tablename
+  billing_mode = &quot;PAY_PER_REQUEST&quot; # <1>
+  table_class  = &quot;STANDARD_INFREQUENT_ACCESS&quot;
+  hash_key = var.dynamodb_hashkey # <2>
+  range_key = var.dynamodb_rangekey # <3>
+  
+  attribute {
+    name = var.dynamodb_hash_key
+    type = &quot;N&quot;
+  }
+
+  attribute {
+    name = var.dynamodb_range_key
+    type = &quot;N&quot;
+  }
+}" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-6-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">resource "aws_dynamodb_table" "sales_preds_table_fromtf" {</span></span>
 <span id="annotated-cell-6-2"><span class="at" style="color: #657422;
@@ -5317,7 +5699,7 @@ font-style: inherit;">}</span></span></code></pre></div></div>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>Terraform</category>
   <category>AWS</category>
   <category>Docker</category>
@@ -5682,7 +6064,11 @@ font-style: inherit;">-t</span> lambda-app:v1 .</span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>Terminal 1</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Terminal 1" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><span class="bu" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Terminal 1" data-llms-code-original="set +o history # <1>
+export HISTIGNORE= \
+        &quot;ls*:cat*:*AWS*:*SECRET*:*KEY*:*PASS*:*TOKEN*&quot; # <2>
+ export AWS_ACCESS_KEY_ID=xxxx
+ export AWS_SECRET_ACCESS_KEY=xxxtt" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">set</span> +o history</span>
 <span id="annotated-cell-3-2"><span class="bu" style="color: null;
@@ -5797,7 +6183,12 @@ font-style: inherit;">python</span> test_docker_fn_docker.py</span></code></pre>
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-1" class="code-annotation-target"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-6" data-filename="Terminal" data-llms-code-original="docker build -t lambda-app:v1 . # <1>
+export ACCOUNT_ID=xxxx # <2>
+aws ecr create-repository --repository-name lambda-images
+docker tag lambda-app:v1 ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/lambda-images:app
+$(aws ecr get-login --no-include-email) # <3>
+docker push ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/lambda-images:app" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-1" class="code-annotation-target"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">docker</span> build <span class="at" style="color: #657422;
 background-color: null;
@@ -5882,7 +6273,89 @@ font-style: inherit;">${ACCOUNT_ID}</span>.dkr.ecr.us-east-1.amazonaws.com/lambd
 <div class="code-with-filename-file">
 <pre><strong>lambda_function.py</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="lambda_function.py" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="lambda_function.py" data-llms-code-original="import os
+
+import mlflow
+import pandas as pd
+import boto3
+import json
+
+RUN_ID = os.getenv(&quot;RUN_ID&quot;)  # &quot;5651db4644334361b10296c51ba3af3e&quot;
+S3_BUCKET_NAME = os.getenv(
+    &quot;S3_BUCKET_NAME&quot;
+)  # &quot;mlops-project-sales-forecast-bucket&quot;
+EXPERIMENT_ID = 1
+FILE_ADDRESS = &quot;artifacts/predictions/lgb_preds.parquet&quot;
+pred_s3_location = (
+    f&quot;s3://{S3_BUCKET_NAME}/{EXPERIMENT_ID}/{RUN_ID}/{FILE_ADDRESS}&quot;
+)
+
+# Initialize the SNS client object outside of the handler
+dynamodb = boto3.resource('dynamodb') # <1>
+
+def read_parquet_files(filename: str):
+    &quot;&quot;&quot;
+    Read parquet file format for given filename and returns the contents
+    &quot;&quot;&quot;
+    df = pd.read_parquet(filename, engine=&quot;pyarrow&quot;)
+    return df
+
+
+if os.path.exists(&quot;lgb_preds.parquet&quot;):
+    df_test_preds = read_parquet_files(&quot;lgb_preds.parquet&quot;)
+else:
+    s3_file = mlflow.artifacts.download_artifacts(
+        artifact_uri=pred_s3_location, dst_path=&quot;/tmp&quot;
+    )  # /tmp is added as lambda gives write access only to that folder. Otherwise use &quot;./&quot; .
+    df_test_preds = read_parquet_files(s3_file)
+
+
+df_items = read_parquet_files(&quot;items.parquet&quot;)
+
+
+def predict(find, item_idx: int):
+    &quot;&quot;&quot;
+    Takes the json inputs, processes it and outputs the unit sales
+    &quot;&quot;&quot;
+    try:
+        idx = pd.IndexSlice
+        # df_items.sample(1).index[0]
+        x = df_test_preds.loc[idx[find[&quot;store_nbr&quot;], item_idx, find[&quot;date1&quot;]]][
+            &quot;unit_sales&quot;
+        ]
+    except KeyError:
+        print(&quot;This item is not present this store. Try some other item&quot;)
+        return -0.0
+    else:
+        return float(round(x, 2))
+
+
+def lambda_handler(event, context=None) -> dict:
+    &quot;&quot;&quot;
+    lambda handler for predict method
+    &quot;&quot;&quot;
+
+    find = event[&quot;find&quot;]
+    item = df_items.sample(1)
+    item_idx, item_family = item.index[0], item[&quot;family&quot;].values[0]
+    pred_unit_sales = predict(find, item_idx)
+
+    result = {
+        &quot;store_id&quot;: find[&quot;store_nbr&quot;],
+        &quot;item_id&quot;: int(item_idx),
+        &quot;family&quot;: item_family,
+        &quot;prediction_date&quot;: find[&quot;date1&quot;],
+        &quot;unit_sales&quot;: str(pred_unit_sales),
+    }
+
+    table = dynamodb.Table(&quot;sales_preds_for_blog&quot;) # <2>
+    table.put_item(
+        Item = result # <3>
+    )
+    return {
+      'statusCode': 200,
+      'body': 'successfully created item!',
+      }" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> os</span>
 <span id="annotated-cell-7-2"></span>
@@ -6230,7 +6703,7 @@ font-style: inherit;">'successfully created item!'</span>,</span>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>AWS</category>
   <category>Lambda</category>
   <category>API Gateway</category>
@@ -6270,7 +6743,52 @@ font-style: inherit;">'successfully created item!'</span>,</span>
 <div class="code-with-filename-file">
 <pre><strong>lambda_function.py</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="lambda_function.py" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="lambda_function.py" data-llms-code-original="import os
+import pandas as pd
+
+def read_parquet_files(filename: str):
+    &quot;&quot;&quot;
+    Read parquet file format for given filename and returns the contents
+    &quot;&quot;&quot;
+    df = pd.read_parquet(filename, engine=&quot;pyarrow&quot;)
+    return df
+
+df_test_preds = read_parquet_files(&quot;lgb_preds.parquet&quot;)
+df_items = read_parquet_files(&quot;items.parquet&quot;)
+
+def predict(find, item_idx: int):
+    &quot;&quot;&quot;
+    Takes the json inputs, processes it and outputs the unit sales
+    &quot;&quot;&quot;
+    try:
+        idx = pd.IndexSlice
+        x = df_test_preds.loc[idx[find[&quot;store_nbr&quot;], item_idx, find[&quot;date1&quot;]]][
+            &quot;unit_sales&quot;
+        ]
+    except KeyError:
+        print(&quot;This item is not present this store. Try some other item&quot;)
+        return -0.0
+    else:
+        return float(round(x, 2))
+
+def lambda_handler(event, context=None) -> dict: # <1>
+    &quot;&quot;&quot;
+    lambda handler for predict method
+    &quot;&quot;&quot;
+
+    find = event[&quot;find&quot;]
+    item = df_items.sample(1)
+    item_idx, item_family = item.index[0], item[&quot;family&quot;].values[0]
+    pred_unit_sales = predict(find, item_idx)
+
+    result = {
+        &quot; Store&quot;: find[&quot;store_nbr&quot;],
+        &quot; item&quot;: int(item_idx),
+        &quot;Family&quot;: item_family,
+        &quot;Prediction date&quot;: find[&quot;date1&quot;],
+        &quot;Unit_sales&quot;: pred_unit_sales,
+    }
+    return result" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> os</span>
 <span id="annotated-cell-1-2"><span class="im" style="color: #00769E;
@@ -6473,7 +6991,19 @@ font-style: inherit;">return</span> result</span><div class="code-annotation-gut
 <div class="code-with-filename-file">
 <pre><strong>Dockerfile</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Dockerfile" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Dockerfile" data-llms-code-original="FROM public.ecr.aws/lambda/python:3.9 # <1>
+
+RUN pip install -U pip
+RUN pip install pipenv
+
+COPY [ &quot;Pipfile&quot;, &quot;Pipfile.lock&quot;, &quot;./&quot; ]
+
+RUN pipenv install --system --deploy
+
+COPY [ &quot;lgb_preds.parquet&quot; , &quot;lgb_preds.parquet&quot; ]
+COPY [ &quot;items.parquet&quot; , &quot;lambda_function.py&quot;, &quot;./&quot; ]
+
+CMD [ &quot;lambda_function.lambda_handler&quot; ] # <2>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">FROM</span> public.ecr.aws/lambda/python:3.9</span>
 <span id="annotated-cell-2-2"></span>
@@ -6558,7 +7088,11 @@ font-style: inherit;">-t</span> lambda-app:v1 .</span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>Terminal 1</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="Terminal 1" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-4-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-4" data-filename="Terminal 1" data-llms-code-original="docker run \
+    -it \
+    --rm \
+    -p 9000:8080 \ # <1>
+    lambda-app:v1" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-4-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">docker</span> run <span class="dt" style="color: #AD0000;
 background-color: null;
@@ -6655,7 +7189,7 @@ font-style: inherit;">python</span> test_docker_fn.py</span></code></pre></div><
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>https://aws.amazon.com/lambda/features/↩︎</p></li>
@@ -6711,7 +7245,70 @@ font-style: inherit;">python</span> test_docker_fn.py</span></code></pre></div><
 <div class="code-with-filename-file">
 <pre><strong>flask-app.py</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="flask-app.py" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><span class="im" style="color: #00769E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="flask-app.py" data-llms-code-original="import pandas as pd
+from flask import Flask, jsonify, request
+from zipfile import ZipFile as zf
+import os
+
+def read_parquet_files(filename: str) -> pd.DataFrame:
+    &quot;&quot;&quot;
+    Read parquet file format for given filename and returns the contents
+    &quot;&quot;&quot;
+    df = pd.read_parquet(filename, engine=&quot;pyarrow&quot;)
+    return df
+
+
+if os.path.exists(&quot;lgb_preds.parquet&quot;):
+    df_test_preds = read_parquet_files(&quot;lgb_preds.parquet&quot;)
+else:   
+    with zf(&quot;lgb_preds.parquet.zip&quot;) as zipfile:
+        zipfile.extract(&quot;lgb_preds.parquet&quot;)
+    df_test_preds = read_parquet_files(&quot;lgb_preds.parquet&quot;) # <1>
+
+df_items = read_parquet_files(&quot;items.parquet&quot;)
+
+app = Flask(&quot;flask-unit-sales-prediction&quot;) # <2>
+
+
+def predict(find: request, item_idx: int) -> float:
+    &quot;&quot;&quot;
+    Takes the json inputs, processes it and outputs the unit sales
+    &quot;&quot;&quot;
+    try:
+        idx = pd.IndexSlice
+        x = df_test_preds.loc[idx[find[&quot;store_nbr&quot;], item_idx, find[&quot;date1&quot;]]][
+            &quot;unit_sales&quot;
+        ]
+    except KeyError:
+        print(&quot;This item is not present this store. Try some other item&quot;)
+        return -0.0
+    else:
+        return float(round(x, 2))
+
+
+@app.route(&quot;/predict-sales&quot;, methods=[&quot;POST&quot;]) # <3>
+def predict_endpoint():
+    &quot;&quot;&quot;
+    flask predict endpoint
+    &quot;&quot;&quot;
+    find = request.get_json()
+    item = df_items.sample(1)
+    item_idx, item_family = item.index[0], item[&quot;family&quot;].values[0]
+    pred_unit_sales = predict(find, item_idx)
+    result = {
+        &quot; Store&quot;: find[&quot;store_nbr&quot;],
+        &quot; item&quot;: int(item_idx),
+        &quot;Family&quot;: item_family,
+        &quot;Prediction date&quot;: find[&quot;date1&quot;],
+        &quot;Unit_sales&quot;: pred_unit_sales,
+    }
+
+    return jsonify(result) # <4>
+
+
+if __name__ == &quot;__main__&quot;:
+    app.run(debug=True, host=&quot;0.0.0.0&quot;, port=9696) # <5>
+" style="background: #f1f3f5;"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
 background-color: null;
@@ -7260,7 +7857,7 @@ font-style: inherit;">print</span>(response.json())</span></code></pre></div></d
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>docker</category>
   <category>flask</category>
   <category>deployment</category>
@@ -7312,7 +7909,12 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>Terminal for Mac</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="Terminal for Mac" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-7-1"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-7" data-filename="Terminal for Mac" data-llms-code-original="/bin/bash \
+-c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot; # <1>
+brew tap hashicorp/tap # <1>
+brew install hashicorp/tap/terraform # <2>
+which terraform # <3>
+terraform --version # <4>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-7-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">/bin/bash</span> <span class="dt" style="color: #AD0000;
 background-color: null;
@@ -7369,7 +7971,15 @@ font-style: inherit;">--version</span></span><div class="code-annotation-gutter-
 <div class="code-with-filename-file">
 <pre><strong>Terminal for Ubuntu</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-8" data-filename="Terminal for Ubuntu" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-8-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-8" data-filename="Terminal for Ubuntu" data-llms-code-original="#Commands install Hashicorp's GPG key, its repo, 
+#verifies key's fingerprint. 
+#Don't worry if you see gibberish after executing the second command. 
+#Carry on with next commands.
+sudo apt update &amp;&amp; sudo apt install -y gnupg software-properties-common curl 
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository &quot;deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main&quot;
+sudo apt update &amp;&amp; sudo apt-get install terraform # <1>
+terraform --version # <2>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-8-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#Commands install Hashicorp's GPG key, its repo, </span></span>
 <span id="annotated-cell-8-2"><span class="co" style="color: #5E5E5E;
@@ -7485,7 +8095,14 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-11-1"><span class="bu" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-11" data-filename="Terminal" data-llms-code-original="cd ~
+sudo apt update &amp;&amp; sudo apt install docker.io -y # <1>
+mkdir soft &amp;&amp; cd soft 
+wget https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -O docker-compose 
+chmod +x docker-compose # <2>
+echo 'export PATH=&quot;/home/'$USER'/soft:$PATH&quot;' >> ~/.bashrc # <3>
+sudo groupadd docker 
+sudo usermod -aG docker $USER # <4>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-11-1"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">cd</span> ~</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-2" class="code-annotation-target"><span class="fu" style="color: #4758AB;
@@ -7559,7 +8176,7 @@ font-style: inherit;">$USER</span></span><div class="code-annotation-gutter-bg">
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-12" data-filename="Terminal" data-llms-code-original="docker run --rm hello-world # <1>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">docker</span> run <span class="at" style="color: #657422;
 background-color: null;
@@ -7586,7 +8203,27 @@ font-style: inherit;">--rm</span> hello-world</span><div class="code-annotation-
 <div class="code-with-filename-file">
 <pre><strong>main.tf</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="main.tf" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="at" style="color: #657422;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="main.tf" data-llms-code-original="terraform {
+  required_providers {
+    docker = {
+      source  = &quot;kreuzwerker/docker&quot;
+      version = &quot;~> 3.0.1&quot;
+    }
+  }
+} # <1>
+provider &quot;docker&quot; {} 
+resource &quot;docker_image&quot; &quot;nginx&quot; {
+  name         = &quot;nginx&quot;
+  keep_locally = false
+} # <2>
+resource &quot;docker_container&quot; &quot;nginx&quot; {
+  image = docker_image.nginx.image_id
+  name  = &quot;tutorial&quot;
+  ports {
+    internal = 80
+    external = 8000
+  }
+} # <3>" style="background: #f1f3f5;"><pre class="sourceCode yaml code-annotation-code code-with-copy code-annotated"><code class="sourceCode yaml"><span id="annotated-cell-1-1"><span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">terraform {</span></span>
 <span id="annotated-cell-1-2"><span class="at" style="color: #657422;
@@ -7758,7 +8395,7 @@ font-style: inherit;">}</span></span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-1" class="code-annotation-target"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-5" data-filename="Terminal" data-llms-code-original="terrform validate # <1>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1">1</button><span id="annotated-cell-5-1" class="code-annotation-target"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">terrform</span> validate</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div></div>
 </div>
@@ -7827,7 +8464,7 @@ font-style: inherit;">}</span></span></code></pre></div></div>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <guid>https://deepakramani.github.io/posts/2023-06-02-Terraform-setup/</guid>
   <pubDate>Fri, 02 Jun 2023 00:00:00 GMT</pubDate>
   <media:content url="https://deepakramani.github.io/posts/2023-06-02-Terraform-setup/tf.png" medium="image" type="image/png" height="50" width="144"/>
@@ -8671,7 +9308,7 @@ font-style: inherit;">"downloaded_turtlesim.jpg"</span>,</span>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>boto3</category>
   <category>s3</category>
   <category>aws</category>
@@ -8745,7 +9382,13 @@ font-style: inherit;">'lervag/vimtex'</span></span></code></pre></div></div>
 <div class="code-with-filename-file">
 <pre><strong>Inside init.vim</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Inside init.vim" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="Inside init.vim" data-llms-code-original="# Hover over the number at the end of each line to see its importance
+let g:vimtex_view_method = 'skim' # <1>
+
+
+let g:vimtex_view_skim_sync = 1 # <2>
+let g:vimtex_view_skim_activate = 1 # <3>
+" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Hover over the number at the end of each line to see its importance</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><span class="bu" style="color: null;
@@ -8836,7 +9479,7 @@ Important
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>In the nvim command line, run <code>:echo v:servername</code> to know the name of the server↩︎</p></li>
@@ -9976,7 +10619,7 @@ font-style: inherit;">=</span> json.loads(requests.get(URL).text)</span>
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>pandas</category>
   <category>json</category>
   <category>jupyter</category>
@@ -10054,7 +10697,9 @@ files. Never store secure keys, passwords in public domains." %} -->
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-1" class="code-annotation-target"><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-1" data-filename="Terminal" data-llms-code-original="sudo apt stow # <1>
+
+brew install stow # <2>" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-1" class="code-annotation-target"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sudo</span> apt stow</span>
 <span id="annotated-cell-1-2"></span>
@@ -10085,7 +10730,10 @@ font-style: inherit;">brew</span> install stow</span><div class="code-annotation
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Terminal" style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><span class="ex" style="color: null;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="Terminal" data-llms-code-original="stow <packagename> # <1> 
+stow -n <packagename> # <2> 
+stow -D <packagename> # <3> 
+stow -R <packagename> # <4> " style="background: #f1f3f5;"><pre class="sourceCode bash code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">stow</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -10189,7 +10837,7 @@ font-style: inherit;">&gt;</span> ../.dotfiles/nvim/.config/nvim</span></code></
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>dotfiles</category>
   <category>GNU stow</category>
   <category>setup-dev-env</category>
@@ -10381,7 +11029,7 @@ Tip
 
 </section>
 
- ]]></description>
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a> ]]></description>
   <category>kaggle</category>
   <category>markdown</category>
   <guid>https://deepakramani.github.io/posts/2021-09-18-kaggle-setup/</guid>

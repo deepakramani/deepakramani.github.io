@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.3">
+<meta name="generator" content="quarto-1.11.6">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -15,10 +15,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,14 +79,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="../../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-70bba17f54d0d4d57e9a26002654b9c6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-3978f374695de4ef1d00a8eb948ae22a.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../../site_libs/bootstrap/bootstrap-4be46a29ba495b8a0a585e09b6f026be.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-5cfd04728c532b29461f5498fb8b6be1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script src="../../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -151,14 +155,14 @@ cookieconsent.run({
 <link rel="canonical" href="https://deepakramani.github.io/notes/data-engineering/Debezium-CDC/">
 </head>
 
-<body class="floating nav-fixed quarto-light">
+<body class="floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -176,10 +180,6 @@ cookieconsent.run({
   <li class="nav-item">
     <a class="nav-link" href="../../../about.html"> 
 <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../../resume.pdf"> 
-<span class="menu-text">Resume</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -224,8 +224,8 @@ cookieconsent.run({
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <nav id="TOC" role="doc-toc" class="toc-active">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
+    <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul class="collapse">
@@ -245,14 +245,14 @@ cookieconsent.run({
   <li><a href="#common-issue-with-decimal-data-types" id="toc-common-issue-with-decimal-data-types" class="nav-link" data-scroll-target="#common-issue-with-decimal-data-types">Common issue with Decimal data types</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/notes/data-engineering/Debezium-CDC/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/main/notes/data-engineering/Debezium-CDC/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content" tabindex="-1">
 
 
 
@@ -351,7 +351,39 @@ cookieconsent.run({
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>This is for inserting an data entry. For an update the stream looks like -</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-llms-code-original="{
+  &quot;value&quot;:{
+    &quot;before&quot;:{
+      &quot;id&quot;:95,
+      &quot;name&quot;:&quot;Steven Cowan&quot;,
+      &quot;description&quot;:&quot;Heavy rise something sell case institution chair. Control them might court surface none property. Subject behind them. Quickly near trial.&quot;,
+      &quot;price&quot;:75.0
+    },
+    &quot;after&quot;:{
+      &quot;id&quot;:95,
+      &quot;name&quot;:&quot;Yvonne Collins&quot;,
+      &quot;description&quot;:&quot;Heavy rise something sell case institution chair. Control them might court surface none property. Subject behind them. Quickly near trial.&quot;,
+      &quot;price&quot;:75.0
+    },
+    &quot;source&quot;:{
+      &quot;version&quot;:&quot;2.2.0.Alpha3&quot;,
+      &quot;connector&quot;:&quot;postgresql&quot;,
+      &quot;name&quot;:&quot;debezium&quot;,
+      &quot;ts_ms&quot;:1692626421005,
+      &quot;snapshot&quot;:&quot;false&quot;,
+      &quot;db&quot;:&quot;postgres&quot;,
+      &quot;sequence&quot;:&quot;[\&quot;23399328\&quot;,\&quot;23399456\&quot;]&quot;,
+      &quot;schema&quot;:&quot;commerce&quot;,
+      &quot;table&quot;:&quot;products&quot;,
+      &quot;txId&quot;:854,
+      &quot;lsn&quot;:23399456, // <1>
+      &quot;xmin&quot;:null
+    },
+    &quot;op&quot;:&quot;u&quot;,
+    &quot;ts_ms&quot;:1692626421499,
+    &quot;transaction&quot;:null
+  }
+}"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"value"</span><span class="fu">:{</span></span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"before"</span><span class="fu">:{</span></span>
 <span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span><span class="dv">95</span><span class="fu">,</span></span>
@@ -407,7 +439,22 @@ cookieconsent.run({
 <div class="code-with-filename-file">
 <pre><strong>pg-src-connector.json</strong></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="pg-src-connector.json"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename="pg-src-connector.json" data-llms-code-original="{
+    &quot;name&quot;: &quot;pg-src-connector&quot;,
+    &quot;config&quot;: {
+        &quot;connector.class&quot;: &quot;io.debezium.connector.postgresql.PostgresConnector&quot;, // <1>
+        &quot;tasks.max&quot;: &quot;1&quot;,
+        &quot;database.hostname&quot;: &quot;postgres&quot;, // <2>
+        &quot;database.port&quot;: &quot;5432&quot;, // <2>
+        &quot;database.user&quot;: &quot;postgres&quot;, // <2>
+        &quot;database.password&quot;: &quot;postgres&quot;, // <2>
+        &quot;database.dbname&quot;: &quot;postgres&quot;, // <2>
+        &quot;database.server.name&quot;: &quot;postgres&quot;, // <2>
+        &quot;database.include.list&quot;: &quot;postgres&quot;, // <2>
+        &quot;topic.prefix&quot;: &quot;debezium&quot;, // <3>
+        &quot;schema.include.list&quot;: &quot;commerce&quot; // <4>
+    }
+}"><pre class="sourceCode json code-annotation-code code-with-copy code-annotated"><code class="sourceCode json"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"pg-src-connector"</span><span class="fu">,</span></span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"config"</span><span class="fu">:</span> <span class="fu">{</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-4" class="code-annotation-target"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"connector.class"</span><span class="fu">:</span> <span class="st">"io.debezium.connector.postgresql.PostgresConnector"</span><span class="fu">,</span></span>
@@ -467,7 +514,7 @@ cookieconsent.run({
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-streaming-changes<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -923,6 +970,9 @@ cookieconsent.run({
     }
   });
   </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
 <script src="https://utteranc.es/client.js" repo="deepakramani/blog_comments" issue-term="pathname" theme="github-dark" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
@@ -933,7 +983,7 @@ cookieconsent.run({
 </div>   
     <div class="nav-footer-center">
 
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/master/notes/data-engineering/Debezium-CDC/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/deepakramani/dr563105.github.io/blob/main/notes/data-engineering/Debezium-CDC/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center"> </a></div></div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">

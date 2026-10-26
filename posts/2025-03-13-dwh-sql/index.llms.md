@@ -1,0 +1,191 @@
+# Introduction
+
+Building a data warehouse can be daunting task. In this blog post, I make an attempt to take a sales dataset, do some transformation and load it into a data warehouse from which business intelligence team can create reports.
+
+**Full disclosure**: This blog is inspired upon following [Data With Bara](https://www.youtube.com/watch?v=9GVqKuTVANE) video. Only the dataset, project specifications to make a data warehouse is unchanged; every other step is changed such as using docker, postgresQL and adding personal touches.
+
+The code for this project is [here in github](https://github.com/deepakramani/sql-data-warehouse-project).
+
+## ETL data architecture
+
+This is the architecture we are going to implement. The raw data in `csv` files are extracted into bronze layer tables. Then the data is cleaned and transformed into silver layer tables. Then we combine tables to form data marts for business users in the gold/final layer.
+
+![ETL architecture diagram](./assets/data_architecture.png) *Source: [Data With Baraa](https://datawithbaraa.substack.com/p/build-a-data-warehouse-from-scratch)*
+
+## Prerequisites and Setup
+
+We use Ubuntu 20.04 LTS AWS EC2 and GCP machine for the project.
+
+We need the following:
+
+- [git version \>= 2.37.1](https://github.com/git-guides/install-git),
+- [Docker version \>= 20.10.17](https://docs.docker.com/engine/install/) and [Docker compose v2 version \>= v2.10.2](https://docs.docker.com/compose/install/),
+- [make](https://linuxhint.com/install-make-ubuntu/)
+
+To make things easier I have scripted these prerequisites. Just clone my repo and run the instructions I provide.
+
+``` bash
+sudo apt update && sudo apt install git make -y
+git clone https://github.com/deepakramani/sql-data-warehouse-project.git
+cd sql-data-warehouse-project
+make install_docker
+source ~/.bashrc
+```
+
+Logout and log in back to the instance. To test docker if it is working, run
+
+``` bash
+docker run --rm hello-world # should return "Hello from Docker!" without errors
+```
+
+**Set environment variables**:
+
+``` bash
+export POSTGRES_USER=postgres
+export POSTGRES_PASSWORD=postgres
+export POSTGRES_HOST=postgres
+export POSTGRES_DB=sql_dwh_db
+```
+
+Now we’re ready to start our project.
+
+``` bash
+cd ~/sql-data-warehouse-project
+make up # creates the database and schemas for the medallion architecture
+```
+
+## Extract-Transform-Load (ETL) Process
+
+We begin the ETL process of the data pipeline with the bronze layer. This layer is usually called `staging` layer as the raw data from various sources are dumped into temp tables. We choose `full-extract` type instead of `incremental` here. Raw data are in `csv` files.
+
+## Bronze Layer
+
+### Setup bronze layer and populate raw data to tables
+
+``` bash
+cd ~/sql-data-warehouse-project
+make setup_bronze_tables
+make populate_bronze_tables
+```
+
+Now the bronze layer tables have raw data populated.
+
+## Silver Layer
+
+### Setup silver layer table
+
+(The script is designed to work only once in the beginning since gold layer table(downstream) is dependent on silver tables)
+
+``` bash
+cd ~/sql-data-warehouse-project
+make setup_silver_tables
+```
+
+In the Silver layer, data cleansing and transformation on the bronze layer tables are carried out.
+
+### Data Cleansing
+
+This step includes:
+
+1.  Remove duplicate entries
+2.  Data filtering
+3.  Handling missing/invalid data
+4.  Handling unwanted white spaces
+5.  Data type casting
+6.  Outlier detection
+
+### Data Transformation
+
+This step includes:
+
+1.  Data enrichment
+2.  Data integration
+3.  Deriving new columns
+4.  Data aggregations
+5.  Applying business rules and logic
+6.  Data normalization and standardization
+
+## Populate Silver layer tables
+
+``` bash
+cd ~/sql-data-warehouse-project
+make populate_silver_tables
+```
+
+As the data integration image indicates, we design the silver layer tables accordingly.
+
+## Gold Layer (Business Logic layer)
+
+We use the below image to see how data from the source comes downstream to the destination in gold layer views.
+
+![Data flow diagram](./assets/data_flow.png)
+
+Data Flow
+
+*Source: [Data with Baraa](https://datawithbaraa.substack.com/p/build-a-data-warehouse-from-scratch)*
+
+Before the dimensional and fact tables are created, it is important to know the relationship between tables. The below data integration image shows how one table is related to other. This diagram helps in making joins with other tables using that specific key.
+
+![Data integration diagram](./assets/data_integration.png)
+
+Data Integration
+
+``` bash
+cd ~/sql-data-warehouse-project
+make setup_gold_layer
+```
+
+### Data Mart
+
+In the image below, we can see how the gold layer dimensional and fact tables/views(data marts) are created.
+
+![Data mart model diagram](./assets/data_model.png)
+
+Data Mart
+
+## Testing - Data quality checks
+
+Testing data quality is an integral part of ETL process. It ensures bad data doesn’t get transmitted to the stakeholders or business users potentially avoiding dire consequences.
+
+Here we check data integrity, consistency, and correctness. It verifies primary key uniqueness, standardization, referential integrity, and logical correctness of business rules.
+
+### Silver - data quality check
+
+``` bash
+cd ~/sql-data-warehouse-project
+make check_silver_data_quality
+```
+
+### Gold - data quality check
+
+``` bash
+cd ~/sql-data-warehouse-project
+make check_gold_data_quality
+```
+
+## Data Catalog
+
+Gold layer views are usually used by Business users. In order to help them understand what each row in the table/view represent is important. Therefore I provide a catalog file that gives the metadata of the views created.
+
+[Data Catalog](../../posts/2025-03-13-dwh-sql/assets/data_catalog.llms.md)
+
+## Future developments
+
+1.  Take historical data into account
+2.  Do incremental data load than full load each time
+3.  Make use of an orchestration tool such as Dagster to orchestrate ETL process
+4.  Do EDA on the gold layer and derive reports for business users
+
+### Deleting resources
+
+To bring down all container and return to the original state, run the following instructions
+
+``` bash
+make down
+```
+
+# Conclusion
+
+In this blog we learn how to build a data warehouse using ETL process in a data pipeline. We learn to create sql scripts to create tables. We learn to create stored procedures and their invocation. We learn to do data quality check at the silver and gold layers.
+
+Back to top
