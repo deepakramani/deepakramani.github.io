@@ -1,11 +1,11 @@
-- project: "Build Data Warehouse using SQL"
-  path: "https://github.com/deepakramani/sql-data-warehouse-project"
+- project: "Turning Bike Shop Data into Revenue and Retention Wins"
+  path: "https://github.com/deepakramani/dbt-bike-insights"
   role: Creator
   description: |
-      Build a data warehouse for a customer-product-sales dataset using ETL following data engineering principles.
+    Build an end-to-end ELT pipeline (Postgres, dbt, Airflow) transforming raw CRM/ERP data into a powerful analytics platform.
 
 - project: "Capture Change data using Debezium and Kafka"
   path: https://github.com/deepakramani/cdc-pg-dbz-kafka-s3
   role: Creator
   description: |
-      A data pipeline that looks for changes and streams it through Kafka downstream for analytics.
+    A data pipeline that looks for changes and streams it through Kafka downstream for analytics.

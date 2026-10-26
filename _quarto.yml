@@ -12,11 +12,13 @@ website:
   site-url: "https://deepakramani.github.io"
   repo-url: "https://github.com/deepakramani/dr563105.github.io"
   repo-actions: source
-  repo-branch: master
+  repo-branch: main
   open-graph: true
   twitter-card:
     creator: "@thosegradients"
   page-navigation: true
+  back-to-top-navigation: true
+  llms-txt: true
   navbar:
     title: false
     left: 
@@ -40,8 +42,8 @@ website:
     right:
       - text: About
         href: about.qmd
-      - text: Resume
-        href: resume.pdf
+      # - text: Resume
+      #   href: resume.pdf
 
   # sidebar: 
   #   - title: Notes

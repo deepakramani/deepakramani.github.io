@@ -165,8 +165,15 @@ div.callout-warning.callout-style-default>.callout-header {
 
 // Categories
 .quarto-title .quarto-categories .quarto-category {
-  color: #0e143d;
+  color: #e8dcc8; // Changed from #0e143d to light cream
   font-family: "Fira Code", monospace;
+}
+
+.quarto-title-banner .quarto-categories .quarto-category {
+  color: #e8dcc8 !important; // Light cream text
+  background-color: rgba(20, 124, 145, 0.25) !important;
+  padding: 0.2em 0.6em !important;
+  border-radius: 4px !important;
 }
 
 // Nav links
